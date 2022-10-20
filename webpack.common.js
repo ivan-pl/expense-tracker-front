@@ -3,13 +3,10 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 const path = require("path");
 
-const pages = ["index"];
-
 module.exports = {
-  entry: pages.reduce((config, page) => {
-    config[page] = `./src/${page}.ts`; // eslint-disable-line no-param-reassign
-    return config;
-  }, {}),
+  entry: {
+    app: path.join(__dirname, "src", "index.tsx"),
+  },
   output: {
     filename: "[name].js",
     path: path.resolve(__dirname, "dist"),
@@ -18,15 +15,22 @@ module.exports = {
       arrowFunction: false,
     },
   },
+  resolve: {
+    extensions: [".tsx", ".ts", ".js"],
+  },
   module: {
     rules: [
       {
-        test: /\.m?js$/,
+        test: /\.[jt]sx?$/,
         exclude: /node_modules/,
         use: {
           loader: "babel-loader",
           options: {
-            presets: ["@babel/preset-env"],
+            presets: [
+              "@babel/preset-env",
+              "@babel/preset-typescript",
+              "@babel/preset-react",
+            ],
           },
         },
       },
@@ -54,15 +58,10 @@ module.exports = {
   optimization: {
     minimizer: [`...`, new CssMinimizerPlugin()],
   },
-  plugins: [new MiniCssExtractPlugin()].concat(
-    pages.map(
-      (page) =>
-        new HtmlWebpackPlugin({
-          inject: true,
-          template: `./src/pages/${page}.html`,
-          filename: `${page}.html`,
-          chunks: [page],
-        })
-    )
-  ),
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: "./src/index.html",
+    }),
+    new MiniCssExtractPlugin(),
+  ],
 };
