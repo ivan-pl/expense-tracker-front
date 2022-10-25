@@ -1,5 +1,6 @@
 {
   "name": "expense-tracker-front",
+  "homepage": "https://ivan-pl.github.io/expense-tracker-front",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -25,7 +26,6 @@
   "bugs": {
     "url": "https://github.com/ivan-pl/expense-tracker-front/issues"
   },
-  "homepage": "https://github.com/ivan-pl/expense-tracker-front#readme",
   "devDependencies": {
     "@babel/core": "^7.19.3",
     "@babel/preset-env": "^7.19.4",
