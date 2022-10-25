@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "jest --coverage",
-    "lint": "prettier --check . && eslint . && stylelint \"**/*.scss\"",
-    "lint:fix": "prettier --write . && eslint . --fix && stylelint \"**/*scss\" --fix",
+    "lint": "prettier --check . && eslint --ext .js,.jsx,.tsx,.ts . && stylelint \"**/*.scss\"",
+    "lint:fix": "prettier --write . && eslint --fix --ext .js,.jsx,.tsx,.ts . && stylelint \"**/*scss\" --fix",
     "prepare": "husky install",
     "build": "webpack --config webpack.prod.js",
     "build:dev": "webpack --config webpack.dev.js",
@@ -32,8 +32,9 @@
     "@babel/preset-react": "^7.18.6",
     "@babel/preset-typescript": "^7.18.6",
     "@types/jest": "^29.2.0",
-    "@types/react": "^18.0.21",
-    "@types/react-dom": "^18.0.6",
+    "@types/node": "^18.11.5",
+    "@types/react": "^18.0.22",
+    "@types/react-dom": "^18.0.7",
     "@typescript-eslint/eslint-plugin": "^5.40.0",
     "@typescript-eslint/parser": "^5.40.0",
     "babel-jest": "^29.1.2",
@@ -75,8 +76,9 @@
     "*.{js,ts,tsx,html,scss,md}": "prettier --write"
   },
   "dependencies": {
-    "@types/node": "^18.11.3",
     "babel-cli": "^6.26.0",
-    "babel-preset-react-app": "^3.1.2"
+    "babel-preset-react-app": "^3.1.2",
+    "normalize.css": "^8.0.1",
+    "react-router-dom": "^6.4.2"
   }
 }
