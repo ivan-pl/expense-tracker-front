@@ -1,29 +1,17 @@
-import { Outlet, Link } from "react-router-dom";
+import { Outlet } from "react-router-dom";
+import Navigation from "./Navigation";
+import "./Layout.scss";
 
 export default function Layout() {
   return (
-    <>
-      <header>
-        <nav>
-          <ul>
-            <li>
-              <Link to={"/expenses"}>Expenses</Link>
-            </li>
-            <li>
-              <Link to={"/analytics"}>Analytics</Link>
-            </li>
-            <li>
-              <Link to={"/about"}>About</Link>
-            </li>
-          </ul>
-        </nav>
-      </header>
+    <div className="layout">
+      <Navigation />
 
-      <main>
+      <main className="main">
         <Outlet />
       </main>
 
-      <footer>Footer</footer>
-    </>
+      <footer className="footer">Footer</footer>
+    </div>
   );
 }

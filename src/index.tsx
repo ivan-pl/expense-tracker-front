@@ -1,9 +1,10 @@
 import React from "react";
 import * as ReactDOM from "react-dom/client";
-import { BrowserRouter } from "react-router-dom";
+import { HashRouter } from "react-router-dom";
 
-import "./index.scss";
-// import "normalize.css"
+import "normalize.css";
+import "./styles/fonts.scss";
+import "./styles/index.scss";
 import App from "./App";
 
 const root = ReactDOM.createRoot(
@@ -11,8 +12,12 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <React.StrictMode>
-    <BrowserRouter basename="expense-tracker-front">
+    <HashRouter>
+      {/* <BrowserRouter> */}
+      {/* TODO: uncommit to deploy */}
+      {/* <BrowserRouter basename="expense-tracker-front"> */}
       <App />
-    </BrowserRouter>
+      {/* </BrowserRouter> */}
+    </HashRouter>
   </React.StrictMode>
 );
