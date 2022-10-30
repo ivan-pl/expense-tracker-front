@@ -4,7 +4,12 @@ module.exports = {
     es2021: true,
     jest: true,
   },
-  extends: ["eslint:recommended", "plugin:react/recommended", "prettier"],
+  extends: [
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "plugin:css-modules/recommended",
+    "prettier",
+  ],
   parser: "@typescript-eslint/parser",
   settings: {
     react: {
@@ -18,10 +23,12 @@ module.exports = {
       jsx: true,
     },
   },
-  plugins: ["react", "@typescript-eslint"],
+  plugins: ["react", "@typescript-eslint", "css-modules", "import"],
   rules: {
     "react/jsx-uses-react": "off",
     "react/react-in-jsx-scope": "off",
+    "import/no-unresolved": "off", // https://github.com/typescript-eslint/typescript-eslint/issues/1624
+    "import/extensions": ["warn", "never"], // https://github.com/benmosher/eslint-plugin-import/blob/master/docs/rules/extensions.md
   },
   overrides: [
     {
