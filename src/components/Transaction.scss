@@ -1,0 +1,55 @@
+@import "../styles/variables";
+
+.transaction {
+  display: grid;
+  grid:
+    "tag amount"
+    "pay-method amount"
+    "comment amount"
+    / 1fr 1fr;
+
+  .tag {
+    grid-area: tag;
+    font-weight: 600;
+  }
+
+  .pay-method {
+    grid-area: pay-method;
+    color: #797979;
+  }
+
+  .comment {
+    grid-area: comment;
+    color: #797979;
+  }
+
+  .amount {
+    grid-area: amount;
+    font-size: 22px;
+    align-self: center;
+    justify-self: right;
+  }
+}
+
+@media (min-width: $breakpoint-tablet) {
+  .transaction {
+    grid:
+      "tag amount pay-method"
+      "comment amount pay-method"
+      / 220px auto 130px;
+
+    .pay-method {
+      align-self: center;
+      justify-self: right;
+      color: black;
+    }
+
+    .amount {
+      justify-self: right;
+    }
+
+    .comment {
+      color: black;
+    }
+  }
+}
