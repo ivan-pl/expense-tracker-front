@@ -1,4 +1,4 @@
-import IDayStransactionList from "../types/daytransactionlist";
+import { IDayStransactionList } from "../types/transactions.type";
 import DayTransactionList from "../components/DayTransactionList";
 
 const dayTransactionList: IDayStransactionList = {

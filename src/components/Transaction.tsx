@@ -1,5 +1,5 @@
+import { ITransaction } from "../types/transactions.type";
 import "./Transaction.scss";
-import ITransaction from "../types/transaction";
 
 interface IProps {
   transaction: ITransaction;

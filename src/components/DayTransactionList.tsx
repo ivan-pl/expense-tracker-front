@@ -1,4 +1,4 @@
-import IDayStransactionList from "../types/daytransactionlist";
+import { IDayStransactionList } from "../types/transactions.type";
 import Transaction from "./Transaction";
 import "./DayTransactionList.scss";
 
