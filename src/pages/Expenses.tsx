@@ -1,5 +1,5 @@
 import { IDayStransactionList } from "../types/transactions.type";
-import DayTransactionList from "../components/DayTransactionList";
+import DayTransactionList from "../components/DayTransactionList/DayTransactionList";
 
 const dayTransactionList: IDayStransactionList = {
   date: new Date(),

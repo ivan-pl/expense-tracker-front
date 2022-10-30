@@ -1,5 +1,5 @@
-import { IDayStransactionList } from "../types/transactions.type";
-import Transaction from "./Transaction";
+import { IDayStransactionList } from "../../types/transactions.type";
+import Transaction from "../Transaction/Transaction";
 import "./DayTransactionList.scss";
 
 interface IProps {

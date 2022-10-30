@@ -1,4 +1,4 @@
-import { ITransaction } from "../types/transactions.type";
+import { ITransaction } from "../../types/transactions.type";
 import "./Transaction.scss";
 
 interface IProps {
