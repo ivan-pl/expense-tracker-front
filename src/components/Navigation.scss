@@ -6,6 +6,8 @@
   flex-flow: nowrap row;
   width: 100%;
   justify-content: space-around;
+  border-top: solid 1px;
+  padding-top: 5px;
 
   .link {
     text-decoration: none;
@@ -35,10 +37,20 @@
   .link-about {
     background-image: url("../assets/images/about.svg");
   }
+
+  .link-logout {
+    background-image: url("../assets/images/logout.svg");
+  }
 }
 
 @media (min-width: $breakpoint-tablet) {
   .nav {
+    justify-content: left;
+    gap: 5%;
+    padding: 0 2%;
+    border-top: none;
+    border-bottom: solid 1px;
+
     .link {
       background: none;
       line-height: 64px;
@@ -47,6 +59,10 @@
       .link-text {
         display: block;
       }
+    }
+
+    .link-logout {
+      margin-left: auto;
     }
   }
 }

@@ -14,6 +14,9 @@ export default function Navigation() {
       <Link className="link link-about" to={"/about"}>
         <span className="link-text">About</span>
       </Link>
+      <Link className="link link-logout" to={"/auth"}>
+        <span className="link-text">Sign out</span>
+      </Link>
     </nav>
   );
 }
