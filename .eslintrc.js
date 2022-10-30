@@ -28,14 +28,13 @@ module.exports = {
     "react/jsx-uses-react": "off",
     "react/react-in-jsx-scope": "off",
     "import/no-unresolved": "off", // https://github.com/typescript-eslint/typescript-eslint/issues/1624
-    "import/extensions": ["warn", "never"], // https://github.com/benmosher/eslint-plugin-import/blob/master/docs/rules/extensions.md
+    "import/extensions": "off",
   },
   overrides: [
     {
       files: ["webpack.*.js"],
       rules: {
         "import/no-extraneous-dependencies": "off",
-        "import/extensions": "off",
       },
     },
     {

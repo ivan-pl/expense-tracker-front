@@ -1,5 +1,3 @@
-@import "../../styles/variables";
-
 .nav {
   display: flex;
   flex-flow: nowrap row;
@@ -42,7 +40,7 @@
   }
 }
 
-@media (min-width: $breakpoint-tablet) {
+@include for-desktop-up {
   .nav {
     justify-content: left;
     gap: 5%;

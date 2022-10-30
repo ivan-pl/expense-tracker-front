@@ -39,7 +39,19 @@ module.exports = {
       },
       {
         test: /\.s[ac]ss$/i,
-        use: [MiniCssExtractPlugin.loader, "css-loader", "sass-loader"],
+        use: [
+          MiniCssExtractPlugin.loader,
+          "css-loader",
+          {
+            loader: "sass-loader",
+            options: {
+              additionalData: '@import "variables";',
+              sassOptions: {
+                includePaths: [path.resolve(__dirname, "./src/styles")],
+              },
+            },
+          },
+        ],
       },
       {
         test: /\.html$/i,

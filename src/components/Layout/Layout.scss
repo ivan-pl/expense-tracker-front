@@ -23,7 +23,7 @@
   }
 }
 
-@media (min-width: 768px) {
+@include for-desktop-up {
   .layout {
     grid-template:
       "nav" auto
