@@ -1,0 +1,52 @@
+// @use "../styles/variables";   Не работает
+@import "../styles/variables";
+
+.nav {
+  display: flex;
+  flex-flow: nowrap row;
+  width: 100%;
+  justify-content: space-around;
+
+  .link {
+    text-decoration: none;
+    color: black;
+    height: 64px;
+    width: 64px;
+    background: {
+      repeat: no-repeat;
+      position: center;
+      size: contain;
+      color: transparent;
+    }
+
+    .link-text {
+      display: none;
+    }
+  }
+
+  .link-expenses {
+    background-image: url("../assets/images/expenses.svg");
+  }
+
+  .link-analytics {
+    background-image: url("../assets/images/analytics.svg");
+  }
+
+  .link-about {
+    background-image: url("../assets/images/about.svg");
+  }
+}
+
+@media (min-width: $breakpoint-tablet) {
+  .nav {
+    .link {
+      background: none;
+      line-height: 64px;
+      width: fit-content;
+
+      .link-text {
+        display: block;
+      }
+    }
+  }
+}

@@ -1,11 +1,19 @@
 import { Link } from "react-router-dom";
 
+import "./Navigation.scss";
+
 export default function Navigation() {
   return (
     <nav className="nav">
-      <Link to={"/expenses"}>Expenses</Link>
-      <Link to={"/analytics"}>Analytics</Link>
-      <Link to={"/about"}>About</Link>
+      <Link className="link link-expenses" to={"/expenses"}>
+        <span className="link-text">Expenses</span>
+      </Link>
+      <Link className="link link-analytics" to={"/analytics"}>
+        <span className="link-text">Analytics</span>
+      </Link>
+      <Link className="link link-about" to={"/about"}>
+        <span className="link-text">About</span>
+      </Link>
     </nav>
   );
 }
