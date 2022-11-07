@@ -45,6 +45,7 @@
 
 @include for-desktop-up {
   .nav {
+    position: static;
     justify-content: left;
     gap: 5%;
     padding: 0 2%;
