@@ -10,3 +10,12 @@ export interface IDayStransactionList {
   date: Date;
   transactionList: ITransaction[];
 }
+
+export interface ITransactionSection {
+  total: {
+    day: number;
+    week: number;
+    month: number;
+  };
+  transactionHistory: IDayStransactionList[];
+}

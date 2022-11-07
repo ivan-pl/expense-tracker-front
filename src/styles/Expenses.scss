@@ -1,0 +1,37 @@
+.total {
+  display: none;
+}
+
+@include for-desktop-up {
+  .expenses {
+    display: grid;
+    grid-template:
+      "transactions total" auto
+      / auto auto;
+    gap: 24px;
+
+    &__total {
+      grid-area: total;
+    }
+
+    &__transactions {
+      grid-area: transactions;
+    }
+  }
+
+  .total {
+    display: block;
+    width: 250px;
+  }
+
+  .total-wrap {
+    display: flex;
+    flex-flow: column nowrap;
+
+    .row {
+      display: flex;
+      flex-flow: row nowrap;
+      justify-content: space-between;
+    }
+  }
+}
