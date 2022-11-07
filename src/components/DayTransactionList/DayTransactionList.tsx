@@ -1,3 +1,4 @@
+import React, { FC } from "react";
 import { IDayStransactionList } from "../../types/transactions.type";
 import Transaction from "../Transaction/Transaction";
 import "./DayTransactionList.scss";
@@ -6,7 +7,7 @@ interface IProps {
   dayTransactionList: IDayStransactionList;
 }
 
-function DayTransactionList(props: IProps) {
+const DayTransactionList: FC<IProps> = (props: IProps) => {
   const date = props.dayTransactionList.date;
   const transactions = props.dayTransactionList.transactionList.map(
     (transaction) => (
@@ -21,6 +22,6 @@ function DayTransactionList(props: IProps) {
       <div className="transaction-list">{transactions}</div>
     </div>
   );
-}
+};
 
 export default DayTransactionList;

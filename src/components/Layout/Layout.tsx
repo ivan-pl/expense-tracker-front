@@ -1,8 +1,9 @@
+import React, { FC } from "react";
 import { Outlet } from "react-router-dom";
 import Navigation from "../Navigation/Navigation";
 import "./Layout.scss";
 
-export default function Layout() {
+const Layout: FC = () => {
   return (
     <div className="layout">
       <Navigation />
@@ -14,4 +15,6 @@ export default function Layout() {
       <footer className="footer">Footer</footer>
     </div>
   );
-}
+};
+
+export default Layout;

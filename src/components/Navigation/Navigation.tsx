@@ -1,8 +1,9 @@
+import React, { FC } from "react";
 import { Link } from "react-router-dom";
 
 import "./Navigation.scss";
 
-export default function Navigation() {
+const Navigation: FC = () => {
   return (
     <nav className="nav">
       <Link className="link link-expenses" to={"/expenses"}>
@@ -19,4 +20,6 @@ export default function Navigation() {
       </Link>
     </nav>
   );
-}
+};
+
+export default Navigation;

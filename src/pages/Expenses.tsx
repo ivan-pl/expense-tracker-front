@@ -1,3 +1,4 @@
+import React, { FC } from "react";
 import { IDayStransactionList } from "../types/transactions.type";
 import DayTransactionList from "../components/DayTransactionList/DayTransactionList";
 
@@ -21,11 +22,13 @@ const dayTransactionList: IDayStransactionList = {
   ],
 };
 
-export default function Expenses() {
+const Expenses: FC = () => {
   return (
     <div>
       <p>Expenses page</p>
       <DayTransactionList dayTransactionList={dayTransactionList} />
     </div>
   );
-}
+};
+
+export default Expenses;

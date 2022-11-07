@@ -1,3 +1,4 @@
+import React, { FC } from "react";
 import { Routes, Route } from "react-router-dom";
 
 import Layout from "./components/Layout/Layout";
@@ -5,7 +6,7 @@ import About from "./pages/About";
 import Analytics from "./pages/Analytics";
 import Expenses from "./pages/Expenses";
 
-export default function App() {
+const App: FC = () => {
   return (
     <Routes>
       <Route path="/" element={<Layout />}>
@@ -16,4 +17,6 @@ export default function App() {
       </Route>
     </Routes>
   );
-}
+};
+
+export default App;

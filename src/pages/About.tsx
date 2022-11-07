@@ -1,6 +1,7 @@
+import React, { FC } from "react";
 import "../styles/about.scss";
 
-export default function About() {
+const About: FC = () => {
   return (
     <div className="about">
       <h1 className="title">About</h1>
@@ -27,4 +28,6 @@ export default function About() {
       </p>
     </div>
   );
-}
+};
+
+export default About;
