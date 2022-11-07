@@ -16,7 +16,9 @@
   .expenses {
     display: grid;
     grid-template:
-      "transactions total" auto
+      "transactions total" min-content
+      "transactions add-button" min-content
+      "transactions ." 1fr
       / auto auto;
     gap: 24px;
 
@@ -26,6 +28,11 @@
 
     &__transactions {
       grid-area: transactions;
+    }
+
+    &__add {
+      grid-area: add-button;
+      position: static;
     }
   }
 

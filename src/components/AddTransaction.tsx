@@ -7,7 +7,11 @@ interface IProps {
 }
 
 const AddTransaction: FC<IProps> = ({ className }: IProps) => {
-  return <button className={"add-transaction " + className} />;
+  return (
+    <button className={"add-transaction " + className}>
+      <span className="add-transaction__icon"></span>
+    </button>
+  );
 };
 
 export default AddTransaction;
