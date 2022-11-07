@@ -2,6 +2,16 @@
   display: none;
 }
 
+.expenses {
+  padding-bottom: 100px;
+
+  &__add {
+    position: fixed;
+    bottom: 125px;
+    right: 50px;
+  }
+}
+
 @include for-desktop-up {
   .expenses {
     display: grid;

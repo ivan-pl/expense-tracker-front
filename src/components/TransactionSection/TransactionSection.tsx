@@ -4,7 +4,6 @@ import "./TransactionSection.scss";
 import { ITransactionSection } from "../../types/transactions.type";
 import DayTransactionList from "../DayTransactionList/DayTransactionList";
 
-// type TProps = Pick<ITransactionSection, "transactionHistory">;
 interface IProps
   extends Pick<ITransactionSection, "transactionHistory">,
     DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {}

@@ -2,55 +2,15 @@ import React, { FC, DetailedHTMLProps, HTMLAttributes } from "react";
 
 import { ITransactionSection } from "../types/transactions.type";
 import TransactionSection from "../components/TransactionSection/TransactionSection";
+import AddTransaction from "../components/AddTransaction";
 import "../styles/Expenses.scss";
+import loadMockedTransactionSection from "../scripts/loadMockedTransactions";
 
-const transactionSection: ITransactionSection = {
-  total: { day: 12450, week: 23540, month: 124980 },
-  transactionHistory: [
-    {
-      date: new Date(2022, 11, 7),
-      transactionList: [
-        {
-          id: 1,
-          tag: "Food",
-          payMethod: "Creadit card",
-          comment: "Some comment",
-          amount: "438 RUB",
-        },
-        {
-          id: 2,
-          tag: "Housing",
-          payMethod: "Debit card",
-          comment: "Another comment",
-          amount: "6540 RUB",
-        },
-      ],
-    },
-    {
-      date: new Date(2022, 11, 5),
-      transactionList: [
-        {
-          id: 1,
-          tag: "Clothing",
-          payMethod: "Creadit card",
-          comment: "Some comment",
-          amount: "865 RUB",
-        },
-        {
-          id: 2,
-          tag: "Transportation",
-          payMethod: "Debit card",
-          comment: "Another comment",
-          amount: "4320 RUB",
-        },
-      ],
-    },
-  ],
-};
+const mockedTransactionSection = loadMockedTransactionSection();
 
 const Expenses: FC = () => {
-  const total = transactionSection.total;
-  const transactionHistory = transactionSection.transactionHistory;
+  const total = mockedTransactionSection.total;
+  const transactionHistory = mockedTransactionSection.transactionHistory;
   return (
     <div className="expenses">
       <Total total={total} className="expenses__total" />
@@ -58,6 +18,7 @@ const Expenses: FC = () => {
         transactionHistory={transactionHistory}
         className="expenses__transactions"
       />
+      <AddTransaction className="expenses__add" />
     </div>
   );
 };
