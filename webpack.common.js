@@ -1,6 +1,5 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 const path = require("path");
 
 module.exports = {
@@ -16,7 +15,7 @@ module.exports = {
     },
   },
   resolve: {
-    extensions: [".tsx", ".ts", ".js"],
+    extensions: [".tsx", ".jsx", ".ts", ".js"],
   },
   module: {
     rules: [
@@ -29,7 +28,7 @@ module.exports = {
             presets: [
               "@babel/preset-env",
               "@babel/preset-typescript",
-              "@babel/preset-react",
+              ["@babel/preset-react", { runtime: "automatic" }],
             ],
           },
         },
@@ -40,7 +39,19 @@ module.exports = {
       },
       {
         test: /\.s[ac]ss$/i,
-        use: [MiniCssExtractPlugin.loader, "css-loader", "sass-loader"],
+        use: [
+          MiniCssExtractPlugin.loader,
+          "css-loader",
+          {
+            loader: "sass-loader",
+            options: {
+              additionalData: '@import "variables";',
+              sassOptions: {
+                includePaths: [path.resolve(__dirname, "./src/styles")],
+              },
+            },
+          },
+        ],
       },
       {
         test: /\.html$/i,
@@ -54,9 +65,6 @@ module.exports = {
         },
       },
     ],
-  },
-  optimization: {
-    minimizer: [`...`, new CssMinimizerPlugin()],
   },
   plugins: [
     new HtmlWebpackPlugin({

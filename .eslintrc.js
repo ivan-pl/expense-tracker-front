@@ -2,8 +2,14 @@ module.exports = {
   env: {
     browser: true,
     es2021: true,
+    jest: true,
   },
-  extends: ["eslint:recommended", "plugin:react/recommended", "prettier"],
+  extends: [
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "plugin:css-modules/recommended",
+    "prettier",
+  ],
   parser: "@typescript-eslint/parser",
   settings: {
     react: {
@@ -17,17 +23,18 @@ module.exports = {
       jsx: true,
     },
   },
-  plugins: ["react", "@typescript-eslint"],
+  plugins: ["react", "@typescript-eslint", "css-modules", "import"],
   rules: {
-    "react/jsx-uses-react": "error",
-    "react/jsx-uses-vars": "error",
+    "react/jsx-uses-react": "off",
+    "react/react-in-jsx-scope": "off",
+    "import/no-unresolved": "off", // https://github.com/typescript-eslint/typescript-eslint/issues/1624
+    "import/extensions": "off",
   },
   overrides: [
     {
       files: ["webpack.*.js"],
       rules: {
         "import/no-extraneous-dependencies": "off",
-        "import/extensions": "off",
       },
     },
     {

@@ -1,0 +1,57 @@
+.filer {
+  font-size: 14px;
+}
+
+.filter-pattern {
+  width: 100%;
+  height: 30px;
+  color: #898383;
+  text-align: center;
+  margin: 8px 0;
+}
+
+.periods {
+  display: flex;
+  flex-flow: row nowrap;
+  margin: 0;
+  margin-bottom: 10px;
+  padding: 0;
+
+  &__item {
+    list-style-type: none;
+    color: #06c;
+    text-decoration: underline;
+    cursor: pointer;
+    min-width: 88px;
+    width: fit-content;
+    line-height: 28px;
+    white-space: nowrap;
+    text-align: center;
+
+    &--active {
+      text-decoration: none;
+      cursor: default;
+      background-color: #e6e6e6;
+      color: black;
+    }
+  }
+}
+
+@include for-desktop-up {
+  .filter {
+    margin-top: 10px;
+    display: flex;
+    flex-flow: row nowrap;
+    gap: 30px;
+    align-items: center;
+  }
+
+  .filter-pattern {
+    width: 305px;
+    margin: 0;
+  }
+
+  .periods {
+    margin: 0;
+  }
+}
