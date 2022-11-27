@@ -3,6 +3,7 @@ import React, { FC, DetailedHTMLProps, HTMLAttributes } from "react";
 import { ITransactionSection } from "../types/transactions.type";
 import TransactionSection from "../components/TransactionSection/TransactionSection";
 import AddTransaction from "../components/AddTransaction/AddTransaction";
+import TransactionFilter from "../components/TransactionFilter/TransactionFilter";
 import "../styles/Expenses.scss";
 import loadMockedTransactionSection from "../scripts/loadMockedTransactions";
 
@@ -14,6 +15,7 @@ const Expenses: FC = () => {
   return (
     <div className="expenses">
       <Total total={total} className="expenses__total" />
+      <TransactionFilter className="expenses__filter" />
       <TransactionSection
         transactionHistory={transactionHistory}
         className="expenses__transactions"

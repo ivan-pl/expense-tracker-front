@@ -16,6 +16,7 @@
   .expenses {
     display: grid;
     grid-template:
+      "filter ." min-content
       "transactions total" min-content
       "transactions add-button" min-content
       "transactions ." 1fr
@@ -33,6 +34,10 @@
     &__add {
       grid-area: add-button;
       position: static;
+    }
+
+    &__filter {
+      grid-area: filter;
     }
   }
 
