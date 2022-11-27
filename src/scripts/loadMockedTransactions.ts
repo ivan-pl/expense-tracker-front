@@ -74,13 +74,6 @@ function loadMockedTransactionSection(): ITransactionSection {
             amount: "4320 RUB",
           },
           {
-            id: 8,
-            tag: "Clothing",
-            payMethod: "Creadit card",
-            comment: "Some comment",
-            amount: "865 RUB",
-          },
-          {
             id: 10,
             tag: "Transportation",
             payMethod: "Debit card",
@@ -100,6 +93,13 @@ function loadMockedTransactionSection(): ITransactionSection {
             payMethod: "Debit card",
             comment: "Another comment",
             amount: "4320 RUB",
+          },
+          {
+            id: 13,
+            tag: "Clothing",
+            payMethod: "Creadit card",
+            comment: "Some comment",
+            amount: "865 RUB",
           },
         ],
       },

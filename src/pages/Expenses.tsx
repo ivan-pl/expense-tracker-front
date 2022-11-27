@@ -2,7 +2,7 @@ import React, { FC, DetailedHTMLProps, HTMLAttributes } from "react";
 
 import { ITransactionSection } from "../types/transactions.type";
 import TransactionSection from "../components/TransactionSection/TransactionSection";
-import AddTransaction from "../components/AddTransaction";
+import AddTransaction from "../components/AddTransaction/AddTransaction";
 import "../styles/Expenses.scss";
 import loadMockedTransactionSection from "../scripts/loadMockedTransactions";
 
