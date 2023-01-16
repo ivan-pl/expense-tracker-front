@@ -12,7 +12,7 @@ const Layout: FC = () => {
         <Outlet />
       </main>
 
-      <footer className="footer">Footer</footer>
+      <footer className="footer">© 2022 All Rights Reserved</footer>
     </div>
   );
 };

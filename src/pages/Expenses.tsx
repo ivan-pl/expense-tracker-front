@@ -5,7 +5,7 @@ import TransactionSection from "../components/TransactionSection/TransactionSect
 import AddTransaction from "../components/AddTransaction/AddTransaction";
 import TransactionFilter from "../components/TransactionFilter/TransactionFilter";
 import "../styles/Expenses.scss";
-import loadMockedTransactionSection from "../scripts/loadMockedTransactions";
+import loadMockedTransactionSection from "../utils/loadMockedTransactions";
 
 const mockedTransactionSection = loadMockedTransactionSection();
 
