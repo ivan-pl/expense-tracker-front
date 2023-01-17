@@ -6,6 +6,7 @@ module.exports = {
   },
   extends: [
     "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
     "plugin:react/recommended",
     "plugin:css-modules/recommended",
     "prettier",
@@ -35,6 +36,7 @@ module.exports = {
       files: ["webpack.*.js"],
       rules: {
         "import/no-extraneous-dependencies": "off",
+        "@typescript-eslint/no-var-requires": "off",
       },
     },
     {

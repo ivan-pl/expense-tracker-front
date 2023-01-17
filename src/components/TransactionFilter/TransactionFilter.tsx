@@ -1,8 +1,7 @@
 import React, { FC, DetailedHTMLProps, HTMLAttributes } from "react";
 import "./TransactionFilter.scss";
 
-interface Props
-  extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {}
+type Props = DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
 
 const TransactionFilter: FC<Props> = ({ className }) => {
   return (

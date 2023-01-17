@@ -1,7 +1,24 @@
+export const enum PayMethod {
+  Debit = "Debit card",
+  Credit = "Credit card",
+  Cash = "Cash",
+}
+
+export const enum Tag {
+  Food = "Food",
+  Housing = "Housing",
+  Transportation = "Transportation",
+  Clothing = "Clothing",
+  Utilities = "Utilities",
+  Insurance = "Insurance",
+  MedicalAndHealthcare = "Medical & Healthcare",
+  Investing = "Investing",
+}
+
 export interface Transaction {
-  id: number;
-  tag: string;
-  payMethod: string;
+  id: string;
+  tag: Tag;
+  payMethod: PayMethod;
   comment: string;
   amount: string;
 }
