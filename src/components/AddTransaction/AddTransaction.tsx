@@ -3,12 +3,15 @@ import React, { FC } from "react";
 import "./AddTransaction.scss";
 
 interface IProps {
-  className: string;
+  className?: string;
 }
 
-const AddTransaction: FC<IProps> = ({ className }: IProps) => {
+const AddTransaction: FC<IProps> = ({ className = "" }: IProps) => {
   return (
-    <button className={"add-transaction " + className}>
+    <button
+      className={"add-transaction " + className}
+      data-testid="add-transaction"
+    >
       <span className="add-transaction__icon"></span>
     </button>
   );

@@ -38,7 +38,13 @@ module.exports = {
       },
     },
     {
-      files: ["webpack.*.js", "babel.config.js", ".eslintrc.js"],
+      files: [
+        "webpack.*.js",
+        "babel.config.js",
+        ".eslintrc.js",
+        "fileMock.js",
+        "styleMock.js",
+      ],
       rules: {
         "no-undef": "off",
       },
