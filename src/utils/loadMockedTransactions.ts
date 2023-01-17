@@ -37,6 +37,7 @@ function loadMockedTransactionSection(): ITransactionSection {
           },
         ],
       },
+
       {
         date: new Date(2022, 11, 5),
         transactionList: [
@@ -56,6 +57,7 @@ function loadMockedTransactionSection(): ITransactionSection {
           },
         ],
       },
+
       {
         date: new Date(2022, 11, 3),
         transactionList: [
@@ -96,6 +98,198 @@ function loadMockedTransactionSection(): ITransactionSection {
           },
           {
             id: 13,
+            tag: "Clothing",
+            payMethod: "Creadit card",
+            comment: "Some comment",
+            amount: "865 RUB",
+          },
+        ],
+      },
+
+      {
+        date: new Date(2022, 10, 1),
+        transactionList: [
+          {
+            id: 14,
+            tag: "Clothing",
+            payMethod: "Creadit card",
+            comment: "Some comment",
+            amount: "865 RUB",
+          },
+          {
+            id: 15,
+            tag: "Transportation",
+            payMethod: "Debit card",
+            comment: "Another comment",
+            amount: "4320 RUB",
+          },
+          {
+            id: 16,
+            tag: "Transportation",
+            payMethod: "Debit card",
+            comment: "Another comment",
+            amount: "4320 RUB",
+          },
+          {
+            id: 17,
+            tag: "Clothing",
+            payMethod: "Creadit card",
+            comment: "Some comment",
+            amount: "865 RUB",
+          },
+          {
+            id: 18,
+            tag: "Transportation",
+            payMethod: "Debit card",
+            comment: "Another comment",
+            amount: "4320 RUB",
+          },
+          {
+            id: 19,
+            tag: "Clothing",
+            payMethod: "Creadit card",
+            comment: "Some comment",
+            amount: "865 RUB",
+          },
+        ],
+      },
+
+      {
+        date: new Date(2022, 9, 15),
+        transactionList: [
+          {
+            id: 20,
+            tag: "Clothing",
+            payMethod: "Creadit card",
+            comment: "Some comment",
+            amount: "865 RUB",
+          },
+          {
+            id: 21,
+            tag: "Transportation",
+            payMethod: "Debit card",
+            comment: "Another comment",
+            amount: "4320 RUB",
+          },
+          {
+            id: 22,
+            tag: "Transportation",
+            payMethod: "Debit card",
+            comment: "Another comment",
+            amount: "4320 RUB",
+          },
+          {
+            id: 23,
+            tag: "Clothing",
+            payMethod: "Creadit card",
+            comment: "Some comment",
+            amount: "865 RUB",
+          },
+          {
+            id: 24,
+            tag: "Transportation",
+            payMethod: "Debit card",
+            comment: "Another comment",
+            amount: "4320 RUB",
+          },
+          {
+            id: 25,
+            tag: "Clothing",
+            payMethod: "Creadit card",
+            comment: "Some comment",
+            amount: "865 RUB",
+          },
+        ],
+      },
+
+      {
+        date: new Date(2022, 8, 13),
+        transactionList: [
+          {
+            id: 26,
+            tag: "Clothing",
+            payMethod: "Creadit card",
+            comment: "Some comment",
+            amount: "865 RUB",
+          },
+          {
+            id: 27,
+            tag: "Transportation",
+            payMethod: "Debit card",
+            comment: "Another comment",
+            amount: "4320 RUB",
+          },
+          {
+            id: 28,
+            tag: "Transportation",
+            payMethod: "Debit card",
+            comment: "Another comment",
+            amount: "4320 RUB",
+          },
+          {
+            id: 29,
+            tag: "Clothing",
+            payMethod: "Creadit card",
+            comment: "Some comment",
+            amount: "865 RUB",
+          },
+          {
+            id: 30,
+            tag: "Transportation",
+            payMethod: "Debit card",
+            comment: "Another comment",
+            amount: "4320 RUB",
+          },
+          {
+            id: 31,
+            tag: "Clothing",
+            payMethod: "Creadit card",
+            comment: "Some comment",
+            amount: "865 RUB",
+          },
+        ],
+      },
+
+      {
+        date: new Date(2022, 8, 5),
+        transactionList: [
+          {
+            id: 32,
+            tag: "Clothing",
+            payMethod: "Creadit card",
+            comment: "Some comment",
+            amount: "865 RUB",
+          },
+          {
+            id: 33,
+            tag: "Transportation",
+            payMethod: "Debit card",
+            comment: "Another comment",
+            amount: "4320 RUB",
+          },
+          {
+            id: 34,
+            tag: "Transportation",
+            payMethod: "Debit card",
+            comment: "Another comment",
+            amount: "4320 RUB",
+          },
+          {
+            id: 35,
+            tag: "Clothing",
+            payMethod: "Creadit card",
+            comment: "Some comment",
+            amount: "865 RUB",
+          },
+          {
+            id: 36,
+            tag: "Transportation",
+            payMethod: "Debit card",
+            comment: "Another comment",
+            amount: "4320 RUB",
+          },
+          {
+            id: 37,
             tag: "Clothing",
             payMethod: "Creadit card",
             comment: "Some comment",
