@@ -8,7 +8,7 @@ const Layout: FC = () => {
     <div className="layout">
       <Navigation />
 
-      <main className="main">
+      <main className="main" data-testid="main">
         <Outlet />
       </main>
 

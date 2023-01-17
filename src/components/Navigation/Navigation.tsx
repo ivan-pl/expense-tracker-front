@@ -5,7 +5,7 @@ import "./Navigation.scss";
 
 const Navigation: FC = () => {
   return (
-    <nav className="nav">
+    <nav className="nav" data-testid="nav">
       <Link className="link link-expenses" to={"/expenses"}>
         <span className="link-text">Expenses</span>
       </Link>
