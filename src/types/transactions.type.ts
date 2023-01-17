@@ -1,4 +1,4 @@
-export interface ITransaction {
+export interface Transaction {
   id: number;
   tag: string;
   payMethod: string;
@@ -6,16 +6,16 @@ export interface ITransaction {
   amount: string;
 }
 
-export interface IDayStransactionList {
+export interface DayTransactions {
   date: Date;
-  transactionList: ITransaction[];
+  transactionList: Transaction[];
 }
 
-export interface ITransactionSection {
+export interface TransactionsInfo {
   total: {
     day: number;
     week: number;
     month: number;
   };
-  transactionHistory: IDayStransactionList[];
+  transactionHistory: DayTransactions[];
 }

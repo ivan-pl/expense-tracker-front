@@ -1,17 +1,17 @@
 import React, { FC, DetailedHTMLProps, HTMLAttributes } from "react";
 
 import "./TransactionSection.scss";
-import { ITransactionSection } from "../../types/transactions.type";
+import { TransactionsInfo } from "../../types/transactions.type";
 import DayTransactionList from "../DayTransactionList/DayTransactionList";
 
-interface IProps
-  extends Pick<ITransactionSection, "transactionHistory">,
+interface Props
+  extends Pick<TransactionsInfo, "transactionHistory">,
     DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {}
 
-const TransactionSection: FC<IProps> = ({
+const TransactionSection: FC<Props> = ({
   transactionHistory,
   className,
-}: IProps) => {
+}: Props) => {
   const dayTransactionList = transactionHistory.map((dayTransaction) => (
     <DayTransactionList
       dayTransactionList={dayTransaction}

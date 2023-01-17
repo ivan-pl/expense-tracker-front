@@ -13,11 +13,7 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <HashRouter>
-      {/* <BrowserRouter> */}
-      {/* TODO: uncommit to deploy */}
-      {/* <BrowserRouter basename="expense-tracker-front"> */}
       <App />
-      {/* </BrowserRouter> */}
     </HashRouter>
   </React.StrictMode>
 );

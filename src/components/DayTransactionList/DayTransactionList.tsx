@@ -1,13 +1,13 @@
 import React, { FC } from "react";
-import { IDayStransactionList } from "../../types/transactions.type";
+import { DayTransactions } from "../../types/transactions.type";
 import Transaction from "../Transaction/Transaction";
 import "./DayTransactionList.scss";
 
-interface IProps {
-  dayTransactionList: IDayStransactionList;
+interface Props {
+  dayTransactionList: DayTransactions;
 }
 
-const DayTransactionList: FC<IProps> = (props: IProps) => {
+const DayTransactionList: FC<Props> = (props: Props) => {
   const date = props.dayTransactionList.date;
   const transactions = props.dayTransactionList.transactionList.map(
     (transaction) => (

@@ -1,6 +1,6 @@
-import { ITransactionSection } from "../types/transactions.type";
+import { TransactionSection } from "../types/transactions.type";
 
-function loadMockedTransactionSection(): ITransactionSection {
+function loadMockedTransactionSection(): TransactionSection {
   return {
     total: { day: 12450, week: 23540, month: 124980 },
     transactionHistory: [

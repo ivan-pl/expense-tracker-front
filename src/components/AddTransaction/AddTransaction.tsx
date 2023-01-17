@@ -2,11 +2,11 @@ import React, { FC } from "react";
 
 import "./AddTransaction.scss";
 
-interface IProps {
+interface Props {
   className?: string;
 }
 
-const AddTransaction: FC<IProps> = ({ className = "" }: IProps) => {
+const AddTransaction: FC<Props> = ({ className = "" }: Props) => {
   return (
     <button
       className={"add-transaction " + className}

@@ -1,12 +1,12 @@
 import React, { FC } from "react";
-import { ITransaction } from "../../types/transactions.type";
+import { Transaction as TransactionType } from "../../types/transactions.type";
 import "./Transaction.scss";
 
-interface IProps {
-  transaction: ITransaction;
+interface Props {
+  transaction: TransactionType;
 }
 
-const Transaction: FC<IProps> = (props: IProps) => {
+const Transaction: FC<Props> = (props: Props) => {
   return (
     <div className="transaction">
       <div className="tag">{props.transaction.tag}</div>

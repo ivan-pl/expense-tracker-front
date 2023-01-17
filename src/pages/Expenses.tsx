@@ -1,6 +1,6 @@
 import React, { FC, DetailedHTMLProps, HTMLAttributes } from "react";
 
-import { ITransactionSection } from "../types/transactions.type";
+import { TransactionsInfo } from "../types/transactions.type";
 import TransactionSection from "../components/TransactionSection/TransactionSection";
 import AddTransaction from "../components/AddTransaction/AddTransaction";
 import TransactionFilter from "../components/TransactionFilter/TransactionFilter";
@@ -25,14 +25,14 @@ const Expenses: FC = () => {
   );
 };
 
-interface TTotalProps
-  extends Pick<ITransactionSection, "total">,
+interface TotalProps
+  extends Pick<TransactionsInfo, "total">,
     DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {}
 
-const Total: FC<TTotalProps> = ({
+const Total: FC<TotalProps> = ({
   total: { day, week, month },
   className,
-}: TTotalProps) => {
+}: TotalProps) => {
   return (
     <section className={"total " + className}>
       <h2 className="total__header">Total</h2>
