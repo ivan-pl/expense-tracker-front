@@ -1,11 +1,11 @@
 import React, { FC, DetailedHTMLProps, HTMLAttributes } from "react";
 
-import { TransactionsInfo } from "../types/transactions.type";
-import TransactionSection from "../components/TransactionSection/TransactionSection";
-import AddTransaction from "../components/AddTransaction/AddTransaction";
-import TransactionFilter from "../components/TransactionFilter/TransactionFilter";
-import "../styles/Expenses.scss";
-import loadMockedTransactionSection from "../utils/loadMockedTransactions";
+import { TransactionsInfo } from "../../types/transactions.type";
+import TransactionSection from "../../components/TransactionSection/TransactionSection";
+import AddTransaction from "../../components/AddTransaction/AddTransaction";
+import TransactionFilter from "../../components/TransactionFilter/TransactionFilter";
+import "./Expenses.scss";
+import loadMockedTransactionSection from "../../utils/loadMockedTransactions";
 
 const mockedTransactionSection = loadMockedTransactionSection();
 

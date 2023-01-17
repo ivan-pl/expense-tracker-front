@@ -1,7 +1,7 @@
 import React, { FC } from "react";
 import { Routes, Route } from "react-router-dom";
 
-import Layout from "./components/Layout/Layout";
+import Layout from "./components/Layout";
 import About from "./pages/About";
 import Analytics from "./pages/Analytics";
 import Expenses from "./pages/Expenses";
