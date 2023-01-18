@@ -7,7 +7,7 @@ import Navigation from "./Navigation";
 describe("Navigation", () => {
   it("renders nav menu", async () => {
     const navBars = ["Expenses", "Analytics", "About", "Sign out"];
-    const { rerender } = render(
+    render(
       <HashRouter>
         <Navigation />
       </HashRouter>
