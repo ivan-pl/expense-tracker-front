@@ -5,7 +5,7 @@ import { HashRouter } from "react-router-dom";
 import "normalize.css";
 import "./styles/fonts.scss";
 import "./styles/index.scss";
-import App from "./App";
+import App from "./app/App";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
