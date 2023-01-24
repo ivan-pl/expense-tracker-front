@@ -20,7 +20,7 @@ function valueCount(dayTransactions: DayTransactions[]): {
   };
 
   for (const { date, transactionList } of dayTransactions) {
-    addValueToCounter(date.toDateString());
+    addValueToCounter(new Date(date).toDateString());
 
     for (const transaction of transactionList) {
       for (const [key, value] of Object.entries(transaction)) {

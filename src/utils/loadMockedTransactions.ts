@@ -5,7 +5,7 @@ function loadMockedTransactionSection(): TransactionsInfo {
     total: { day: 12450, week: 23540, month: 124980 },
     transactionHistory: [
       {
-        date: new Date(2022, 11, 7),
+        date: new Date(2022, 11, 7).toISOString(),
         transactionList: [
           {
             id: "1",
@@ -39,7 +39,7 @@ function loadMockedTransactionSection(): TransactionsInfo {
       },
 
       {
-        date: new Date(2022, 11, 5),
+        date: new Date(2022, 11, 5).toISOString(),
         transactionList: [
           {
             id: "6",
@@ -59,7 +59,7 @@ function loadMockedTransactionSection(): TransactionsInfo {
       },
 
       {
-        date: new Date(2022, 11, 3),
+        date: new Date(2022, 11, 3).toISOString(),
         transactionList: [
           {
             id: "8",
@@ -107,7 +107,7 @@ function loadMockedTransactionSection(): TransactionsInfo {
       },
 
       {
-        date: new Date(2022, 10, 1),
+        date: new Date(2022, 10, 1).toISOString(),
         transactionList: [
           {
             id: "14",
@@ -155,7 +155,7 @@ function loadMockedTransactionSection(): TransactionsInfo {
       },
 
       {
-        date: new Date(2022, 9, 15),
+        date: new Date(2022, 9, 15).toISOString(),
         transactionList: [
           {
             id: "20",
@@ -203,7 +203,7 @@ function loadMockedTransactionSection(): TransactionsInfo {
       },
 
       {
-        date: new Date(2022, 8, 13),
+        date: new Date(2022, 8, 13).toISOString(),
         transactionList: [
           {
             id: "26",
@@ -251,7 +251,7 @@ function loadMockedTransactionSection(): TransactionsInfo {
       },
 
       {
-        date: new Date(2022, 8, 5),
+        date: new Date(2022, 8, 5).toISOString(),
         transactionList: [
           {
             id: "32",

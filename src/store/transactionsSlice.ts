@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { TransactionsInfo } from "../types/transactions.type";
 
 const initialState: TransactionsInfo = {
@@ -6,10 +6,22 @@ const initialState: TransactionsInfo = {
   transactionHistory: [],
 };
 
-export const transactionSlice = createSlice({
+export const transactionsSlice = createSlice({
   name: "transactions",
   initialState,
-  reducers: {},
+  reducers: {
+    setNewTransactions: (
+      state,
+      {
+        payload: { total, transactionHistory },
+      }: PayloadAction<TransactionsInfo>
+    ) => {
+      state.total = total;
+      state.transactionHistory = transactionHistory;
+    },
+  },
 });
 
-export default transactionSlice.reducer;
+export default transactionsSlice.reducer;
+
+export const { setNewTransactions } = transactionsSlice.actions;

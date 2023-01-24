@@ -24,7 +24,7 @@ export interface Transaction {
 }
 
 export interface DayTransactions {
-  date: Date;
+  date: string;
   transactionList: Transaction[];
 }
 

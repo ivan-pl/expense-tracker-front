@@ -5,7 +5,7 @@ import { Tag, PayMethod } from "../../types/transactions.type";
 import DayTransactionList from "./DayTransactionList";
 
 const DAY_TRANSACTION_LIST = {
-  date: new Date(2022, 11, 7),
+  date: new Date(2022, 11, 7).toISOString(),
   transactionList: [
     {
       id: "1",
@@ -29,7 +29,7 @@ describe("DayTransactionList", () => {
     render(<DayTransactionList dayTransactionList={DAY_TRANSACTION_LIST} />);
 
     expect(
-      screen.getByText(DAY_TRANSACTION_LIST.date.toDateString())
+      screen.getByText(new Date(DAY_TRANSACTION_LIST.date).toDateString())
     ).toBeInTheDocument();
 
     for (const transaction of DAY_TRANSACTION_LIST.transactionList) {

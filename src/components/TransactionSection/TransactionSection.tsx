@@ -15,7 +15,7 @@ const TransactionSection: FC<Props> = ({
   const dayTransactionList = transactionHistory.map((dayTransaction) => (
     <DayTransactionList
       dayTransactionList={dayTransaction}
-      key={dayTransaction.date.getTime().toString()}
+      key={dayTransaction.date}
     />
   ));
   return (

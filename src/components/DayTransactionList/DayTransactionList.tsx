@@ -16,8 +16,8 @@ const DayTransactionList: FC<Props> = (props: Props) => {
   );
   return (
     <div className="day-transactions">
-      <time className="time" dateTime={date.toISOString().substring(0, 10)}>
-        {date.toDateString()}
+      <time className="time" dateTime={date.substring(0, 10)}>
+        {new Date(date).toDateString()}
       </time>
       <div className="transaction-list">{transactions}</div>
     </div>

@@ -4,14 +4,16 @@ import { TransactionsInfo } from "../../types/transactions.type";
 import TransactionSection from "../../components/TransactionSection/TransactionSection";
 import AddTransaction from "../../components/AddTransaction/AddTransaction";
 import TransactionFilter from "../../components/TransactionFilter/TransactionFilter";
+import { useAppSelector, useAppDispatch } from "../../app/hooks";
+import {
+  selectTotal,
+  selectTransactionHistory,
+} from "../../store/transactionsSelectors";
 import "./Expenses.scss";
-import loadMockedTransactionSection from "../../utils/loadMockedTransactions";
-
-const mockedTransactionSection = loadMockedTransactionSection();
 
 const Expenses: FC = () => {
-  const total = mockedTransactionSection.total;
-  const transactionHistory = mockedTransactionSection.transactionHistory;
+  const total = useAppSelector(selectTotal);
+  const transactionHistory = useAppSelector(selectTransactionHistory);
   return (
     <div className="expenses">
       <Total total={total} className="expenses__total" />
