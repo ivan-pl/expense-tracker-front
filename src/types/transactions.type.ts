@@ -1,10 +1,10 @@
-export const enum PayMethod {
+export enum PayMethod {
   Debit = "Debit card",
   Credit = "Credit card",
   Cash = "Cash",
 }
 
-export const enum Tag {
+export enum Tag {
   Food = "Food",
   Housing = "Housing",
   Transportation = "Transportation",

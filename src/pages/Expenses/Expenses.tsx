@@ -4,7 +4,7 @@ import { TransactionsInfo } from "../../types/transactions.type";
 import TransactionSection from "../../components/TransactionSection/TransactionSection";
 import AddTransaction from "../../components/AddTransaction/AddTransaction";
 import TransactionFilter from "../../components/TransactionFilter/TransactionFilter";
-import { useAppSelector, useAppDispatch } from "../../app/hooks";
+import { useAppSelector } from "../../app/hooks";
 import {
   selectTotal,
   selectTransactionHistory,
