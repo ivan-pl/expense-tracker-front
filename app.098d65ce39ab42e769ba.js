@@ -1769,7 +1769,7 @@ function matchRouteBranch(branch, pathname) {
     let meta = routesMeta[i];
     let end = i === routesMeta.length - 1;
     let remainingPathname = matchedPathname === "/" ? pathname : pathname.slice(matchedPathname.length) || "/";
-    let match = router_matchPath({
+    let match = matchPath({
       path: meta.relativePath,
       caseSensitive: meta.caseSensitive,
       end
@@ -1827,7 +1827,7 @@ function generatePath(path, params) {
  * @see https://reactrouter.com/docs/en/v6/utils/match-path
  */
 
-function router_matchPath(pattern, pathname) {
+function matchPath(pattern, pathname) {
   if (typeof pattern === "string") {
     pattern = {
       path: pattern,
@@ -4626,12 +4626,12 @@ function useNavigationType() {
  * @see https://reactrouter.com/docs/en/v6/hooks/use-match
  */
 
-function dist_useMatch(pattern) {
-  !useInRouterContext() ?  false ? 0 : invariant(false) : void 0;
+function useMatch(pattern) {
+  !useInRouterContext() ?  false ? 0 : router_invariant(false) : void 0;
   let {
     pathname
   } = dist_useLocation();
-  return React.useMemo(() => matchPath(pattern, pathname), [pathname, pattern]);
+  return react.useMemo(() => matchPath(pattern, pathname), [pathname, pattern]);
 }
 /**
  * The interface for the navigate() function returned from useNavigate().
@@ -5811,7 +5811,7 @@ function getFormSubmissionInfo(target, defaultAction, options) {
 }
 
 const _excluded = ["onClick", "relative", "reloadDocument", "replace", "state", "target", "to", "preventScrollReset"],
-      _excluded2 = (/* unused pure expression or super */ null && (["aria-current", "caseSensitive", "className", "end", "style", "to", "children"])),
+      _excluded2 = ["aria-current", "caseSensitive", "className", "end", "style", "to", "children"],
       _excluded3 = (/* unused pure expression or super */ null && (["reloadDocument", "replace", "method", "action", "onSubmit", "fetcherKey", "routeId", "relative"]));
 //#region Routers
 ////////////////////////////////////////////////////////////////////////////////
@@ -5989,7 +5989,7 @@ if (false) {}
  */
 
 
-const NavLink = /*#__PURE__*/(/* unused pure expression or super */ null && (React.forwardRef(function NavLinkWithRef(_ref5, ref) {
+const NavLink = /*#__PURE__*/react.forwardRef(function NavLinkWithRef(_ref5, ref) {
   let {
     "aria-current": ariaCurrentProp = "page",
     caseSensitive = false,
@@ -6001,16 +6001,16 @@ const NavLink = /*#__PURE__*/(/* unused pure expression or super */ null && (Rea
   } = _ref5,
       rest = dist_objectWithoutPropertiesLoose(_ref5, _excluded2);
 
-  let path = useResolvedPath(to);
+  let path = dist_useResolvedPath(to);
   let match = useMatch({
     path: path.pathname,
     end,
     caseSensitive
   });
-  let routerState = React.useContext(UNSAFE_DataRouterStateContext);
+  let routerState = react.useContext(DataRouterStateContext);
   let nextLocation = routerState == null ? void 0 : routerState.navigation.location;
-  let nextPath = useResolvedPath(nextLocation || "");
-  let nextMatch = React.useMemo(() => nextLocation ? matchPath({
+  let nextPath = dist_useResolvedPath(nextLocation || "");
+  let nextMatch = react.useMemo(() => nextLocation ? matchPath({
     path: path.pathname,
     end,
     caseSensitive
@@ -6038,7 +6038,7 @@ const NavLink = /*#__PURE__*/(/* unused pure expression or super */ null && (Rea
     isActive,
     isPending
   }) : styleProp;
-  return /*#__PURE__*/React.createElement(Link, react_router_dom_dist_extends({}, rest, {
+  return /*#__PURE__*/react.createElement(Link, react_router_dom_dist_extends({}, rest, {
     "aria-current": ariaCurrent,
     className: className,
     ref: ref,
@@ -6048,7 +6048,7 @@ const NavLink = /*#__PURE__*/(/* unused pure expression or super */ null && (Rea
     isActive,
     isPending
   }) : children);
-})));
+});
 
 if (false) {}
 /**
@@ -10027,6 +10027,13 @@ const transactionsSlice = createSlice({
       payload
     }) => {
       filter.expensesPage = payload;
+    },
+    filterAnalytics: ({
+      filter
+    }, {
+      payload
+    }) => {
+      filter.analyticsPage = payload;
     }
   }
 });
@@ -10034,7 +10041,8 @@ const transactionsSlice = createSlice({
 const {
   setNewTransactions,
   add,
-  filterExpenses
+  filterExpenses,
+  filterAnalytics
 } = transactionsSlice.actions;
 ;// CONCATENATED MODULE: ./src/store/store.ts
 
@@ -10057,31 +10065,43 @@ var jsx_runtime = __webpack_require__(893);
 
 
 const Navigation = () => {
+  const activeStyle = {
+    textDecoration: "underline"
+  };
   return /*#__PURE__*/(0,jsx_runtime.jsxs)("nav", {
     className: "nav",
     "data-testid": "nav",
-    children: [/*#__PURE__*/(0,jsx_runtime.jsx)(Link, {
+    children: [/*#__PURE__*/(0,jsx_runtime.jsx)(NavLink, {
       className: "link link-expenses",
       to: "/expenses",
+      style: ({
+        isActive
+      }) => isActive ? activeStyle : undefined,
       children: /*#__PURE__*/(0,jsx_runtime.jsx)("span", {
         className: "link-text",
         children: "Expenses"
       })
-    }), /*#__PURE__*/(0,jsx_runtime.jsx)(Link, {
+    }), /*#__PURE__*/(0,jsx_runtime.jsx)(NavLink, {
       className: "link link-analytics",
       to: "/analytics",
+      style: ({
+        isActive
+      }) => isActive ? activeStyle : undefined,
       children: /*#__PURE__*/(0,jsx_runtime.jsx)("span", {
         className: "link-text",
         children: "Analytics"
       })
-    }), /*#__PURE__*/(0,jsx_runtime.jsx)(Link, {
+    }), /*#__PURE__*/(0,jsx_runtime.jsx)(NavLink, {
       className: "link link-about",
       to: "/about",
+      style: ({
+        isActive
+      }) => isActive ? activeStyle : undefined,
       children: /*#__PURE__*/(0,jsx_runtime.jsx)("span", {
         className: "link-text",
         children: "About"
       })
-    }), /*#__PURE__*/(0,jsx_runtime.jsx)(Link, {
+    }), /*#__PURE__*/(0,jsx_runtime.jsx)(NavLink, {
       className: "link link-logout",
       to: "/auth",
       children: /*#__PURE__*/(0,jsx_runtime.jsx)("span", {
@@ -10409,14 +10429,973 @@ const About = () => {
 ;// CONCATENATED MODULE: ./src/pages/About/index.ts
 
 /* harmony default export */ const pages_About = (About_About);
+// EXTERNAL MODULE: ./node_modules/classnames/index.js
+var classnames = __webpack_require__(184);
+var classnames_default = /*#__PURE__*/__webpack_require__.n(classnames);
+;// CONCATENATED MODULE: ./node_modules/react-bootstrap/esm/ThemeProvider.js
+
+
+
+const DEFAULT_BREAKPOINTS = ['xxl', 'xl', 'lg', 'md', 'sm', 'xs'];
+const DEFAULT_MIN_BREAKPOINT = 'xs';
+const ThemeContext = /*#__PURE__*/react.createContext({
+  prefixes: {},
+  breakpoints: DEFAULT_BREAKPOINTS,
+  minBreakpoint: DEFAULT_MIN_BREAKPOINT
+});
+const {
+  Consumer,
+  Provider: ThemeProvider_Provider
+} = ThemeContext;
+function ThemeProvider({
+  prefixes = {},
+  breakpoints = DEFAULT_BREAKPOINTS,
+  minBreakpoint = DEFAULT_MIN_BREAKPOINT,
+  dir,
+  children
+}) {
+  const contextValue = useMemo(() => ({
+    prefixes: {
+      ...prefixes
+    },
+    breakpoints,
+    minBreakpoint,
+    dir
+  }), [prefixes, breakpoints, minBreakpoint, dir]);
+  return /*#__PURE__*/_jsx(ThemeProvider_Provider, {
+    value: contextValue,
+    children: children
+  });
+}
+function useBootstrapPrefix(prefix, defaultPrefix) {
+  const {
+    prefixes
+  } = (0,react.useContext)(ThemeContext);
+  return prefix || prefixes[defaultPrefix] || defaultPrefix;
+}
+function useBootstrapBreakpoints() {
+  const {
+    breakpoints
+  } = (0,react.useContext)(ThemeContext);
+  return breakpoints;
+}
+function useBootstrapMinBreakpoint() {
+  const {
+    minBreakpoint
+  } = (0,react.useContext)(ThemeContext);
+  return minBreakpoint;
+}
+function useIsRTL() {
+  const {
+    dir
+  } = (0,react.useContext)(ThemeContext);
+  return dir === 'rtl';
+}
+function createBootstrapComponent(Component, opts) {
+  if (typeof opts === 'string') opts = {
+    prefix: opts
+  };
+  const isClassy = Component.prototype && Component.prototype.isReactComponent;
+  // If it's a functional component make sure we don't break it with a ref
+  const {
+    prefix,
+    forwardRefAs = isClassy ? 'ref' : 'innerRef'
+  } = opts;
+  const Wrapped = /*#__PURE__*/React.forwardRef(({
+    ...props
+  }, ref) => {
+    props[forwardRefAs] = ref;
+    const bsPrefix = useBootstrapPrefix(props.bsPrefix, prefix);
+    return /*#__PURE__*/_jsx(Component, {
+      ...props,
+      bsPrefix: bsPrefix
+    });
+  });
+  Wrapped.displayName = `Bootstrap(${Component.displayName || Component.name})`;
+  return Wrapped;
+}
+
+/* harmony default export */ const esm_ThemeProvider = ((/* unused pure expression or super */ null && (ThemeProvider)));
+;// CONCATENATED MODULE: ./node_modules/react-bootstrap/esm/Container.js
+
+
+
+
+const defaultProps = {
+  fluid: false
+};
+const Container = /*#__PURE__*/react.forwardRef(({
+  bsPrefix,
+  fluid,
+  // Need to define the default "as" during prop destructuring to be compatible with styled-components github.com/react-bootstrap/react-bootstrap/issues/3595
+  as: Component = 'div',
+  className,
+  ...props
+}, ref) => {
+  const prefix = useBootstrapPrefix(bsPrefix, 'container');
+  const suffix = typeof fluid === 'string' ? `-${fluid}` : '-fluid';
+  return /*#__PURE__*/(0,jsx_runtime.jsx)(Component, {
+    ref: ref,
+    ...props,
+    className: classnames_default()(className, fluid ? `${prefix}${suffix}` : prefix)
+  });
+});
+Container.displayName = 'Container';
+Container.defaultProps = defaultProps;
+/* harmony default export */ const esm_Container = (Container);
+;// CONCATENATED MODULE: ./node_modules/react-bootstrap/esm/Row.js
+
+
+
+
+const Row = /*#__PURE__*/react.forwardRef(({
+  bsPrefix,
+  className,
+  // Need to define the default "as" during prop destructuring to be compatible with styled-components github.com/react-bootstrap/react-bootstrap/issues/3595
+  as: Component = 'div',
+  ...props
+}, ref) => {
+  const decoratedBsPrefix = useBootstrapPrefix(bsPrefix, 'row');
+  const breakpoints = useBootstrapBreakpoints();
+  const minBreakpoint = useBootstrapMinBreakpoint();
+  const sizePrefix = `${decoratedBsPrefix}-cols`;
+  const classes = [];
+  breakpoints.forEach(brkPoint => {
+    const propValue = props[brkPoint];
+    delete props[brkPoint];
+    let cols;
+    if (propValue != null && typeof propValue === 'object') {
+      ({
+        cols
+      } = propValue);
+    } else {
+      cols = propValue;
+    }
+    const infix = brkPoint !== minBreakpoint ? `-${brkPoint}` : '';
+    if (cols != null) classes.push(`${sizePrefix}${infix}-${cols}`);
+  });
+  return /*#__PURE__*/(0,jsx_runtime.jsx)(Component, {
+    ref: ref,
+    ...props,
+    className: classnames_default()(className, decoratedBsPrefix, ...classes)
+  });
+});
+Row.displayName = 'Row';
+/* harmony default export */ const esm_Row = (Row);
+;// CONCATENATED MODULE: ./node_modules/react-bootstrap/esm/Col.js
+
+
+
+
+function useCol({
+  as,
+  bsPrefix,
+  className,
+  ...props
+}) {
+  bsPrefix = useBootstrapPrefix(bsPrefix, 'col');
+  const breakpoints = useBootstrapBreakpoints();
+  const minBreakpoint = useBootstrapMinBreakpoint();
+  const spans = [];
+  const classes = [];
+  breakpoints.forEach(brkPoint => {
+    const propValue = props[brkPoint];
+    delete props[brkPoint];
+    let span;
+    let offset;
+    let order;
+    if (typeof propValue === 'object' && propValue != null) {
+      ({
+        span,
+        offset,
+        order
+      } = propValue);
+    } else {
+      span = propValue;
+    }
+    const infix = brkPoint !== minBreakpoint ? `-${brkPoint}` : '';
+    if (span) spans.push(span === true ? `${bsPrefix}${infix}` : `${bsPrefix}${infix}-${span}`);
+    if (order != null) classes.push(`order${infix}-${order}`);
+    if (offset != null) classes.push(`offset${infix}-${offset}`);
+  });
+  return [{
+    ...props,
+    className: classnames_default()(className, ...spans, ...classes)
+  }, {
+    as,
+    bsPrefix,
+    spans
+  }];
+}
+const Col = /*#__PURE__*/react.forwardRef(
+// Need to define the default "as" during prop destructuring to be compatible with styled-components github.com/react-bootstrap/react-bootstrap/issues/3595
+(props, ref) => {
+  const [{
+    className,
+    ...colProps
+  }, {
+    as: Component = 'div',
+    bsPrefix,
+    spans
+  }] = useCol(props);
+  return /*#__PURE__*/(0,jsx_runtime.jsx)(Component, {
+    ...colProps,
+    ref: ref,
+    className: classnames_default()(className, !spans.length && bsPrefix)
+  });
+});
+Col.displayName = 'Col';
+/* harmony default export */ const esm_Col = (Col);
+// EXTERNAL MODULE: ./node_modules/prop-types/index.js
+var prop_types = __webpack_require__(697);
+var prop_types_default = /*#__PURE__*/__webpack_require__.n(prop_types);
+;// CONCATENATED MODULE: ./node_modules/react-bootstrap/esm/Feedback.js
+
+
+
+
+const propTypes = {
+  /**
+   * Specify whether the feedback is for valid or invalid fields
+   *
+   * @type {('valid'|'invalid')}
+   */
+  type: (prop_types_default()).string,
+  /** Display feedback as a tooltip. */
+  tooltip: (prop_types_default()).bool,
+  as: (prop_types_default()).elementType
+};
+const Feedback = /*#__PURE__*/react.forwardRef(
+// Need to define the default "as" during prop destructuring to be compatible with styled-components github.com/react-bootstrap/react-bootstrap/issues/3595
+({
+  as: Component = 'div',
+  className,
+  type = 'valid',
+  tooltip = false,
+  ...props
+}, ref) => /*#__PURE__*/(0,jsx_runtime.jsx)(Component, {
+  ...props,
+  ref: ref,
+  className: classnames_default()(className, `${type}-${tooltip ? 'tooltip' : 'feedback'}`)
+}));
+Feedback.displayName = 'Feedback';
+Feedback.propTypes = propTypes;
+/* harmony default export */ const esm_Feedback = (Feedback);
+;// CONCATENATED MODULE: ./node_modules/react-bootstrap/esm/FormContext.js
+
+
+// TODO
+
+const FormContext = /*#__PURE__*/react.createContext({});
+/* harmony default export */ const esm_FormContext = (FormContext);
+;// CONCATENATED MODULE: ./node_modules/react-bootstrap/esm/FormCheckInput.js
+
+
+
+
+
+
+const FormCheckInput = /*#__PURE__*/react.forwardRef(({
+  id,
+  bsPrefix,
+  className,
+  type = 'checkbox',
+  isValid = false,
+  isInvalid = false,
+  // Need to define the default "as" during prop destructuring to be compatible with styled-components github.com/react-bootstrap/react-bootstrap/issues/3595
+  as: Component = 'input',
+  ...props
+}, ref) => {
+  const {
+    controlId
+  } = (0,react.useContext)(esm_FormContext);
+  bsPrefix = useBootstrapPrefix(bsPrefix, 'form-check-input');
+  return /*#__PURE__*/(0,jsx_runtime.jsx)(Component, {
+    ...props,
+    ref: ref,
+    type: type,
+    id: id || controlId,
+    className: classnames_default()(className, bsPrefix, isValid && 'is-valid', isInvalid && 'is-invalid')
+  });
+});
+FormCheckInput.displayName = 'FormCheckInput';
+/* harmony default export */ const esm_FormCheckInput = (FormCheckInput);
+;// CONCATENATED MODULE: ./node_modules/react-bootstrap/esm/FormCheckLabel.js
+
+
+
+
+
+
+const FormCheckLabel = /*#__PURE__*/react.forwardRef(({
+  bsPrefix,
+  className,
+  htmlFor,
+  ...props
+}, ref) => {
+  const {
+    controlId
+  } = (0,react.useContext)(esm_FormContext);
+  bsPrefix = useBootstrapPrefix(bsPrefix, 'form-check-label');
+  return /*#__PURE__*/(0,jsx_runtime.jsx)("label", {
+    ...props,
+    ref: ref,
+    htmlFor: htmlFor || controlId,
+    className: classnames_default()(className, bsPrefix)
+  });
+});
+FormCheckLabel.displayName = 'FormCheckLabel';
+/* harmony default export */ const esm_FormCheckLabel = (FormCheckLabel);
+;// CONCATENATED MODULE: ./node_modules/react-bootstrap/esm/ElementChildren.js
+
+
+/**
+ * Iterates through children that are typically specified as `props.children`,
+ * but only maps over children that are "valid elements".
+ *
+ * The mapFunction provided index will be normalised to the components mapped,
+ * so an invalid component would not increase the index.
+ *
+ */
+function map(children, func) {
+  let index = 0;
+  return React.Children.map(children, child => /*#__PURE__*/React.isValidElement(child) ? func(child, index++) : child);
+}
+
+/**
+ * Iterates through children that are "valid elements".
+ *
+ * The provided forEachFunc(child, index) will be called for each
+ * leaf child with the index reflecting the position relative to "valid components".
+ */
+function forEach(children, func) {
+  let index = 0;
+  React.Children.forEach(children, child => {
+    if ( /*#__PURE__*/React.isValidElement(child)) func(child, index++);
+  });
+}
+
+/**
+ * Finds whether a component's `children` prop includes a React element of the
+ * specified type.
+ */
+function hasChildOfType(children, type) {
+  return react.Children.toArray(children).some(child => /*#__PURE__*/react.isValidElement(child) && child.type === type);
+}
+
+;// CONCATENATED MODULE: ./node_modules/react-bootstrap/esm/FormCheck.js
+
+
+
+
+
+
+
+
+
+
+
+
+const FormCheck = /*#__PURE__*/react.forwardRef(({
+  id,
+  bsPrefix,
+  bsSwitchPrefix,
+  inline = false,
+  reverse = false,
+  disabled = false,
+  isValid = false,
+  isInvalid = false,
+  feedbackTooltip = false,
+  feedback,
+  feedbackType,
+  className,
+  style,
+  title = '',
+  type = 'checkbox',
+  label,
+  children,
+  // Need to define the default "as" during prop destructuring to be compatible with styled-components github.com/react-bootstrap/react-bootstrap/issues/3595
+  as = 'input',
+  ...props
+}, ref) => {
+  bsPrefix = useBootstrapPrefix(bsPrefix, 'form-check');
+  bsSwitchPrefix = useBootstrapPrefix(bsSwitchPrefix, 'form-switch');
+  const {
+    controlId
+  } = (0,react.useContext)(esm_FormContext);
+  const innerFormContext = (0,react.useMemo)(() => ({
+    controlId: id || controlId
+  }), [controlId, id]);
+  const hasLabel = !children && label != null && label !== false || hasChildOfType(children, esm_FormCheckLabel);
+  const input = /*#__PURE__*/(0,jsx_runtime.jsx)(esm_FormCheckInput, {
+    ...props,
+    type: type === 'switch' ? 'checkbox' : type,
+    ref: ref,
+    isValid: isValid,
+    isInvalid: isInvalid,
+    disabled: disabled,
+    as: as
+  });
+  return /*#__PURE__*/(0,jsx_runtime.jsx)(esm_FormContext.Provider, {
+    value: innerFormContext,
+    children: /*#__PURE__*/(0,jsx_runtime.jsx)("div", {
+      style: style,
+      className: classnames_default()(className, hasLabel && bsPrefix, inline && `${bsPrefix}-inline`, reverse && `${bsPrefix}-reverse`, type === 'switch' && bsSwitchPrefix),
+      children: children || /*#__PURE__*/(0,jsx_runtime.jsxs)(jsx_runtime.Fragment, {
+        children: [input, hasLabel && /*#__PURE__*/(0,jsx_runtime.jsx)(esm_FormCheckLabel, {
+          title: title,
+          children: label
+        }), feedback && /*#__PURE__*/(0,jsx_runtime.jsx)(esm_Feedback, {
+          type: feedbackType,
+          tooltip: feedbackTooltip,
+          children: feedback
+        })]
+      })
+    })
+  });
+});
+FormCheck.displayName = 'FormCheck';
+/* harmony default export */ const esm_FormCheck = (Object.assign(FormCheck, {
+  Input: esm_FormCheckInput,
+  Label: esm_FormCheckLabel
+}));
+// EXTERNAL MODULE: ./node_modules/warning/warning.js
+var warning_warning = __webpack_require__(473);
+;// CONCATENATED MODULE: ./node_modules/react-bootstrap/esm/FormControl.js
+
+
+
+
+
+
+
+
+const FormControl = /*#__PURE__*/react.forwardRef(({
+  bsPrefix,
+  type,
+  size,
+  htmlSize,
+  id,
+  className,
+  isValid = false,
+  isInvalid = false,
+  plaintext,
+  readOnly,
+  // Need to define the default "as" during prop destructuring to be compatible with styled-components github.com/react-bootstrap/react-bootstrap/issues/3595
+  as: Component = 'input',
+  ...props
+}, ref) => {
+  const {
+    controlId
+  } = (0,react.useContext)(esm_FormContext);
+  bsPrefix = useBootstrapPrefix(bsPrefix, 'form-control');
+  let classes;
+  if (plaintext) {
+    classes = {
+      [`${bsPrefix}-plaintext`]: true
+    };
+  } else {
+    classes = {
+      [bsPrefix]: true,
+      [`${bsPrefix}-${size}`]: size
+    };
+  }
+   false ? 0 : void 0;
+  return /*#__PURE__*/(0,jsx_runtime.jsx)(Component, {
+    ...props,
+    type: type,
+    size: htmlSize,
+    ref: ref,
+    readOnly: readOnly,
+    id: id || controlId,
+    className: classnames_default()(className, classes, isValid && `is-valid`, isInvalid && `is-invalid`, type === 'color' && `${bsPrefix}-color`)
+  });
+});
+FormControl.displayName = 'FormControl';
+/* harmony default export */ const esm_FormControl = (Object.assign(FormControl, {
+  Feedback: esm_Feedback
+}));
+;// CONCATENATED MODULE: ./node_modules/dom-helpers/esm/camelize.js
+var rHyphen = /-(.)/g;
+function camelize(string) {
+  return string.replace(rHyphen, function (_, chr) {
+    return chr.toUpperCase();
+  });
+}
+;// CONCATENATED MODULE: ./node_modules/react-bootstrap/esm/createWithBsPrefix.js
+
+
+
+
+
+const pascalCase = str => str[0].toUpperCase() + camelize(str).slice(1);
+// TODO: emstricten & fix the typing here! `createWithBsPrefix<TElementType>...`
+function createWithBsPrefix(prefix, {
+  displayName = pascalCase(prefix),
+  Component,
+  defaultProps
+} = {}) {
+  const BsComponent = /*#__PURE__*/react.forwardRef(({
+    className,
+    bsPrefix,
+    as: Tag = Component || 'div',
+    ...props
+  }, ref) => {
+    const resolvedPrefix = useBootstrapPrefix(bsPrefix, prefix);
+    return /*#__PURE__*/(0,jsx_runtime.jsx)(Tag, {
+      ref: ref,
+      className: classnames_default()(className, resolvedPrefix),
+      ...props
+    });
+  });
+  BsComponent.defaultProps = defaultProps;
+  BsComponent.displayName = displayName;
+  return BsComponent;
+}
+;// CONCATENATED MODULE: ./node_modules/react-bootstrap/esm/FormFloating.js
+
+/* harmony default export */ const FormFloating = (createWithBsPrefix('form-floating'));
+;// CONCATENATED MODULE: ./node_modules/react-bootstrap/esm/FormGroup.js
+
+
+
+
+const FormGroup = /*#__PURE__*/react.forwardRef(({
+  controlId,
+  // Need to define the default "as" during prop destructuring to be compatible with styled-components github.com/react-bootstrap/react-bootstrap/issues/3595
+  as: Component = 'div',
+  ...props
+}, ref) => {
+  const context = (0,react.useMemo)(() => ({
+    controlId
+  }), [controlId]);
+  return /*#__PURE__*/(0,jsx_runtime.jsx)(esm_FormContext.Provider, {
+    value: context,
+    children: /*#__PURE__*/(0,jsx_runtime.jsx)(Component, {
+      ...props,
+      ref: ref
+    })
+  });
+});
+FormGroup.displayName = 'FormGroup';
+/* harmony default export */ const esm_FormGroup = (FormGroup);
+;// CONCATENATED MODULE: ./node_modules/react-bootstrap/esm/FormLabel.js
+
+
+
+
+
+
+
+
+const FormLabel_defaultProps = {
+  column: false,
+  visuallyHidden: false
+};
+const FormLabel = /*#__PURE__*/react.forwardRef(({
+  // Need to define the default "as" during prop destructuring to be compatible with styled-components github.com/react-bootstrap/react-bootstrap/issues/3595
+  as: Component = 'label',
+  bsPrefix,
+  column,
+  visuallyHidden,
+  className,
+  htmlFor,
+  ...props
+}, ref) => {
+  const {
+    controlId
+  } = (0,react.useContext)(esm_FormContext);
+  bsPrefix = useBootstrapPrefix(bsPrefix, 'form-label');
+  let columnClass = 'col-form-label';
+  if (typeof column === 'string') columnClass = `${columnClass} ${columnClass}-${column}`;
+  const classes = classnames_default()(className, bsPrefix, visuallyHidden && 'visually-hidden', column && columnClass);
+   false ? 0 : void 0;
+  htmlFor = htmlFor || controlId;
+  if (column) return /*#__PURE__*/(0,jsx_runtime.jsx)(esm_Col, {
+    ref: ref,
+    as: "label",
+    className: classes,
+    htmlFor: htmlFor,
+    ...props
+  });
+  return (
+    /*#__PURE__*/
+    // eslint-disable-next-line jsx-a11y/label-has-for, jsx-a11y/label-has-associated-control
+    (0,jsx_runtime.jsx)(Component, {
+      ref: ref,
+      className: classes,
+      htmlFor: htmlFor,
+      ...props
+    })
+  );
+});
+FormLabel.displayName = 'FormLabel';
+FormLabel.defaultProps = FormLabel_defaultProps;
+/* harmony default export */ const esm_FormLabel = (FormLabel);
+;// CONCATENATED MODULE: ./node_modules/react-bootstrap/esm/FormRange.js
+
+
+
+
+
+
+const FormRange = /*#__PURE__*/react.forwardRef(({
+  bsPrefix,
+  className,
+  id,
+  ...props
+}, ref) => {
+  const {
+    controlId
+  } = (0,react.useContext)(esm_FormContext);
+  bsPrefix = useBootstrapPrefix(bsPrefix, 'form-range');
+  return /*#__PURE__*/(0,jsx_runtime.jsx)("input", {
+    ...props,
+    type: "range",
+    ref: ref,
+    className: classnames_default()(className, bsPrefix),
+    id: id || controlId
+  });
+});
+FormRange.displayName = 'FormRange';
+/* harmony default export */ const esm_FormRange = (FormRange);
+;// CONCATENATED MODULE: ./node_modules/react-bootstrap/esm/FormSelect.js
+
+
+
+
+
+
+const FormSelect = /*#__PURE__*/react.forwardRef(({
+  bsPrefix,
+  size,
+  htmlSize,
+  className,
+  isValid = false,
+  isInvalid = false,
+  id,
+  ...props
+}, ref) => {
+  const {
+    controlId
+  } = (0,react.useContext)(esm_FormContext);
+  bsPrefix = useBootstrapPrefix(bsPrefix, 'form-select');
+  return /*#__PURE__*/(0,jsx_runtime.jsx)("select", {
+    ...props,
+    size: htmlSize,
+    ref: ref,
+    className: classnames_default()(className, bsPrefix, size && `${bsPrefix}-${size}`, isValid && `is-valid`, isInvalid && `is-invalid`),
+    id: id || controlId
+  });
+});
+FormSelect.displayName = 'FormSelect';
+/* harmony default export */ const esm_FormSelect = (FormSelect);
+;// CONCATENATED MODULE: ./node_modules/react-bootstrap/esm/FormText.js
+
+
+
+
+const FormText = /*#__PURE__*/react.forwardRef(
+// Need to define the default "as" during prop destructuring to be compatible with styled-components github.com/react-bootstrap/react-bootstrap/issues/3595
+({
+  bsPrefix,
+  className,
+  as: Component = 'small',
+  muted,
+  ...props
+}, ref) => {
+  bsPrefix = useBootstrapPrefix(bsPrefix, 'form-text');
+  return /*#__PURE__*/(0,jsx_runtime.jsx)(Component, {
+    ...props,
+    ref: ref,
+    className: classnames_default()(className, bsPrefix, muted && 'text-muted')
+  });
+});
+FormText.displayName = 'FormText';
+/* harmony default export */ const esm_FormText = (FormText);
+;// CONCATENATED MODULE: ./node_modules/react-bootstrap/esm/Switch.js
+
+
+
+const Switch = /*#__PURE__*/react.forwardRef((props, ref) => /*#__PURE__*/(0,jsx_runtime.jsx)(esm_FormCheck, {
+  ...props,
+  ref: ref,
+  type: "switch"
+}));
+Switch.displayName = 'Switch';
+/* harmony default export */ const esm_Switch = (Object.assign(Switch, {
+  Input: esm_FormCheck.Input,
+  Label: esm_FormCheck.Label
+}));
+;// CONCATENATED MODULE: ./node_modules/react-bootstrap/esm/FloatingLabel.js
+
+
+
+
+
+
+const FloatingLabel = /*#__PURE__*/react.forwardRef(({
+  bsPrefix,
+  className,
+  children,
+  controlId,
+  label,
+  ...props
+}, ref) => {
+  bsPrefix = useBootstrapPrefix(bsPrefix, 'form-floating');
+  return /*#__PURE__*/(0,jsx_runtime.jsxs)(esm_FormGroup, {
+    ref: ref,
+    className: classnames_default()(className, bsPrefix),
+    controlId: controlId,
+    ...props,
+    children: [children, /*#__PURE__*/(0,jsx_runtime.jsx)("label", {
+      htmlFor: controlId,
+      children: label
+    })]
+  });
+});
+FloatingLabel.displayName = 'FloatingLabel';
+/* harmony default export */ const esm_FloatingLabel = (FloatingLabel);
+;// CONCATENATED MODULE: ./node_modules/react-bootstrap/esm/Form.js
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const Form_propTypes = {
+  /**
+   * The Form `ref` will be forwarded to the underlying element,
+   * which means, unless it's rendered `as` a composite component,
+   * it will be a DOM node, when resolved.
+   *
+   * @type {ReactRef}
+   * @alias ref
+   */
+  _ref: (prop_types_default()).any,
+  /**
+   * Mark a form as having been validated. Setting it to `true` will
+   * toggle any validation styles on the forms elements.
+   */
+  validated: (prop_types_default()).bool,
+  as: (prop_types_default()).elementType
+};
+const Form_Form = /*#__PURE__*/react.forwardRef(({
+  className,
+  validated,
+  // Need to define the default "as" during prop destructuring to be compatible with styled-components github.com/react-bootstrap/react-bootstrap/issues/3595
+  as: Component = 'form',
+  ...props
+}, ref) => /*#__PURE__*/(0,jsx_runtime.jsx)(Component, {
+  ...props,
+  ref: ref,
+  className: classnames_default()(className, validated && 'was-validated')
+}));
+Form_Form.displayName = 'Form';
+Form_Form.propTypes = Form_propTypes;
+/* harmony default export */ const esm_Form = (Object.assign(Form_Form, {
+  Group: esm_FormGroup,
+  Control: esm_FormControl,
+  Floating: FormFloating,
+  Check: esm_FormCheck,
+  Switch: esm_Switch,
+  Label: esm_FormLabel,
+  Text: esm_FormText,
+  Range: esm_FormRange,
+  Select: esm_FormSelect,
+  FloatingLabel: esm_FloatingLabel
+}));
+;// CONCATENATED MODULE: ./src/components/Filter/ExpensesFilter/ExpensesFilter.tsx
+
+
+
+
+
+
+
+
+const ExpensesFilter = ({
+  className
+}) => {
+  const dispatch = useAppDispatch();
+  const filterState = useAppSelector(state => state.transactions.filter.expensesPage);
+  const [dateFrom, setDateFrom] = (0,react.useState)(filterState.dateFrom);
+  const [dateTo, setDateTo] = (0,react.useState)(filterState.dateTo);
+  const [pattern, setPattern] = (0,react.useState)(filterState.pattern);
+  const handlePattern = e => {
+    const newPattern = e.target.value;
+    dispatch(filterExpenses({
+      pattern: newPattern,
+      dateFrom,
+      dateTo
+    }));
+    setPattern(newPattern);
+  };
+  const handleDateFrom = e => {
+    const newDateFrom = e.target.value;
+    dispatch(filterExpenses({
+      pattern,
+      dateFrom: newDateFrom,
+      dateTo
+    }));
+    setDateFrom(newDateFrom);
+  };
+  const handleDateTo = e => {
+    const newDateTo = e.target.value;
+    dispatch(filterExpenses({
+      pattern,
+      dateFrom,
+      dateTo: newDateTo
+    }));
+    setDateTo(newDateTo);
+  };
+  return /*#__PURE__*/(0,jsx_runtime.jsxs)(esm_Row, {
+    className: "my-3 mb-md-0 " + className,
+    children: [/*#__PURE__*/(0,jsx_runtime.jsxs)(esm_Form.Floating, {
+      as: esm_Col,
+      xs: "12",
+      lg: "6",
+      className: "mb-3 mb-lg-0",
+      children: [/*#__PURE__*/(0,jsx_runtime.jsx)(esm_Form.Control, {
+        id: "filterPattern",
+        type: "text",
+        placeholder: "Search by Tag, amount, comment",
+        value: pattern,
+        onChange: handlePattern
+      }), /*#__PURE__*/(0,jsx_runtime.jsx)("label", {
+        htmlFor: "filterPattern",
+        children: "Search by Tag, amount, comment"
+      })]
+    }), /*#__PURE__*/(0,jsx_runtime.jsxs)(esm_Form.Floating, {
+      as: esm_Col,
+      className: "mb-3 mb-md-0",
+      xs: "6",
+      lg: "3",
+      children: [/*#__PURE__*/(0,jsx_runtime.jsx)(esm_Form.Control, {
+        id: "filterDateFrom",
+        type: "date",
+        placeholder: "Date from",
+        value: dateFrom,
+        onChange: handleDateFrom
+      }), /*#__PURE__*/(0,jsx_runtime.jsx)("label", {
+        htmlFor: "filterDateFrom",
+        children: "Date from"
+      })]
+    }), /*#__PURE__*/(0,jsx_runtime.jsxs)(esm_Form.Floating, {
+      as: esm_Col,
+      className: "mb-3 mb-md-0",
+      xs: "6",
+      lg: "3",
+      children: [/*#__PURE__*/(0,jsx_runtime.jsx)(esm_Form.Control, {
+        id: "filterDateTo",
+        "data-testid": "filterDateTo",
+        type: "date",
+        placeholder: "Date to",
+        value: dateTo,
+        onChange: handleDateTo
+      }), /*#__PURE__*/(0,jsx_runtime.jsx)("label", {
+        htmlFor: "filterDateTo",
+        children: "Date to"
+      })]
+    })]
+  });
+};
+/* harmony default export */ const ExpensesFilter_ExpensesFilter = (ExpensesFilter);
+;// CONCATENATED MODULE: ./src/components/Filter/ExpensesFilter/index.ts
+
+/* harmony default export */ const Filter_ExpensesFilter = (ExpensesFilter_ExpensesFilter);
+;// CONCATENATED MODULE: ./src/components/Filter/AnalyticsFilter/AnalyticsFilter.tsx
+
+
+
+
+
+
+
+
+const AnalyticsFilter = ({
+  className
+}) => {
+  const dispatch = useAppDispatch();
+  const filterState = useAppSelector(state => state.transactions.filter.analyticsPage);
+  const [dateFrom, setDateFrom] = (0,react.useState)(filterState.dateFrom);
+  const [dateTo, setDateTo] = (0,react.useState)(filterState.dateTo);
+  const handleDateFrom = e => {
+    const newDateFrom = e.target.value;
+    dispatch(filterAnalytics({
+      dateFrom: newDateFrom,
+      dateTo
+    }));
+    setDateFrom(newDateFrom);
+  };
+  const handleDateTo = e => {
+    const newDateTo = e.target.value;
+    dispatch(filterAnalytics({
+      dateFrom,
+      dateTo: newDateTo
+    }));
+    setDateTo(newDateTo);
+  };
+  return /*#__PURE__*/(0,jsx_runtime.jsxs)(esm_Row, {
+    className: "my-3 mb-md-0 " + className,
+    children: [/*#__PURE__*/(0,jsx_runtime.jsxs)(esm_Form.Floating, {
+      as: esm_Col,
+      className: "mb-3 mb-md-0",
+      xs: "6",
+      lg: "3",
+      children: [/*#__PURE__*/(0,jsx_runtime.jsx)(esm_Form.Control, {
+        id: "filterDateFrom",
+        type: "date",
+        placeholder: "Date from",
+        value: dateFrom,
+        onChange: handleDateFrom
+      }), /*#__PURE__*/(0,jsx_runtime.jsx)("label", {
+        htmlFor: "filterDateFrom",
+        children: "Date from"
+      })]
+    }), /*#__PURE__*/(0,jsx_runtime.jsxs)(esm_Form.Floating, {
+      as: esm_Col,
+      className: "mb-3 mb-md-0",
+      xs: "6",
+      lg: "3",
+      children: [/*#__PURE__*/(0,jsx_runtime.jsx)(esm_Form.Control, {
+        id: "filterDateTo",
+        "data-testid": "filterDateTo",
+        type: "date",
+        placeholder: "Date to",
+        value: dateTo,
+        onChange: handleDateTo
+      }), /*#__PURE__*/(0,jsx_runtime.jsx)("label", {
+        htmlFor: "filterDateTo",
+        children: "Date to"
+      })]
+    })]
+  });
+};
+/* harmony default export */ const AnalyticsFilter_AnalyticsFilter = (AnalyticsFilter);
+;// CONCATENATED MODULE: ./src/components/Filter/AnalyticsFilter/index.ts
+
+/* harmony default export */ const Filter_AnalyticsFilter = (AnalyticsFilter_AnalyticsFilter);
+;// CONCATENATED MODULE: ./src/components/Filter/index.ts
+
+
+
 ;// CONCATENATED MODULE: ./src/pages/Analytics/Analytics.tsx
 
 
+
+
 const Analytics = () => {
-  return /*#__PURE__*/(0,jsx_runtime.jsx)("div", {
-    children: /*#__PURE__*/(0,jsx_runtime.jsx)("p", {
-      children: "Analytics page"
-    })
+  return /*#__PURE__*/(0,jsx_runtime.jsx)(esm_Container, {
+    children: /*#__PURE__*/(0,jsx_runtime.jsx)(Filter_AnalyticsFilter, {})
   });
 };
 /* harmony default export */ const Analytics_Analytics = (Analytics);
@@ -10492,9 +11471,6 @@ const TransactionSection = ({
   });
 };
 /* harmony default export */ const TransactionSection_TransactionSection = (TransactionSection);
-// EXTERNAL MODULE: ./node_modules/classnames/index.js
-var classnames = __webpack_require__(184);
-var classnames_default = /*#__PURE__*/__webpack_require__.n(classnames);
 ;// CONCATENATED MODULE: ./node_modules/@restart/ui/esm/Button.js
 const Button_excluded = ["as", "disabled"];
 function Button_objectWithoutPropertiesLoose(source, excluded) { if (source == null) return {}; var target = {}; var sourceKeys = Object.keys(source); var key, i; for (i = 0; i < sourceKeys.length; i++) { key = sourceKeys[i]; if (excluded.indexOf(key) >= 0) continue; target[key] = source[key]; } return target; }
@@ -10585,97 +11561,13 @@ const Button = /*#__PURE__*/react.forwardRef((_ref, ref) => {
 });
 Button.displayName = 'Button';
 /* harmony default export */ const esm_Button = ((/* unused pure expression or super */ null && (Button)));
-;// CONCATENATED MODULE: ./node_modules/react-bootstrap/esm/ThemeProvider.js
-
-
-
-const DEFAULT_BREAKPOINTS = ['xxl', 'xl', 'lg', 'md', 'sm', 'xs'];
-const DEFAULT_MIN_BREAKPOINT = 'xs';
-const ThemeContext = /*#__PURE__*/react.createContext({
-  prefixes: {},
-  breakpoints: DEFAULT_BREAKPOINTS,
-  minBreakpoint: DEFAULT_MIN_BREAKPOINT
-});
-const {
-  Consumer,
-  Provider: ThemeProvider_Provider
-} = ThemeContext;
-function ThemeProvider({
-  prefixes = {},
-  breakpoints = DEFAULT_BREAKPOINTS,
-  minBreakpoint = DEFAULT_MIN_BREAKPOINT,
-  dir,
-  children
-}) {
-  const contextValue = useMemo(() => ({
-    prefixes: {
-      ...prefixes
-    },
-    breakpoints,
-    minBreakpoint,
-    dir
-  }), [prefixes, breakpoints, minBreakpoint, dir]);
-  return /*#__PURE__*/_jsx(ThemeProvider_Provider, {
-    value: contextValue,
-    children: children
-  });
-}
-function useBootstrapPrefix(prefix, defaultPrefix) {
-  const {
-    prefixes
-  } = (0,react.useContext)(ThemeContext);
-  return prefix || prefixes[defaultPrefix] || defaultPrefix;
-}
-function useBootstrapBreakpoints() {
-  const {
-    breakpoints
-  } = (0,react.useContext)(ThemeContext);
-  return breakpoints;
-}
-function useBootstrapMinBreakpoint() {
-  const {
-    minBreakpoint
-  } = (0,react.useContext)(ThemeContext);
-  return minBreakpoint;
-}
-function useIsRTL() {
-  const {
-    dir
-  } = (0,react.useContext)(ThemeContext);
-  return dir === 'rtl';
-}
-function createBootstrapComponent(Component, opts) {
-  if (typeof opts === 'string') opts = {
-    prefix: opts
-  };
-  const isClassy = Component.prototype && Component.prototype.isReactComponent;
-  // If it's a functional component make sure we don't break it with a ref
-  const {
-    prefix,
-    forwardRefAs = isClassy ? 'ref' : 'innerRef'
-  } = opts;
-  const Wrapped = /*#__PURE__*/React.forwardRef(({
-    ...props
-  }, ref) => {
-    props[forwardRefAs] = ref;
-    const bsPrefix = useBootstrapPrefix(props.bsPrefix, prefix);
-    return /*#__PURE__*/_jsx(Component, {
-      ...props,
-      bsPrefix: bsPrefix
-    });
-  });
-  Wrapped.displayName = `Bootstrap(${Component.displayName || Component.name})`;
-  return Wrapped;
-}
-
-/* harmony default export */ const esm_ThemeProvider = ((/* unused pure expression or super */ null && (ThemeProvider)));
 ;// CONCATENATED MODULE: ./node_modules/react-bootstrap/esm/Button.js
 
 
 
 
 
-const defaultProps = {
+const Button_defaultProps = {
   variant: 'primary',
   active: false,
   disabled: false
@@ -10705,7 +11597,7 @@ const Button_Button = /*#__PURE__*/react.forwardRef(({
   });
 });
 Button_Button.displayName = 'Button';
-Button_Button.defaultProps = defaultProps;
+Button_Button.defaultProps = Button_defaultProps;
 /* harmony default export */ const react_bootstrap_esm_Button = (Button_Button);
 ;// CONCATENATED MODULE: ./node_modules/dom-helpers/esm/canUseDOM.js
 /* harmony default export */ const esm_canUseDOM = (!!(typeof window !== 'undefined' && window.document && window.document.createElement));
@@ -12451,43 +13343,6 @@ const Fade = /*#__PURE__*/react.forwardRef(({
 Fade.defaultProps = Fade_defaultProps;
 Fade.displayName = 'Fade';
 /* harmony default export */ const esm_Fade = (Fade);
-;// CONCATENATED MODULE: ./node_modules/dom-helpers/esm/camelize.js
-var rHyphen = /-(.)/g;
-function camelize(string) {
-  return string.replace(rHyphen, function (_, chr) {
-    return chr.toUpperCase();
-  });
-}
-;// CONCATENATED MODULE: ./node_modules/react-bootstrap/esm/createWithBsPrefix.js
-
-
-
-
-
-const pascalCase = str => str[0].toUpperCase() + camelize(str).slice(1);
-// TODO: emstricten & fix the typing here! `createWithBsPrefix<TElementType>...`
-function createWithBsPrefix(prefix, {
-  displayName = pascalCase(prefix),
-  Component,
-  defaultProps
-} = {}) {
-  const BsComponent = /*#__PURE__*/react.forwardRef(({
-    className,
-    bsPrefix,
-    as: Tag = Component || 'div',
-    ...props
-  }, ref) => {
-    const resolvedPrefix = useBootstrapPrefix(bsPrefix, prefix);
-    return /*#__PURE__*/(0,jsx_runtime.jsx)(Tag, {
-      ref: ref,
-      className: classnames_default()(className, resolvedPrefix),
-      ...props
-    });
-  });
-  BsComponent.defaultProps = defaultProps;
-  BsComponent.displayName = displayName;
-  return BsComponent;
-}
 ;// CONCATENATED MODULE: ./node_modules/react-bootstrap/esm/ModalBody.js
 
 /* harmony default export */ const ModalBody = (createWithBsPrefix('modal-body'));
@@ -12532,15 +13387,12 @@ ModalDialog.displayName = 'ModalDialog';
 ;// CONCATENATED MODULE: ./node_modules/react-bootstrap/esm/ModalFooter.js
 
 /* harmony default export */ const ModalFooter = (createWithBsPrefix('modal-footer'));
-// EXTERNAL MODULE: ./node_modules/prop-types/index.js
-var prop_types = __webpack_require__(697);
-var prop_types_default = /*#__PURE__*/__webpack_require__.n(prop_types);
 ;// CONCATENATED MODULE: ./node_modules/react-bootstrap/esm/CloseButton.js
 
 
 
 
-const propTypes = {
+const CloseButton_propTypes = {
   /** An accessible label indicating the relevant information about the Close Button. */
   'aria-label': (prop_types_default()).string,
   /** A callback fired after the Close Button is clicked. */
@@ -12566,7 +13418,7 @@ const CloseButton = /*#__PURE__*/react.forwardRef(({
   ...props
 }));
 CloseButton.displayName = 'CloseButton';
-CloseButton.propTypes = propTypes;
+CloseButton.propTypes = CloseButton_propTypes;
 CloseButton.defaultProps = CloseButton_defaultProps;
 /* harmony default export */ const esm_CloseButton = (CloseButton);
 ;// CONCATENATED MODULE: ./node_modules/react-bootstrap/esm/AbstractModalHeader.js
@@ -12912,636 +13764,6 @@ Modal_Modal.defaultProps = Modal_defaultProps;
   TRANSITION_DURATION: 300,
   BACKDROP_TRANSITION_DURATION: 150
 }));
-;// CONCATENATED MODULE: ./node_modules/react-bootstrap/esm/Col.js
-
-
-
-
-function useCol({
-  as,
-  bsPrefix,
-  className,
-  ...props
-}) {
-  bsPrefix = useBootstrapPrefix(bsPrefix, 'col');
-  const breakpoints = useBootstrapBreakpoints();
-  const minBreakpoint = useBootstrapMinBreakpoint();
-  const spans = [];
-  const classes = [];
-  breakpoints.forEach(brkPoint => {
-    const propValue = props[brkPoint];
-    delete props[brkPoint];
-    let span;
-    let offset;
-    let order;
-    if (typeof propValue === 'object' && propValue != null) {
-      ({
-        span,
-        offset,
-        order
-      } = propValue);
-    } else {
-      span = propValue;
-    }
-    const infix = brkPoint !== minBreakpoint ? `-${brkPoint}` : '';
-    if (span) spans.push(span === true ? `${bsPrefix}${infix}` : `${bsPrefix}${infix}-${span}`);
-    if (order != null) classes.push(`order${infix}-${order}`);
-    if (offset != null) classes.push(`offset${infix}-${offset}`);
-  });
-  return [{
-    ...props,
-    className: classnames_default()(className, ...spans, ...classes)
-  }, {
-    as,
-    bsPrefix,
-    spans
-  }];
-}
-const Col = /*#__PURE__*/react.forwardRef(
-// Need to define the default "as" during prop destructuring to be compatible with styled-components github.com/react-bootstrap/react-bootstrap/issues/3595
-(props, ref) => {
-  const [{
-    className,
-    ...colProps
-  }, {
-    as: Component = 'div',
-    bsPrefix,
-    spans
-  }] = useCol(props);
-  return /*#__PURE__*/(0,jsx_runtime.jsx)(Component, {
-    ...colProps,
-    ref: ref,
-    className: classnames_default()(className, !spans.length && bsPrefix)
-  });
-});
-Col.displayName = 'Col';
-/* harmony default export */ const esm_Col = (Col);
-;// CONCATENATED MODULE: ./node_modules/react-bootstrap/esm/Feedback.js
-
-
-
-
-const Feedback_propTypes = {
-  /**
-   * Specify whether the feedback is for valid or invalid fields
-   *
-   * @type {('valid'|'invalid')}
-   */
-  type: (prop_types_default()).string,
-  /** Display feedback as a tooltip. */
-  tooltip: (prop_types_default()).bool,
-  as: (prop_types_default()).elementType
-};
-const Feedback = /*#__PURE__*/react.forwardRef(
-// Need to define the default "as" during prop destructuring to be compatible with styled-components github.com/react-bootstrap/react-bootstrap/issues/3595
-({
-  as: Component = 'div',
-  className,
-  type = 'valid',
-  tooltip = false,
-  ...props
-}, ref) => /*#__PURE__*/(0,jsx_runtime.jsx)(Component, {
-  ...props,
-  ref: ref,
-  className: classnames_default()(className, `${type}-${tooltip ? 'tooltip' : 'feedback'}`)
-}));
-Feedback.displayName = 'Feedback';
-Feedback.propTypes = Feedback_propTypes;
-/* harmony default export */ const esm_Feedback = (Feedback);
-;// CONCATENATED MODULE: ./node_modules/react-bootstrap/esm/FormContext.js
-
-
-// TODO
-
-const FormContext = /*#__PURE__*/react.createContext({});
-/* harmony default export */ const esm_FormContext = (FormContext);
-;// CONCATENATED MODULE: ./node_modules/react-bootstrap/esm/FormCheckInput.js
-
-
-
-
-
-
-const FormCheckInput = /*#__PURE__*/react.forwardRef(({
-  id,
-  bsPrefix,
-  className,
-  type = 'checkbox',
-  isValid = false,
-  isInvalid = false,
-  // Need to define the default "as" during prop destructuring to be compatible with styled-components github.com/react-bootstrap/react-bootstrap/issues/3595
-  as: Component = 'input',
-  ...props
-}, ref) => {
-  const {
-    controlId
-  } = (0,react.useContext)(esm_FormContext);
-  bsPrefix = useBootstrapPrefix(bsPrefix, 'form-check-input');
-  return /*#__PURE__*/(0,jsx_runtime.jsx)(Component, {
-    ...props,
-    ref: ref,
-    type: type,
-    id: id || controlId,
-    className: classnames_default()(className, bsPrefix, isValid && 'is-valid', isInvalid && 'is-invalid')
-  });
-});
-FormCheckInput.displayName = 'FormCheckInput';
-/* harmony default export */ const esm_FormCheckInput = (FormCheckInput);
-;// CONCATENATED MODULE: ./node_modules/react-bootstrap/esm/FormCheckLabel.js
-
-
-
-
-
-
-const FormCheckLabel = /*#__PURE__*/react.forwardRef(({
-  bsPrefix,
-  className,
-  htmlFor,
-  ...props
-}, ref) => {
-  const {
-    controlId
-  } = (0,react.useContext)(esm_FormContext);
-  bsPrefix = useBootstrapPrefix(bsPrefix, 'form-check-label');
-  return /*#__PURE__*/(0,jsx_runtime.jsx)("label", {
-    ...props,
-    ref: ref,
-    htmlFor: htmlFor || controlId,
-    className: classnames_default()(className, bsPrefix)
-  });
-});
-FormCheckLabel.displayName = 'FormCheckLabel';
-/* harmony default export */ const esm_FormCheckLabel = (FormCheckLabel);
-;// CONCATENATED MODULE: ./node_modules/react-bootstrap/esm/ElementChildren.js
-
-
-/**
- * Iterates through children that are typically specified as `props.children`,
- * but only maps over children that are "valid elements".
- *
- * The mapFunction provided index will be normalised to the components mapped,
- * so an invalid component would not increase the index.
- *
- */
-function map(children, func) {
-  let index = 0;
-  return React.Children.map(children, child => /*#__PURE__*/React.isValidElement(child) ? func(child, index++) : child);
-}
-
-/**
- * Iterates through children that are "valid elements".
- *
- * The provided forEachFunc(child, index) will be called for each
- * leaf child with the index reflecting the position relative to "valid components".
- */
-function forEach(children, func) {
-  let index = 0;
-  React.Children.forEach(children, child => {
-    if ( /*#__PURE__*/React.isValidElement(child)) func(child, index++);
-  });
-}
-
-/**
- * Finds whether a component's `children` prop includes a React element of the
- * specified type.
- */
-function hasChildOfType(children, type) {
-  return react.Children.toArray(children).some(child => /*#__PURE__*/react.isValidElement(child) && child.type === type);
-}
-
-;// CONCATENATED MODULE: ./node_modules/react-bootstrap/esm/FormCheck.js
-
-
-
-
-
-
-
-
-
-
-
-
-const FormCheck = /*#__PURE__*/react.forwardRef(({
-  id,
-  bsPrefix,
-  bsSwitchPrefix,
-  inline = false,
-  reverse = false,
-  disabled = false,
-  isValid = false,
-  isInvalid = false,
-  feedbackTooltip = false,
-  feedback,
-  feedbackType,
-  className,
-  style,
-  title = '',
-  type = 'checkbox',
-  label,
-  children,
-  // Need to define the default "as" during prop destructuring to be compatible with styled-components github.com/react-bootstrap/react-bootstrap/issues/3595
-  as = 'input',
-  ...props
-}, ref) => {
-  bsPrefix = useBootstrapPrefix(bsPrefix, 'form-check');
-  bsSwitchPrefix = useBootstrapPrefix(bsSwitchPrefix, 'form-switch');
-  const {
-    controlId
-  } = (0,react.useContext)(esm_FormContext);
-  const innerFormContext = (0,react.useMemo)(() => ({
-    controlId: id || controlId
-  }), [controlId, id]);
-  const hasLabel = !children && label != null && label !== false || hasChildOfType(children, esm_FormCheckLabel);
-  const input = /*#__PURE__*/(0,jsx_runtime.jsx)(esm_FormCheckInput, {
-    ...props,
-    type: type === 'switch' ? 'checkbox' : type,
-    ref: ref,
-    isValid: isValid,
-    isInvalid: isInvalid,
-    disabled: disabled,
-    as: as
-  });
-  return /*#__PURE__*/(0,jsx_runtime.jsx)(esm_FormContext.Provider, {
-    value: innerFormContext,
-    children: /*#__PURE__*/(0,jsx_runtime.jsx)("div", {
-      style: style,
-      className: classnames_default()(className, hasLabel && bsPrefix, inline && `${bsPrefix}-inline`, reverse && `${bsPrefix}-reverse`, type === 'switch' && bsSwitchPrefix),
-      children: children || /*#__PURE__*/(0,jsx_runtime.jsxs)(jsx_runtime.Fragment, {
-        children: [input, hasLabel && /*#__PURE__*/(0,jsx_runtime.jsx)(esm_FormCheckLabel, {
-          title: title,
-          children: label
-        }), feedback && /*#__PURE__*/(0,jsx_runtime.jsx)(esm_Feedback, {
-          type: feedbackType,
-          tooltip: feedbackTooltip,
-          children: feedback
-        })]
-      })
-    })
-  });
-});
-FormCheck.displayName = 'FormCheck';
-/* harmony default export */ const esm_FormCheck = (Object.assign(FormCheck, {
-  Input: esm_FormCheckInput,
-  Label: esm_FormCheckLabel
-}));
-// EXTERNAL MODULE: ./node_modules/warning/warning.js
-var warning_warning = __webpack_require__(473);
-;// CONCATENATED MODULE: ./node_modules/react-bootstrap/esm/FormControl.js
-
-
-
-
-
-
-
-
-const FormControl = /*#__PURE__*/react.forwardRef(({
-  bsPrefix,
-  type,
-  size,
-  htmlSize,
-  id,
-  className,
-  isValid = false,
-  isInvalid = false,
-  plaintext,
-  readOnly,
-  // Need to define the default "as" during prop destructuring to be compatible with styled-components github.com/react-bootstrap/react-bootstrap/issues/3595
-  as: Component = 'input',
-  ...props
-}, ref) => {
-  const {
-    controlId
-  } = (0,react.useContext)(esm_FormContext);
-  bsPrefix = useBootstrapPrefix(bsPrefix, 'form-control');
-  let classes;
-  if (plaintext) {
-    classes = {
-      [`${bsPrefix}-plaintext`]: true
-    };
-  } else {
-    classes = {
-      [bsPrefix]: true,
-      [`${bsPrefix}-${size}`]: size
-    };
-  }
-   false ? 0 : void 0;
-  return /*#__PURE__*/(0,jsx_runtime.jsx)(Component, {
-    ...props,
-    type: type,
-    size: htmlSize,
-    ref: ref,
-    readOnly: readOnly,
-    id: id || controlId,
-    className: classnames_default()(className, classes, isValid && `is-valid`, isInvalid && `is-invalid`, type === 'color' && `${bsPrefix}-color`)
-  });
-});
-FormControl.displayName = 'FormControl';
-/* harmony default export */ const esm_FormControl = (Object.assign(FormControl, {
-  Feedback: esm_Feedback
-}));
-;// CONCATENATED MODULE: ./node_modules/react-bootstrap/esm/FormFloating.js
-
-/* harmony default export */ const FormFloating = (createWithBsPrefix('form-floating'));
-;// CONCATENATED MODULE: ./node_modules/react-bootstrap/esm/FormGroup.js
-
-
-
-
-const FormGroup = /*#__PURE__*/react.forwardRef(({
-  controlId,
-  // Need to define the default "as" during prop destructuring to be compatible with styled-components github.com/react-bootstrap/react-bootstrap/issues/3595
-  as: Component = 'div',
-  ...props
-}, ref) => {
-  const context = (0,react.useMemo)(() => ({
-    controlId
-  }), [controlId]);
-  return /*#__PURE__*/(0,jsx_runtime.jsx)(esm_FormContext.Provider, {
-    value: context,
-    children: /*#__PURE__*/(0,jsx_runtime.jsx)(Component, {
-      ...props,
-      ref: ref
-    })
-  });
-});
-FormGroup.displayName = 'FormGroup';
-/* harmony default export */ const esm_FormGroup = (FormGroup);
-;// CONCATENATED MODULE: ./node_modules/react-bootstrap/esm/FormLabel.js
-
-
-
-
-
-
-
-
-const FormLabel_defaultProps = {
-  column: false,
-  visuallyHidden: false
-};
-const FormLabel = /*#__PURE__*/react.forwardRef(({
-  // Need to define the default "as" during prop destructuring to be compatible with styled-components github.com/react-bootstrap/react-bootstrap/issues/3595
-  as: Component = 'label',
-  bsPrefix,
-  column,
-  visuallyHidden,
-  className,
-  htmlFor,
-  ...props
-}, ref) => {
-  const {
-    controlId
-  } = (0,react.useContext)(esm_FormContext);
-  bsPrefix = useBootstrapPrefix(bsPrefix, 'form-label');
-  let columnClass = 'col-form-label';
-  if (typeof column === 'string') columnClass = `${columnClass} ${columnClass}-${column}`;
-  const classes = classnames_default()(className, bsPrefix, visuallyHidden && 'visually-hidden', column && columnClass);
-   false ? 0 : void 0;
-  htmlFor = htmlFor || controlId;
-  if (column) return /*#__PURE__*/(0,jsx_runtime.jsx)(esm_Col, {
-    ref: ref,
-    as: "label",
-    className: classes,
-    htmlFor: htmlFor,
-    ...props
-  });
-  return (
-    /*#__PURE__*/
-    // eslint-disable-next-line jsx-a11y/label-has-for, jsx-a11y/label-has-associated-control
-    (0,jsx_runtime.jsx)(Component, {
-      ref: ref,
-      className: classes,
-      htmlFor: htmlFor,
-      ...props
-    })
-  );
-});
-FormLabel.displayName = 'FormLabel';
-FormLabel.defaultProps = FormLabel_defaultProps;
-/* harmony default export */ const esm_FormLabel = (FormLabel);
-;// CONCATENATED MODULE: ./node_modules/react-bootstrap/esm/FormRange.js
-
-
-
-
-
-
-const FormRange = /*#__PURE__*/react.forwardRef(({
-  bsPrefix,
-  className,
-  id,
-  ...props
-}, ref) => {
-  const {
-    controlId
-  } = (0,react.useContext)(esm_FormContext);
-  bsPrefix = useBootstrapPrefix(bsPrefix, 'form-range');
-  return /*#__PURE__*/(0,jsx_runtime.jsx)("input", {
-    ...props,
-    type: "range",
-    ref: ref,
-    className: classnames_default()(className, bsPrefix),
-    id: id || controlId
-  });
-});
-FormRange.displayName = 'FormRange';
-/* harmony default export */ const esm_FormRange = (FormRange);
-;// CONCATENATED MODULE: ./node_modules/react-bootstrap/esm/FormSelect.js
-
-
-
-
-
-
-const FormSelect = /*#__PURE__*/react.forwardRef(({
-  bsPrefix,
-  size,
-  htmlSize,
-  className,
-  isValid = false,
-  isInvalid = false,
-  id,
-  ...props
-}, ref) => {
-  const {
-    controlId
-  } = (0,react.useContext)(esm_FormContext);
-  bsPrefix = useBootstrapPrefix(bsPrefix, 'form-select');
-  return /*#__PURE__*/(0,jsx_runtime.jsx)("select", {
-    ...props,
-    size: htmlSize,
-    ref: ref,
-    className: classnames_default()(className, bsPrefix, size && `${bsPrefix}-${size}`, isValid && `is-valid`, isInvalid && `is-invalid`),
-    id: id || controlId
-  });
-});
-FormSelect.displayName = 'FormSelect';
-/* harmony default export */ const esm_FormSelect = (FormSelect);
-;// CONCATENATED MODULE: ./node_modules/react-bootstrap/esm/FormText.js
-
-
-
-
-const FormText = /*#__PURE__*/react.forwardRef(
-// Need to define the default "as" during prop destructuring to be compatible with styled-components github.com/react-bootstrap/react-bootstrap/issues/3595
-({
-  bsPrefix,
-  className,
-  as: Component = 'small',
-  muted,
-  ...props
-}, ref) => {
-  bsPrefix = useBootstrapPrefix(bsPrefix, 'form-text');
-  return /*#__PURE__*/(0,jsx_runtime.jsx)(Component, {
-    ...props,
-    ref: ref,
-    className: classnames_default()(className, bsPrefix, muted && 'text-muted')
-  });
-});
-FormText.displayName = 'FormText';
-/* harmony default export */ const esm_FormText = (FormText);
-;// CONCATENATED MODULE: ./node_modules/react-bootstrap/esm/Switch.js
-
-
-
-const Switch = /*#__PURE__*/react.forwardRef((props, ref) => /*#__PURE__*/(0,jsx_runtime.jsx)(esm_FormCheck, {
-  ...props,
-  ref: ref,
-  type: "switch"
-}));
-Switch.displayName = 'Switch';
-/* harmony default export */ const esm_Switch = (Object.assign(Switch, {
-  Input: esm_FormCheck.Input,
-  Label: esm_FormCheck.Label
-}));
-;// CONCATENATED MODULE: ./node_modules/react-bootstrap/esm/FloatingLabel.js
-
-
-
-
-
-
-const FloatingLabel = /*#__PURE__*/react.forwardRef(({
-  bsPrefix,
-  className,
-  children,
-  controlId,
-  label,
-  ...props
-}, ref) => {
-  bsPrefix = useBootstrapPrefix(bsPrefix, 'form-floating');
-  return /*#__PURE__*/(0,jsx_runtime.jsxs)(esm_FormGroup, {
-    ref: ref,
-    className: classnames_default()(className, bsPrefix),
-    controlId: controlId,
-    ...props,
-    children: [children, /*#__PURE__*/(0,jsx_runtime.jsx)("label", {
-      htmlFor: controlId,
-      children: label
-    })]
-  });
-});
-FloatingLabel.displayName = 'FloatingLabel';
-/* harmony default export */ const esm_FloatingLabel = (FloatingLabel);
-;// CONCATENATED MODULE: ./node_modules/react-bootstrap/esm/Form.js
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-const Form_propTypes = {
-  /**
-   * The Form `ref` will be forwarded to the underlying element,
-   * which means, unless it's rendered `as` a composite component,
-   * it will be a DOM node, when resolved.
-   *
-   * @type {ReactRef}
-   * @alias ref
-   */
-  _ref: (prop_types_default()).any,
-  /**
-   * Mark a form as having been validated. Setting it to `true` will
-   * toggle any validation styles on the forms elements.
-   */
-  validated: (prop_types_default()).bool,
-  as: (prop_types_default()).elementType
-};
-const Form_Form = /*#__PURE__*/react.forwardRef(({
-  className,
-  validated,
-  // Need to define the default "as" during prop destructuring to be compatible with styled-components github.com/react-bootstrap/react-bootstrap/issues/3595
-  as: Component = 'form',
-  ...props
-}, ref) => /*#__PURE__*/(0,jsx_runtime.jsx)(Component, {
-  ...props,
-  ref: ref,
-  className: classnames_default()(className, validated && 'was-validated')
-}));
-Form_Form.displayName = 'Form';
-Form_Form.propTypes = Form_propTypes;
-/* harmony default export */ const esm_Form = (Object.assign(Form_Form, {
-  Group: esm_FormGroup,
-  Control: esm_FormControl,
-  Floating: FormFloating,
-  Check: esm_FormCheck,
-  Switch: esm_Switch,
-  Label: esm_FormLabel,
-  Text: esm_FormText,
-  Range: esm_FormRange,
-  Select: esm_FormSelect,
-  FloatingLabel: esm_FloatingLabel
-}));
-;// CONCATENATED MODULE: ./node_modules/react-bootstrap/esm/Row.js
-
-
-
-
-const Row = /*#__PURE__*/react.forwardRef(({
-  bsPrefix,
-  className,
-  // Need to define the default "as" during prop destructuring to be compatible with styled-components github.com/react-bootstrap/react-bootstrap/issues/3595
-  as: Component = 'div',
-  ...props
-}, ref) => {
-  const decoratedBsPrefix = useBootstrapPrefix(bsPrefix, 'row');
-  const breakpoints = useBootstrapBreakpoints();
-  const minBreakpoint = useBootstrapMinBreakpoint();
-  const sizePrefix = `${decoratedBsPrefix}-cols`;
-  const classes = [];
-  breakpoints.forEach(brkPoint => {
-    const propValue = props[brkPoint];
-    delete props[brkPoint];
-    let cols;
-    if (propValue != null && typeof propValue === 'object') {
-      ({
-        cols
-      } = propValue);
-    } else {
-      cols = propValue;
-    }
-    const infix = brkPoint !== minBreakpoint ? `-${brkPoint}` : '';
-    if (cols != null) classes.push(`${sizePrefix}${infix}-${cols}`);
-  });
-  return /*#__PURE__*/(0,jsx_runtime.jsx)(Component, {
-    ref: ref,
-    ...props,
-    className: classnames_default()(className, decoratedBsPrefix, ...classes)
-  });
-});
-Row.displayName = 'Row';
-/* harmony default export */ const esm_Row = (Row);
 ;// CONCATENATED MODULE: ./node_modules/react-bootstrap/esm/InputGroupContext.js
 
 const context = /*#__PURE__*/react.createContext(null);
@@ -13758,103 +13980,6 @@ const AddTransaction = ({
   });
 };
 /* harmony default export */ const AddTransaction_AddTransaction = (AddTransaction);
-;// CONCATENATED MODULE: ./src/components/TransactionFilter/TransactionFilter.tsx
-
-
-
-
-
-
-
-
-
-const TransactionFilter = ({
-  className
-}) => {
-  const dispatch = useAppDispatch();
-  const filterState = useAppSelector(state => state.transactions.filter.expensesPage);
-  const [dateFrom, setDateFrom] = (0,react.useState)(filterState.dateFrom);
-  const [dateTo, setDateTo] = (0,react.useState)(filterState.dateTo);
-  const [pattern, setPattern] = (0,react.useState)(filterState.pattern);
-  const handlePattern = e => {
-    const newPattern = e.target.value;
-    dispatch(filterExpenses({
-      pattern: newPattern,
-      dateFrom,
-      dateTo
-    }));
-    setPattern(newPattern);
-  };
-  const handleDateFrom = e => {
-    const newDateFrom = e.target.value;
-    dispatch(filterExpenses({
-      pattern,
-      dateFrom: newDateFrom,
-      dateTo
-    }));
-    setDateFrom(newDateFrom);
-  };
-  const handleDateTo = e => {
-    const newDateTo = e.target.value;
-    dispatch(filterExpenses({
-      pattern,
-      dateFrom,
-      dateTo: newDateTo
-    }));
-    setDateTo(newDateTo);
-  };
-  return /*#__PURE__*/(0,jsx_runtime.jsxs)(esm_Row, {
-    className: "my-3 mb-md-0 " + className,
-    children: [/*#__PURE__*/(0,jsx_runtime.jsxs)(esm_Form.Floating, {
-      as: esm_Col,
-      xs: "12",
-      lg: "6",
-      className: "mb-3 mb-lg-0",
-      children: [/*#__PURE__*/(0,jsx_runtime.jsx)(esm_Form.Control, {
-        id: "filterPattern",
-        type: "text",
-        placeholder: "Search by Tag, amount, comment",
-        value: pattern,
-        onChange: handlePattern
-      }), /*#__PURE__*/(0,jsx_runtime.jsx)("label", {
-        htmlFor: "filterPattern",
-        children: "Search by Tag, amount, comment"
-      })]
-    }), /*#__PURE__*/(0,jsx_runtime.jsxs)(esm_Form.Floating, {
-      as: esm_Col,
-      className: "mb-3 mb-md-0",
-      xs: "6",
-      lg: "3",
-      children: [/*#__PURE__*/(0,jsx_runtime.jsx)(esm_Form.Control, {
-        id: "filterDateFrom",
-        type: "date",
-        placeholder: "Date from",
-        value: dateFrom,
-        onChange: handleDateFrom
-      }), /*#__PURE__*/(0,jsx_runtime.jsx)("label", {
-        htmlFor: "filterDateFrom",
-        children: "Date from"
-      })]
-    }), /*#__PURE__*/(0,jsx_runtime.jsxs)(esm_Form.Floating, {
-      as: esm_Col,
-      className: "mb-3 mb-md-0",
-      xs: "6",
-      lg: "3",
-      children: [/*#__PURE__*/(0,jsx_runtime.jsx)(esm_Form.Control, {
-        id: "filterDateTo",
-        "data-testid": "filterDateTo",
-        type: "date",
-        placeholder: "Date to",
-        value: dateTo,
-        onChange: handleDateTo
-      }), /*#__PURE__*/(0,jsx_runtime.jsx)("label", {
-        htmlFor: "filterDateTo",
-        children: "Date to"
-      })]
-    })]
-  });
-};
-/* harmony default export */ const TransactionFilter_TransactionFilter = (TransactionFilter);
 ;// CONCATENATED MODULE: ./src/store/transactionsSelectors.tsx
 const selectTransactionsHistory = state => state.transactions.transactionsHistory;
 const selectFilterExpenses = state => state.transactions.filter.expensesPage;
@@ -14189,7 +14314,7 @@ const Expenses = () => {
       week: total.week,
       month: total.month,
       className: "expenses__total"
-    }), /*#__PURE__*/(0,jsx_runtime.jsx)(TransactionFilter_TransactionFilter, {
+    }), /*#__PURE__*/(0,jsx_runtime.jsx)(Filter_ExpensesFilter, {
       className: "expenses__filter"
     }), /*#__PURE__*/(0,jsx_runtime.jsx)(TransactionSection_TransactionSection, {
       transactionsHistory: transactionsHistory,
@@ -14202,8 +14327,7 @@ const Expenses = () => {
 const Total = ({
   day,
   week,
-  month
-}, {
+  month,
   className
 }) => {
   return /*#__PURE__*/(0,jsx_runtime.jsxs)("section", {
