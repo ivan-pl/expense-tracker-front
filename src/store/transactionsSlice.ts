@@ -1,11 +1,25 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { TransactionsInfo, Transaction } from "../types/transactions.type";
-import addTransactionToHistory from "./utils/addTransactionToHistory";
-import setTotal from "./utils/setTotal";
 
-const initialState: TransactionsInfo = {
-  total: { day: "0", week: "0", month: "0" },
-  transactionHistory: [],
+import { Transaction, DayTransactions } from "../types/transactions.type";
+import addTransactionToHistory from "./utils/addTransactionToHistory";
+import formatDate from "../utils/formatDate";
+
+export interface TransactionsState {
+  transactionsHistory: DayTransactions[];
+  filter: {
+    pattern: string;
+    dateFrom: string;
+    dateTo: string;
+  };
+}
+
+const initialState: TransactionsState = {
+  transactionsHistory: [],
+  filter: {
+    pattern: "",
+    dateFrom: "",
+    dateTo: formatDate(new Date()),
+  },
 };
 
 export const transactionsSlice = createSlice({
@@ -14,12 +28,9 @@ export const transactionsSlice = createSlice({
   reducers: {
     setNewTransactions: (
       state,
-      {
-        payload: { total, transactionHistory },
-      }: PayloadAction<TransactionsInfo>
+      { payload: transactionsHistory }: PayloadAction<DayTransactions[]>
     ) => {
-      state.total = total;
-      state.transactionHistory = transactionHistory;
+      state.transactionsHistory = transactionsHistory;
     },
 
     add: (
@@ -28,17 +39,15 @@ export const transactionsSlice = createSlice({
         payload: { transaction, date },
       }: PayloadAction<{ transaction: Transaction; date: string }>
     ) => {
-      setTotal(state.total, date, transaction);
-
-      if (state.transactionHistory.length === 0) {
-        state.transactionHistory.push({
+      if (state.transactionsHistory.length === 0) {
+        state.transactionsHistory.push({
           date,
           transactionList: [transaction],
         });
         return state;
       }
 
-      addTransactionToHistory(state.transactionHistory, date, transaction);
+      addTransactionToHistory(state.transactionsHistory, date, transaction);
     },
   },
 });

@@ -1,25 +1,20 @@
-import {
-  PayMethod,
-  Tag,
-  Transaction,
-  TransactionsInfo,
-} from "../types/transactions.type";
+import { PayMethod, Tag, Transaction } from "../types/transactions.type";
 import formatDate from "../utils/formatDate";
-import loadMockedTransactionSection from "../utils/loadMockedTransactions";
+import loadMockedTransactionsHistory from "../utils/loadMockedTransactions";
 import transactionsReducer, {
+  TransactionsState,
   setNewTransactions,
   add,
 } from "./transactionsSlice";
 
-const CURRENT_DATE = "2022-11-25";
-jest.useFakeTimers().setSystemTime(new Date(CURRENT_DATE));
+const CURRENT_DATE = formatDate(new Date());
 
-const mockedTransactionHistory = loadMockedTransactionSection();
+const mockedTransactionsHistory = loadMockedTransactionsHistory();
 
 describe("transactions reducer", () => {
-  const initialState: TransactionsInfo = {
-    total: { day: "0", week: "0", month: "0" },
-    transactionHistory: [],
+  const initialState: TransactionsState = {
+    transactionsHistory: [],
+    filter: { dateFrom: "", dateTo: CURRENT_DATE, pattern: "" },
   };
 
   it("should handle initial state", () => {
@@ -32,9 +27,12 @@ describe("transactions reducer", () => {
     expect(
       transactionsReducer(
         initialState,
-        setNewTransactions(mockedTransactionHistory)
+        setNewTransactions(mockedTransactionsHistory)
       )
-    ).toEqual(mockedTransactionHistory);
+    ).toEqual({
+      filter: { dateFrom: "", dateTo: CURRENT_DATE, pattern: "" },
+      transactionsHistory: mockedTransactionsHistory,
+    });
   });
 
   it("should handle add", () => {
@@ -52,29 +50,21 @@ describe("transactions reducer", () => {
       add({ transaction, date: formatDate(new Date(CURRENT_DATE)) })
     );
     expect(actualState).toEqual({
-      total: {
-        day: "123.00",
-        week: "123.00",
-        month: "123.00",
-      },
-      transactionHistory: [
+      filter: { dateFrom: "", dateTo: CURRENT_DATE, pattern: "" },
+      transactionsHistory: [
         { date: CURRENT_DATE, transactionList: [transaction] },
       ],
-    } as TransactionsInfo);
+    } as TransactionsState);
 
     actualState = transactionsReducer(
       actualState,
       add({ transaction, date: formatDate(new Date(CURRENT_DATE)) })
     );
     expect(actualState).toEqual({
-      total: {
-        day: "246.00",
-        week: "246.00",
-        month: "246.00",
-      },
-      transactionHistory: [
+      filter: { dateFrom: "", dateTo: CURRENT_DATE, pattern: "" },
+      transactionsHistory: [
         { date: CURRENT_DATE, transactionList: [transaction, transaction] },
       ],
-    } as TransactionsInfo);
+    } as TransactionsState);
   });
 });

@@ -4,10 +4,10 @@ import { Provider } from "react-redux";
 
 import store from "../../store";
 import TransactionSection from "./TransactionSection";
-import loadMockedTransactionSection from "../../utils/loadMockedTransactions";
+import loadMockedTransactionsHistory from "../../utils/loadMockedTransactions";
 import { DayTransactions } from "../../types/transactions.type";
 
-const transactionHistory = loadMockedTransactionSection().transactionHistory;
+const transactionHistory = loadMockedTransactionsHistory();
 
 function valueCount(dayTransactions: DayTransactions[]): {
   [P: string]: number;
@@ -41,7 +41,7 @@ describe("TransactionSection", () => {
   it("renders section with data", () => {
     render(
       <Provider store={store}>
-        <TransactionSection transactionHistory={transactionHistory} />
+        <TransactionSection transactionsHistory={transactionHistory} />
       </Provider>
     );
 

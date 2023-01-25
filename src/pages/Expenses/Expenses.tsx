@@ -1,25 +1,28 @@
 import React, { FC, DetailedHTMLProps, HTMLAttributes } from "react";
 
-import { TransactionsInfo } from "../../types/transactions.type";
 import TransactionSection from "../../components/TransactionSection/TransactionSection";
 import AddTransaction from "../../components/AddTransaction/AddTransaction";
 import TransactionFilter from "../../components/TransactionFilter/TransactionFilter";
 import { useAppSelector } from "../../app/hooks";
-import {
-  selectTotal,
-  selectTransactionHistory,
-} from "../../store/transactionsSelectors";
+import { selectTransactionsHistory } from "../../store/transactionsSelectors";
+import countTotal, { Total as TotalValues } from "./utils/countTotal";
 import "./Expenses.scss";
 
 const Expenses: FC = () => {
-  const total = useAppSelector(selectTotal);
-  const transactionHistory = useAppSelector(selectTransactionHistory);
+  const transactionsHistory = useAppSelector(selectTransactionsHistory);
+  const total = countTotal(transactionsHistory);
+
   return (
     <div className="expenses">
-      <Total total={total} className="expenses__total" />
+      <Total
+        day={total.day}
+        week={total.week}
+        month={total.month}
+        className="expenses__total"
+      />
       <TransactionFilter className="expenses__filter" />
       <TransactionSection
-        transactionHistory={transactionHistory}
+        transactionsHistory={transactionsHistory}
         className="expenses__transactions"
       />
       <AddTransaction className="expenses__add" />
@@ -28,13 +31,13 @@ const Expenses: FC = () => {
 };
 
 interface TotalProps
-  extends Pick<TransactionsInfo, "total">,
+  extends TotalValues,
     DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {}
 
-const Total: FC<TotalProps> = ({
-  total: { day, week, month },
-  className,
-}: TotalProps) => {
+const Total: FC<TotalProps> = (
+  { day, week, month },
+  { className }: TotalProps
+) => {
   return (
     <section className={"total " + className}>
       <h2 className="total__header">Total</h2>

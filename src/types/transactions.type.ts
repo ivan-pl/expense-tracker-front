@@ -28,11 +28,13 @@ export interface DayTransactions {
   transactionList: Transaction[];
 }
 
+export type TransactionsHistory = DayTransactions[];
+
 export interface TransactionsInfo {
   total: {
     day: string;
     week: string;
     month: string;
   };
-  transactionHistory: DayTransactions[];
+  transactionsHistory: TransactionsHistory;
 }

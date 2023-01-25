@@ -5,14 +5,14 @@ import { TransactionsInfo } from "../../types/transactions.type";
 import DayTransactionList from "../DayTransactionList/DayTransactionList";
 
 interface Props
-  extends Pick<TransactionsInfo, "transactionHistory">,
+  extends Pick<TransactionsInfo, "transactionsHistory">,
     DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {}
 
 const TransactionSection: FC<Props> = ({
-  transactionHistory,
+  transactionsHistory,
   className,
 }: Props) => {
-  const dayTransactionList = transactionHistory.map((dayTransaction) => (
+  const dayTransactionList = transactionsHistory.map((dayTransaction) => (
     <DayTransactionList
       dayTransactionList={dayTransaction}
       key={dayTransaction.date}
