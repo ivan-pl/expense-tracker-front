@@ -11,7 +11,7 @@ const DayTransactionList: FC<Props> = (props: Props) => {
   const date = props.dayTransactionList.date;
   const transactions = props.dayTransactionList.transactionList.map(
     (transaction) => (
-      <Transaction key={transaction.id.toString()} transaction={transaction} />
+      <Transaction key={transaction.id} transaction={transaction} />
     )
   );
   return (

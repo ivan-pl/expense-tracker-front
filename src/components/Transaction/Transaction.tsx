@@ -12,7 +12,7 @@ const Transaction: FC<Props> = (props: Props) => {
       <div className="tag">{props.transaction.tag}</div>
       <div className="pay-method">{props.transaction.payMethod}</div>
       <div className="comment">{props.transaction.comment}</div>
-      <div className="amount">{props.transaction.amount}</div>
+      <div className="amount">{props.transaction.amount + " RUB"}</div>
     </div>
   );
 };

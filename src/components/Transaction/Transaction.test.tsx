@@ -19,7 +19,7 @@ describe("Transaction", () => {
     render(<Transaction transaction={transaction as TransactionType} />);
 
     for (const value of Object.values(transaction)) {
-      expect(screen.getByText(value)).toBeInTheDocument();
+      expect(screen.getByText(new RegExp(value))).toBeInTheDocument();
     }
   });
 });

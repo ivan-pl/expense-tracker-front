@@ -30,9 +30,9 @@ export interface DayTransactions {
 
 export interface TransactionsInfo {
   total: {
-    day: number;
-    week: number;
-    month: number;
+    day: string;
+    week: string;
+    month: string;
   };
   transactionHistory: DayTransactions[];
 }

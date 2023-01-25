@@ -1,6 +1,8 @@
 import React from "react";
 import { screen, render } from "@testing-library/react";
+import { Provider } from "react-redux";
 
+import store from "../../store";
 import TransactionSection from "./TransactionSection";
 import loadMockedTransactionSection from "../../utils/loadMockedTransactions";
 import { DayTransactions } from "../../types/transactions.type";
@@ -37,11 +39,15 @@ function valueCount(dayTransactions: DayTransactions[]): {
 
 describe("TransactionSection", () => {
   it("renders section with data", () => {
-    render(<TransactionSection transactionHistory={transactionHistory} />);
+    render(
+      <Provider store={store}>
+        <TransactionSection transactionHistory={transactionHistory} />
+      </Provider>
+    );
 
     const valueCounter = valueCount(transactionHistory);
     for (const [value, count] of Object.entries(valueCounter)) {
-      expect(screen.getAllByText(value).length).toBe(count);
+      expect(screen.getAllByText(new RegExp(value)).length).toBe(count);
     }
   });
 });

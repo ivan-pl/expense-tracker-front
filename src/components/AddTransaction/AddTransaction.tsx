@@ -5,9 +5,11 @@ import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import InputGroup from "react-bootstrap/InputGroup";
-import formatDate from "../../utils/formatDate";
-import { PayMethod, Tag } from "../../types/transactions.type";
 
+import formatDate from "../../utils/formatDate";
+import { PayMethod, Tag, Transaction } from "../../types/transactions.type";
+import { useAppDispatch } from "../../app/hooks";
+import { add } from "../../store/transactionsSlice";
 import "./AddTransaction.scss";
 
 interface Props {
@@ -15,6 +17,8 @@ interface Props {
 }
 
 const AddTransaction: FC<Props> = ({ className = "" }: Props) => {
+  const dispatch = useAppDispatch();
+
   const [open, setOpen] = useState(false);
   const [date, setDate] = useState(formatDate(new Date()));
   const [tag, setTag] = useState(Tag.Food);
@@ -27,13 +31,20 @@ const AddTransaction: FC<Props> = ({ className = "" }: Props) => {
     setDate(formatDate(new Date()));
     setTag(Tag.Food);
     setPayMethod(PayMethod.Cash);
-    setComment(comment);
+    setComment("");
     setAmount("");
   };
 
   const showModal = () => setOpen(true);
 
   const handleAdd = () => {
+    const transaction: Omit<Transaction, "id"> = {
+      amount,
+      tag,
+      comment,
+      payMethod,
+    };
+    dispatch(add({ date, transaction: { ...transaction, id: "123" } }));
     resetState();
   };
 

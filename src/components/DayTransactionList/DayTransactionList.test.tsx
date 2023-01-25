@@ -1,7 +1,9 @@
 import React from "react";
 import { screen, render } from "@testing-library/react";
-import { Tag, PayMethod } from "../../types/transactions.type";
+import { Provider } from "react-redux";
 
+import store from "../../store";
+import { Tag, PayMethod } from "../../types/transactions.type";
 import DayTransactionList from "./DayTransactionList";
 
 const DAY_TRANSACTION_LIST = {
@@ -26,7 +28,11 @@ const DAY_TRANSACTION_LIST = {
 
 describe("DayTransactionList", () => {
   it("renders transaction list", () => {
-    render(<DayTransactionList dayTransactionList={DAY_TRANSACTION_LIST} />);
+    render(
+      <Provider store={store}>
+        <DayTransactionList dayTransactionList={DAY_TRANSACTION_LIST} />
+      </Provider>
+    );
 
     expect(
       screen.getByText(new Date(DAY_TRANSACTION_LIST.date).toDateString())
@@ -38,7 +44,7 @@ describe("DayTransactionList", () => {
           continue;
         }
 
-        expect(screen.getByText(value)).toBeInTheDocument();
+        expect(screen.getByText(new RegExp(value))).toBeInTheDocument();
       }
     }
   });
