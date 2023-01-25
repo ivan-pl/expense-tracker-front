@@ -5,6 +5,7 @@ import {
   Transaction,
   TransactionsHistory,
 } from "../../../types/transactions.type";
+import formatDate from "../../../utils/formatDate";
 
 export interface Total {
   day: string;
@@ -25,7 +26,7 @@ export default function countTotal(
     return total;
   }
 
-  const curDate = transactionsHistory[0].date;
+  const curDate = formatDate(new Date());
   for (const { date, transactionList } of transactionsHistory) {
     const diffInDays = differenceInDays(new Date(curDate), new Date(date));
 

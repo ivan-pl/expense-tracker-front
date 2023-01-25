@@ -5,6 +5,9 @@ import {
 } from "../../../types/transactions.type";
 import countTotal, { Total } from "./countTotal";
 
+const CURRENT_DATE = "2022-12-24";
+jest.useFakeTimers().setSystemTime(new Date(CURRENT_DATE));
+
 describe("countTotal()", () => {
   it("returns {day: 100.00, week: 200.00, month: 300.00", () => {
     const transactionsHistory: TransactionsHistory = [
