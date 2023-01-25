@@ -4,12 +4,19 @@ import TransactionSection from "../../components/TransactionSection/TransactionS
 import AddTransaction from "../../components/AddTransaction/AddTransaction";
 import TransactionFilter from "../../components/TransactionFilter/TransactionFilter";
 import { useAppSelector } from "../../app/hooks";
-import { selectTransactionsHistory } from "../../store/transactionsSelectors";
+import {
+  selectTransactionsHistory,
+  selectFilterExpenses,
+} from "../../store/transactionsSelectors";
 import countTotal, { Total as TotalValues } from "./utils/countTotal";
+import filterTransactionsHistory from "../../utils/filterTransactions";
 import "./Expenses.scss";
 
 const Expenses: FC = () => {
-  const transactionsHistory = useAppSelector(selectTransactionsHistory);
+  let transactionsHistory = useAppSelector(selectTransactionsHistory);
+  const filter = useAppSelector(selectFilterExpenses);
+  transactionsHistory = filterTransactionsHistory(transactionsHistory, filter);
+
   const total = countTotal(transactionsHistory);
 
   return (

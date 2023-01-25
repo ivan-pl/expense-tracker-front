@@ -20,7 +20,9 @@ const TransactionSection: FC<Props> = ({
   ));
   return (
     <section className={"main-section " + className}>
-      <section className="transaction-section">{dayTransactionList}</section>
+      <section className="transaction-section">
+        {dayTransactionList.length ? dayTransactionList : "No data"}
+      </section>
     </section>
   );
 };

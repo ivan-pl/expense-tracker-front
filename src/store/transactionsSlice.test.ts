@@ -2,6 +2,7 @@ import { PayMethod, Tag, Transaction } from "../types/transactions.type";
 import formatDate from "../utils/formatDate";
 import loadMockedTransactionsHistory from "../utils/loadMockedTransactions";
 import transactionsReducer, {
+  initialState,
   TransactionsState,
   setNewTransactions,
   add,
@@ -12,11 +13,6 @@ const CURRENT_DATE = formatDate(new Date());
 const mockedTransactionsHistory = loadMockedTransactionsHistory();
 
 describe("transactions reducer", () => {
-  const initialState: TransactionsState = {
-    transactionsHistory: [],
-    filter: { dateFrom: "", dateTo: CURRENT_DATE, pattern: "" },
-  };
-
   it("should handle initial state", () => {
     expect(transactionsReducer(undefined, { type: "unknown" })).toEqual(
       initialState
@@ -30,7 +26,7 @@ describe("transactions reducer", () => {
         setNewTransactions(mockedTransactionsHistory)
       )
     ).toEqual({
-      filter: { dateFrom: "", dateTo: CURRENT_DATE, pattern: "" },
+      ...initialState,
       transactionsHistory: mockedTransactionsHistory,
     });
   });
@@ -50,7 +46,7 @@ describe("transactions reducer", () => {
       add({ transaction, date: formatDate(new Date(CURRENT_DATE)) })
     );
     expect(actualState).toEqual({
-      filter: { dateFrom: "", dateTo: CURRENT_DATE, pattern: "" },
+      ...initialState,
       transactionsHistory: [
         { date: CURRENT_DATE, transactionList: [transaction] },
       ],
@@ -61,7 +57,7 @@ describe("transactions reducer", () => {
       add({ transaction, date: formatDate(new Date(CURRENT_DATE)) })
     );
     expect(actualState).toEqual({
-      filter: { dateFrom: "", dateTo: CURRENT_DATE, pattern: "" },
+      ...initialState,
       transactionsHistory: [
         { date: CURRENT_DATE, transactionList: [transaction, transaction] },
       ],

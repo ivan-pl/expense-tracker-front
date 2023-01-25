@@ -7,18 +7,32 @@ import formatDate from "../utils/formatDate";
 export interface TransactionsState {
   transactionsHistory: DayTransactions[];
   filter: {
-    pattern: string;
-    dateFrom: string;
-    dateTo: string;
+    expensesPage: {
+      pattern: string;
+      dateFrom: string;
+      dateTo: string;
+    };
+
+    analyticsPage: {
+      dateFrom: string;
+      dateTo: string;
+    };
   };
 }
 
-const initialState: TransactionsState = {
+export const initialState: TransactionsState = {
   transactionsHistory: [],
   filter: {
-    pattern: "",
-    dateFrom: "",
-    dateTo: formatDate(new Date()),
+    expensesPage: {
+      pattern: "",
+      dateFrom: "",
+      dateTo: formatDate(new Date()),
+    },
+
+    analyticsPage: {
+      dateFrom: "",
+      dateTo: formatDate(new Date()),
+    },
   },
 };
 
@@ -49,9 +63,17 @@ export const transactionsSlice = createSlice({
 
       addTransactionToHistory(state.transactionsHistory, date, transaction);
     },
+
+    filterExpenses: (
+      { filter },
+      { payload }: PayloadAction<TransactionsState["filter"]["expensesPage"]>
+    ) => {
+      filter.expensesPage = payload;
+    },
   },
 });
 
 export default transactionsSlice.reducer;
 
-export const { setNewTransactions, add } = transactionsSlice.actions;
+export const { setNewTransactions, add, filterExpenses } =
+  transactionsSlice.actions;

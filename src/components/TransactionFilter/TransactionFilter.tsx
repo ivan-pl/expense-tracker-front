@@ -3,15 +3,40 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 
-import formatDate from "../../utils/formatDate";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { filterExpenses } from "../../store/transactionsSlice";
 import "./TransactionFilter.scss";
 
 type Props = DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
 
 const TransactionFilter: FC<Props> = ({ className }) => {
-  const [dateFrom, setDateFrom] = useState("");
-  const [dateTo, setDateTo] = useState(formatDate(new Date()));
-  const [pattern, setPattern] = useState("");
+  const dispatch = useAppDispatch();
+
+  const filterState = useAppSelector(
+    (state) => state.transactions.filter.expensesPage
+  );
+
+  const [dateFrom, setDateFrom] = useState(filterState.dateFrom);
+  const [dateTo, setDateTo] = useState(filterState.dateTo);
+  const [pattern, setPattern] = useState(filterState.pattern);
+
+  const handlePattern = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newPattern = e.target.value;
+    dispatch(filterExpenses({ pattern: newPattern, dateFrom, dateTo }));
+    setPattern(newPattern);
+  };
+
+  const handleDateFrom = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newDateFrom = e.target.value;
+    dispatch(filterExpenses({ pattern, dateFrom: newDateFrom, dateTo }));
+    setDateFrom(newDateFrom);
+  };
+
+  const handleDateTo = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newDateTo = e.target.value;
+    dispatch(filterExpenses({ pattern, dateFrom, dateTo: newDateTo }));
+    setDateTo(newDateTo);
+  };
 
   return (
     <Row className={"my-3 mb-md-0 " + className}>
@@ -21,7 +46,7 @@ const TransactionFilter: FC<Props> = ({ className }) => {
           type="text"
           placeholder="Search by Tag, amount, comment"
           value={pattern}
-          onChange={(e) => setPattern(e.target.value)}
+          onChange={handlePattern}
         />
         <label htmlFor="filterPattern">Search by Tag, amount, comment</label>
       </Form.Floating>
@@ -32,7 +57,7 @@ const TransactionFilter: FC<Props> = ({ className }) => {
           type="date"
           placeholder="Date from"
           value={dateFrom}
-          onChange={(e) => setDateFrom(e.target.value)}
+          onChange={handleDateFrom}
         />
         <label htmlFor="filterDateFrom">Date from</label>
       </Form.Floating>
@@ -44,7 +69,7 @@ const TransactionFilter: FC<Props> = ({ className }) => {
           type="date"
           placeholder="Date to"
           value={dateTo}
-          onChange={(e) => setDateTo(e.target.value)}
+          onChange={handleDateTo}
         />
         <label htmlFor="filterDateTo">Date to</label>
       </Form.Floating>

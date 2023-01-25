@@ -1,10 +1,9 @@
 import { DayTransactions, PayMethod, Tag } from "../types/transactions.type";
-import formatDate from "./formatDate";
 
 function loadMockedTransactionsHistory(): DayTransactions[] {
   return [
     {
-      date: formatDate(new Date(2022, 11, 7)),
+      date: "2022-12-07",
       transactionList: [
         {
           id: "1",
@@ -38,7 +37,7 @@ function loadMockedTransactionsHistory(): DayTransactions[] {
     },
 
     {
-      date: formatDate(new Date(2022, 11, 5)),
+      date: "2022-12-05",
       transactionList: [
         {
           id: "6",
@@ -58,7 +57,7 @@ function loadMockedTransactionsHistory(): DayTransactions[] {
     },
 
     {
-      date: formatDate(new Date(2022, 11, 3)),
+      date: "2022-12-03",
       transactionList: [
         {
           id: "8",
@@ -106,7 +105,7 @@ function loadMockedTransactionsHistory(): DayTransactions[] {
     },
 
     {
-      date: formatDate(new Date(2022, 10, 1)),
+      date: "2022-11-01",
       transactionList: [
         {
           id: "14",
@@ -154,7 +153,7 @@ function loadMockedTransactionsHistory(): DayTransactions[] {
     },
 
     {
-      date: formatDate(new Date(2022, 9, 15)),
+      date: "2022-10-15",
       transactionList: [
         {
           id: "20",
@@ -202,7 +201,7 @@ function loadMockedTransactionsHistory(): DayTransactions[] {
     },
 
     {
-      date: formatDate(new Date(2022, 8, 13)),
+      date: "2022-09-13",
       transactionList: [
         {
           id: "26",
@@ -250,7 +249,7 @@ function loadMockedTransactionsHistory(): DayTransactions[] {
     },
 
     {
-      date: formatDate(new Date(2022, 8, 5)),
+      date: "2022-09-05",
       transactionList: [
         {
           id: "32",
