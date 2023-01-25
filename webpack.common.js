@@ -1,6 +1,5 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
+const FaviconsWebpackPlugin = require("favicons-webpack-plugin");
 const path = require("path");
 
 module.exports = {
@@ -8,7 +7,7 @@ module.exports = {
     app: path.join(__dirname, "src", "index.tsx"),
   },
   output: {
-    filename: "[name].js",
+    filename: "[name].[contenthash].js",
     path: path.resolve(__dirname, "dist"),
     clean: true,
     environment: {
@@ -16,7 +15,7 @@ module.exports = {
     },
   },
   resolve: {
-    extensions: [".tsx", ".ts", ".js"],
+    extensions: [".tsx", ".jsx", ".ts", ".js"],
   },
   module: {
     rules: [
@@ -25,43 +24,30 @@ module.exports = {
         exclude: /node_modules/,
         use: {
           loader: "babel-loader",
-          options: {
-            presets: [
-              "@babel/preset-env",
-              "@babel/preset-typescript",
-              "@babel/preset-react",
-            ],
-          },
         },
       },
       {
-        test: /\.css$/i,
-        use: [MiniCssExtractPlugin.loader, "css-loader"],
-      },
-      {
-        test: /\.s[ac]ss$/i,
-        use: [MiniCssExtractPlugin.loader, "css-loader", "sass-loader"],
-      },
-      {
-        test: /\.html$/i,
-        loader: "html-loader",
-      },
-      {
-        test: /\.jpg|svg/,
+        test: /\.jpg|svg|png/,
         type: "asset/resource",
         generator: {
-          filename: "images/[hash][ext]",
+          filename: "assets/images/[name].[hash][ext]",
         },
       },
+      {
+        test: /fonts.*\.+(woff|woff2|eot|ttf|otf|svg)$/i,
+        type: "asset/resource",
+        generator: { filename: "assets/fonts/[name][ext]" },
+      },
     ],
-  },
-  optimization: {
-    minimizer: [`...`, new CssMinimizerPlugin()],
   },
   plugins: [
     new HtmlWebpackPlugin({
       template: "./src/index.html",
     }),
-    new MiniCssExtractPlugin(),
+    new FaviconsWebpackPlugin({
+      logo: "./src/assets/images/favicon.png",
+      cache: true,
+      prefix: "assets/images/",
+    }),
   ],
 };

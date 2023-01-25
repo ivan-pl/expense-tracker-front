@@ -1,0 +1,59 @@
+.total {
+  display: none;
+}
+
+.expenses {
+  padding-bottom: 100px;
+
+  &__add {
+    position: fixed;
+    bottom: 125px;
+    right: 50px;
+  }
+}
+
+@include for-desktop-up {
+  .expenses {
+    display: grid;
+    grid-template:
+      "filter ." min-content
+      "transactions total" min-content
+      "transactions add-button" min-content
+      "transactions ." 1fr
+      / auto auto;
+    gap: 24px;
+
+    &__total {
+      grid-area: total;
+    }
+
+    &__transactions {
+      grid-area: transactions;
+    }
+
+    &__add {
+      grid-area: add-button;
+      position: static;
+    }
+
+    &__filter {
+      grid-area: filter;
+    }
+  }
+
+  .total {
+    display: block;
+    width: 250px;
+  }
+
+  .total-wrap {
+    display: flex;
+    flex-flow: column nowrap;
+
+    .row {
+      display: flex;
+      flex-flow: row nowrap;
+      justify-content: space-between;
+    }
+  }
+}

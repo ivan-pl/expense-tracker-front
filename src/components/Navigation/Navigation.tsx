@@ -1,0 +1,25 @@
+import React, { FC } from "react";
+import { Link } from "react-router-dom";
+
+import "./Navigation.scss";
+
+const Navigation: FC = () => {
+  return (
+    <nav className="nav" data-testid="nav">
+      <Link className="link link-expenses" to={"/expenses"}>
+        <span className="link-text">Expenses</span>
+      </Link>
+      <Link className="link link-analytics" to={"/analytics"}>
+        <span className="link-text">Analytics</span>
+      </Link>
+      <Link className="link link-about" to={"/about"}>
+        <span className="link-text">About</span>
+      </Link>
+      <Link className="link link-logout" to={"/auth"}>
+        <span className="link-text">Sign out</span>
+      </Link>
+    </nav>
+  );
+};
+
+export default Navigation;

@@ -1,0 +1,43 @@
+.layout {
+  display: grid;
+  grid-template:
+    "main" 1fr
+    "nav" auto
+    / auto;
+  min-height: 100vh;
+  min-width: 360px;
+  margin: 0 auto;
+  background-color: white;
+
+  nav {
+    grid-area: nav;
+  }
+
+  main {
+    grid: main;
+    padding: 0 16px;
+  }
+
+  footer {
+    display: none;
+    grid-area: footer;
+    font-size: 12px;
+  }
+}
+
+@include for-desktop-up {
+  .layout {
+    grid-template:
+      "nav" auto
+      "main" 1fr
+      "footer" auto
+      / auto;
+
+    .footer {
+      display: block;
+      text-align: center;
+      border-top: 1px solid black;
+      padding: 16px;
+    }
+  }
+}
