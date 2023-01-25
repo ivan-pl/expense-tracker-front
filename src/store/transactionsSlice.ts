@@ -70,10 +70,17 @@ export const transactionsSlice = createSlice({
     ) => {
       filter.expensesPage = payload;
     },
+
+    filterAnalytics: (
+      { filter },
+      { payload }: PayloadAction<TransactionsState["filter"]["analyticsPage"]>
+    ) => {
+      filter.analyticsPage = payload;
+    },
   },
 });
 
 export default transactionsSlice.reducer;
 
-export const { setNewTransactions, add, filterExpenses } =
+export const { setNewTransactions, add, filterExpenses, filterAnalytics } =
   transactionsSlice.actions;

@@ -1,10 +1,13 @@
 import React, { FC } from "react";
+import Container from "react-bootstrap/Container";
+
+import { AnalyticsFilter } from "../../components/Filter";
 
 const Analytics: FC = () => {
   return (
-    <div>
-      <p>Analytics page</p>
-    </div>
+    <Container>
+      <AnalyticsFilter />
+    </Container>
   );
 };
 

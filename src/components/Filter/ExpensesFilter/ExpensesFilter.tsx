@@ -3,13 +3,12 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { filterExpenses } from "../../store/transactionsSlice";
-import "./TransactionFilter.scss";
+import { useAppDispatch, useAppSelector } from "../../../app/hooks";
+import { filterExpenses } from "../../../store/transactionsSlice";
 
 type Props = DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
 
-const TransactionFilter: FC<Props> = ({ className }) => {
+const ExpensesFilter: FC<Props> = ({ className }) => {
   const dispatch = useAppDispatch();
 
   const filterState = useAppSelector(
@@ -77,4 +76,4 @@ const TransactionFilter: FC<Props> = ({ className }) => {
   );
 };
 
-export default TransactionFilter;
+export default ExpensesFilter;

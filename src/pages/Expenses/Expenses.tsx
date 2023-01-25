@@ -2,7 +2,7 @@ import React, { FC, DetailedHTMLProps, HTMLAttributes } from "react";
 
 import TransactionSection from "../../components/TransactionSection/TransactionSection";
 import AddTransaction from "../../components/AddTransaction/AddTransaction";
-import TransactionFilter from "../../components/TransactionFilter/TransactionFilter";
+import { ExpensesFilter } from "../../components/Filter";
 import { useAppSelector } from "../../app/hooks";
 import {
   selectTransactionsHistory,
@@ -27,7 +27,7 @@ const Expenses: FC = () => {
         month={total.month}
         className="expenses__total"
       />
-      <TransactionFilter className="expenses__filter" />
+      <ExpensesFilter className="expenses__filter" />
       <TransactionSection
         transactionsHistory={transactionsHistory}
         className="expenses__transactions"
@@ -41,10 +41,7 @@ interface TotalProps
   extends TotalValues,
     DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {}
 
-const Total: FC<TotalProps> = (
-  { day, week, month },
-  { className }: TotalProps
-) => {
+const Total: FC<TotalProps> = ({ day, week, month, className }) => {
   return (
     <section className={"total " + className}>
       <h2 className="total__header">Total</h2>
