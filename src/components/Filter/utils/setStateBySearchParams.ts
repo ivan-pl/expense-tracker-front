@@ -1,16 +1,15 @@
-import {
-  ActionCreatorWithNonInferrablePayload,
-  ActionCreatorWithPayload,
-} from "@reduxjs/toolkit";
+import { ActionCreatorWithPayload } from "@reduxjs/toolkit";
 import { AppDispatch } from "../../../store/store";
 
+type Params = "dateFrom" | "dateTo" | "pattern";
+
 export default function setStateBySearchParams<
-  T extends ActionCreatorWithPayload<any, any>
+  T extends ActionCreatorWithPayload<{ [P in Params]?: string }>
 >(
   dispatch: AppDispatch,
   actionCreator: T,
   searchParams: URLSearchParams,
-  parseParams: string[]
+  parseParams: Params[]
 ): void {
   const payload: { [P: string]: string } = {};
   for (const param of parseParams) {

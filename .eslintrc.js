@@ -30,6 +30,7 @@ module.exports = {
     "react/react-in-jsx-scope": "off",
     "import/no-unresolved": "off", // https://github.com/typescript-eslint/typescript-eslint/issues/1624
     "import/extensions": "off",
+    "@typescript-eslint/no-non-null-assertion": "off",
   },
   overrides: [
     {

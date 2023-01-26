@@ -1,5 +1,4 @@
 import loadTransactionsHistory from "./loadTransactionsHistory";
-import { STORAGE_PREFIX } from "./variables";
 import {
   DayTransactions,
   Tag,
