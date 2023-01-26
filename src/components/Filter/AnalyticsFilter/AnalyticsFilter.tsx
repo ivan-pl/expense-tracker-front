@@ -1,34 +1,57 @@
-import React, { FC, DetailedHTMLProps, HTMLAttributes, useState } from "react";
+import React, {
+  FC,
+  DetailedHTMLProps,
+  HTMLAttributes,
+  useState,
+  useEffect,
+} from "react";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
+import { useSearchParams } from "react-router-dom";
 
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import { filterAnalytics } from "../../../store/transactionsSlice";
+import setStateBySearchParams from "../utils/setStateBySearchParams";
 
 type Props = DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
 
 const AnalyticsFilter: FC<Props> = ({ className }) => {
   const dispatch = useAppDispatch();
 
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const filterState = useAppSelector(
     (state) => state.transactions.filter.analyticsPage
   );
 
-  const [dateFrom, setDateFrom] = useState(filterState.dateFrom);
-  const [dateTo, setDateTo] = useState(filterState.dateTo);
+  const [dateFrom, setDateFrom] = useState(
+    searchParams.get("dateFrom") || filterState.dateFrom
+  );
+  const [dateTo, setDateTo] = useState(
+    searchParams.get("dateTo") || filterState.dateTo
+  );
 
   const handleDateFrom = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newDateFrom = e.target.value;
-    dispatch(filterAnalytics({ dateFrom: newDateFrom, dateTo }));
+    dispatch(filterAnalytics({ dateFrom: newDateFrom }));
     setDateFrom(newDateFrom);
+    setSearchParams({ dateFrom: newDateFrom, dateTo });
   };
 
   const handleDateTo = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newDateTo = e.target.value;
-    dispatch(filterAnalytics({ dateFrom, dateTo: newDateTo }));
+    dispatch(filterAnalytics({ dateTo: newDateTo }));
     setDateTo(newDateTo);
+    setSearchParams({ dateFrom, dateTo: newDateTo });
   };
+
+  useEffect(() => {
+    setStateBySearchParams(dispatch, filterAnalytics, searchParams, [
+      "dateFrom",
+      "dateTo",
+    ]);
+  }, []);
 
   return (
     <Row className={"my-3 mb-md-0 " + className}>

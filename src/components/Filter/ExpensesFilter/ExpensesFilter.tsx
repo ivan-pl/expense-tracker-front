@@ -1,41 +1,68 @@
-import React, { FC, DetailedHTMLProps, HTMLAttributes, useState } from "react";
+import React, {
+  FC,
+  DetailedHTMLProps,
+  HTMLAttributes,
+  useState,
+  useEffect,
+} from "react";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
+import { useSearchParams } from "react-router-dom";
 
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import { filterExpenses } from "../../../store/transactionsSlice";
+import setStateBySearchParams from "../utils/setStateBySearchParams";
 
 type Props = DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
 
 const ExpensesFilter: FC<Props> = ({ className }) => {
   const dispatch = useAppDispatch();
 
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const filterState = useAppSelector(
     (state) => state.transactions.filter.expensesPage
   );
 
-  const [dateFrom, setDateFrom] = useState(filterState.dateFrom);
-  const [dateTo, setDateTo] = useState(filterState.dateTo);
-  const [pattern, setPattern] = useState(filterState.pattern);
+  const [dateFrom, setDateFrom] = useState(
+    searchParams.get("dateFrom") || filterState.dateFrom
+  );
+  const [dateTo, setDateTo] = useState(
+    searchParams.get("dateTo") || filterState.dateTo
+  );
+  const [pattern, setPattern] = useState(
+    searchParams.get("pattern") || filterState.pattern
+  );
 
   const handlePattern = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newPattern = e.target.value;
-    dispatch(filterExpenses({ pattern: newPattern, dateFrom, dateTo }));
+    dispatch(filterExpenses({ pattern: newPattern }));
     setPattern(newPattern);
+    setSearchParams({ dateFrom, dateTo, pattern: newPattern });
   };
 
   const handleDateFrom = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newDateFrom = e.target.value;
-    dispatch(filterExpenses({ pattern, dateFrom: newDateFrom, dateTo }));
+    dispatch(filterExpenses({ dateFrom: newDateFrom }));
     setDateFrom(newDateFrom);
+    setSearchParams({ dateFrom: newDateFrom, dateTo, pattern });
   };
 
   const handleDateTo = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newDateTo = e.target.value;
-    dispatch(filterExpenses({ pattern, dateFrom, dateTo: newDateTo }));
+    dispatch(filterExpenses({ dateTo: newDateTo }));
     setDateTo(newDateTo);
+    setSearchParams({ dateFrom, dateTo: newDateTo, pattern });
   };
+
+  useEffect(() => {
+    setStateBySearchParams(dispatch, filterExpenses, searchParams, [
+      "dateFrom",
+      "dateTo",
+      "pattern",
+    ]);
+  }, []);
 
   return (
     <Row className={"my-3 mb-md-0 " + className}>

@@ -66,16 +66,20 @@ export const transactionsSlice = createSlice({
 
     filterExpenses: (
       { filter },
-      { payload }: PayloadAction<TransactionsState["filter"]["expensesPage"]>
+      {
+        payload,
+      }: PayloadAction<Partial<TransactionsState["filter"]["expensesPage"]>>
     ) => {
-      filter.expensesPage = payload;
+      filter.expensesPage = { ...filter.expensesPage, ...payload };
     },
 
     filterAnalytics: (
       { filter },
-      { payload }: PayloadAction<TransactionsState["filter"]["analyticsPage"]>
+      {
+        payload,
+      }: PayloadAction<Partial<TransactionsState["filter"]["analyticsPage"]>>
     ) => {
-      filter.analyticsPage = payload;
+      filter.analyticsPage = { ...filter.analyticsPage, ...payload };
     },
   },
 });
