@@ -6,7 +6,7 @@ import {
 export interface Filter {
   dateFrom: string;
   dateTo: string;
-  pattern: string;
+  pattern?: string;
 }
 
 export default function filterTransactionsHistory(

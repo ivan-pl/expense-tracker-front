@@ -18,12 +18,13 @@ export default function prepareData(
   const amountCounter: { [P: string]: number } = {};
   for (const { transactionList } of transactionsHistory) {
     for (const transaction of transactionList) {
-      if (transaction[byField] in amountCounter) {
-        amountCounter[byField] = currency(amountCounter[byField]).add(
+      const fieldValue = transaction[byField];
+      if (fieldValue in amountCounter) {
+        amountCounter[fieldValue] = currency(amountCounter[fieldValue]).add(
           transaction.amount
         ).value;
       } else {
-        amountCounter[byField] = currency(transaction[byField]).value;
+        amountCounter[fieldValue] = currency(transaction.amount).value;
       }
     }
   }
