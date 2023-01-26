@@ -9,8 +9,8 @@ import "./Layout.scss";
 
 const Layout: FC = () => {
   const dispatch = useAppDispatch();
-  const mockedTransactionsInfo = loadMockedTransactionSection();
-  dispatch(setNewTransactions(mockedTransactionsInfo));
+  // const mockedTransactionsInfo = loadMockedTransactionSection();
+  // dispatch(setNewTransactions(mockedTransactionsInfo));
 
   return (
     <div className="layout">

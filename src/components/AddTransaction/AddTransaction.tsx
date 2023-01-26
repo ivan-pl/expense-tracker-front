@@ -9,7 +9,7 @@ import InputGroup from "react-bootstrap/InputGroup";
 import formatDate from "../../utils/formatDate";
 import { PayMethod, Tag, Transaction } from "../../types/transactions.type";
 import { useAppDispatch } from "../../app/hooks";
-import { add } from "../../store/transactionsSlice";
+import { addToStorageAndStore } from "../../store/transactionsSlice";
 import "./AddTransaction.scss";
 
 interface Props {
@@ -44,7 +44,10 @@ const AddTransaction: FC<Props> = ({ className = "" }: Props) => {
       comment,
       payMethod,
     };
-    dispatch(add({ date, transaction: { ...transaction, id: "123" } }));
+    dispatch(
+      addToStorageAndStore({ date, transaction: { ...transaction, id: "123" } })
+    );
+
     resetState();
   };
 

@@ -3,6 +3,10 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Transaction, DayTransactions } from "../types/transactions.type";
 import addTransactionToHistory from "./utils/addTransactionToHistory";
 import formatDate from "../utils/formatDate";
+import { AppThunk } from "./store";
+import addDayTransactionsToStorage from "../storageController/addDayTransactions";
+import { selectTransactionsHistory } from "./transactionsSelectors";
+import loadTransactionsHistory from "../storageController/loadTransactionsHistory";
 
 export interface TransactionsState {
   transactionsHistory: DayTransactions[];
@@ -21,7 +25,7 @@ export interface TransactionsState {
 }
 
 export const initialState: TransactionsState = {
-  transactionsHistory: [],
+  transactionsHistory: loadTransactionsHistory(),
   filter: {
     expensesPage: {
       pattern: "",
@@ -84,7 +88,22 @@ export const transactionsSlice = createSlice({
   },
 });
 
-export default transactionsSlice.reducer;
+export const addToStorageAndStore =
+  ({
+    transaction,
+    date,
+  }: {
+    transaction: Transaction;
+    date: string;
+  }): AppThunk =>
+  (dispatch, getState) => {
+    dispatch(add({ date, transaction }));
+    addDayTransactionsToStorage(
+      selectTransactionsHistory(getState()).find((_) => _.date === date)!
+    );
+  };
 
 export const { setNewTransactions, add, filterExpenses, filterAnalytics } =
   transactionsSlice.actions;
+
+export default transactionsSlice.reducer;
