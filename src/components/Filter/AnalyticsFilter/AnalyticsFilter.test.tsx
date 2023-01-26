@@ -5,12 +5,15 @@ import { render, screen } from "@testing-library/react";
 import store from "../../../store";
 import AnalyticsFilter from "./AnalyticsFilter";
 import formatDate from "../../../utils/formatDate";
+import { HashRouter } from "react-router-dom";
 
 describe("AnalyticsFilter", () => {
   it("renders filter", () => {
     render(
       <Provider store={store}>
-        <AnalyticsFilter />
+        <HashRouter>
+          <AnalyticsFilter />
+        </HashRouter>
       </Provider>
     );
     expect(screen.getByPlaceholderText("Date from")).toBeInTheDocument();

@@ -5,12 +5,15 @@ import { render, screen } from "@testing-library/react";
 import store from "../../../store";
 import ExpensesFilter from "./ExpensesFilter";
 import formatDate from "../../../utils/formatDate";
+import { HashRouter } from "react-router-dom";
 
 describe("ExpensesFilter", () => {
   it("renders filter", () => {
     render(
       <Provider store={store}>
-        <ExpensesFilter />
+        <HashRouter>
+          <ExpensesFilter />
+        </HashRouter>
       </Provider>
     );
     expect(screen.getByPlaceholderText(/search by /i)).toBeInTheDocument();
