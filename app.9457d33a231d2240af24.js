@@ -4669,7 +4669,7 @@ function getPathContributingMatches(matches) {
  */
 
 
-function dist_useNavigate() {
+function useNavigate() {
   !useInRouterContext() ?  false ? 0 : router_invariant(false) : void 0;
   let {
     basename,
@@ -5256,7 +5256,7 @@ function Navigate(_ref3) {
   !useInRouterContext() ?  false ? 0 : invariant(false) : void 0;
    false ? 0 : void 0;
   let dataRouterState = React.useContext(DataRouterStateContext);
-  let navigate = dist_useNavigate();
+  let navigate = useNavigate();
   React.useEffect(() => {
     // Avoid kicking off multiple navigations if we're in the middle of a
     // data-router navigation, since components get re-rendered when we enter
@@ -6176,7 +6176,7 @@ function useLinkClickHandler(to, _temp) {
     preventScrollReset,
     relative
   } = _temp === void 0 ? {} : _temp;
-  let navigate = dist_useNavigate();
+  let navigate = useNavigate();
   let location = dist_useLocation();
   let path = dist_useResolvedPath(to, {
     relative
@@ -6203,11 +6203,11 @@ function useLinkClickHandler(to, _temp) {
 
 function useSearchParams(defaultInit) {
    false ? 0 : void 0;
-  let defaultSearchParamsRef = React.useRef(createSearchParams(defaultInit));
-  let location = useLocation();
-  let searchParams = React.useMemo(() => getSearchParamsForLocation(location.search, defaultSearchParamsRef.current), [location.search]);
+  let defaultSearchParamsRef = react.useRef(createSearchParams(defaultInit));
+  let location = dist_useLocation();
+  let searchParams = react.useMemo(() => getSearchParamsForLocation(location.search, defaultSearchParamsRef.current), [location.search]);
   let navigate = useNavigate();
-  let setSearchParams = React.useCallback((nextInit, navigateOptions) => {
+  let setSearchParams = react.useCallback((nextInit, navigateOptions) => {
     const newSearchParams = createSearchParams(typeof nextInit === "function" ? nextInit(searchParams) : nextInit);
     navigate("?" + newSearchParams, navigateOptions);
   }, [navigate, searchParams]);
@@ -9979,12 +9979,44 @@ function addTransactionToHistory(transactionsHistory, date, transaction) {
 ;// CONCATENATED MODULE: ./src/utils/formatDate.ts
 const formatDate = date => date.toISOString().substring(0, 10);
 /* harmony default export */ const utils_formatDate = (formatDate);
+;// CONCATENATED MODULE: ./src/storageController/variables.ts
+const STORAGE_PREFIX = "TH_";
+;// CONCATENATED MODULE: ./src/storageController/addDayTransactions.ts
+
+async function addDayTransactions(dayTransactions) {
+  localStorage.setItem(STORAGE_PREFIX + dayTransactions.date, JSON.stringify(dayTransactions));
+}
+;// CONCATENATED MODULE: ./src/store/transactionsSelectors.tsx
+const selectTransactionsHistory = state => state.transactions.transactionsHistory;
+const selectFilterExpenses = state => state.transactions.filter.expensesPage;
+const selectFilterAnalytics = state => state.transactions.filter.analyticsPage;
+;// CONCATENATED MODULE: ./src/storageController/loadTransactionsHistory.ts
+
+function loadTransactionsHistory() {
+  const transactionsHistory = [];
+  for (const key of Object.keys(localStorage)) {
+    if (key.startsWith(STORAGE_PREFIX)) {
+      transactionsHistory.push(JSON.parse(localStorage.getItem(key)));
+    }
+  }
+  transactionsHistory.sort(({
+    date: date1
+  }, {
+    date: date2
+  }) => {
+    return Number(date1 < date2);
+  });
+  return transactionsHistory;
+}
 ;// CONCATENATED MODULE: ./src/store/transactionsSlice.ts
 
 
 
+
+
+
 const initialState = {
-  transactionsHistory: [],
+  transactionsHistory: loadTransactionsHistory(),
   filter: {
     expensesPage: {
       pattern: "",
@@ -10026,24 +10058,40 @@ const transactionsSlice = createSlice({
     }, {
       payload
     }) => {
-      filter.expensesPage = payload;
+      filter.expensesPage = {
+        ...filter.expensesPage,
+        ...payload
+      };
     },
     filterAnalytics: ({
       filter
     }, {
       payload
     }) => {
-      filter.analyticsPage = payload;
+      filter.analyticsPage = {
+        ...filter.analyticsPage,
+        ...payload
+      };
     }
   }
 });
-/* harmony default export */ const store_transactionsSlice = (transactionsSlice.reducer);
+const addToStorageAndStore = ({
+  transaction,
+  date
+}) => (dispatch, getState) => {
+  dispatch(add({
+    date,
+    transaction
+  }));
+  addDayTransactions(selectTransactionsHistory(getState()).find(_ => _.date === date));
+};
 const {
   setNewTransactions,
   add,
   filterExpenses,
   filterAnalytics
 } = transactionsSlice.actions;
+/* harmony default export */ const store_transactionsSlice = (transactionsSlice.reducer);
 ;// CONCATENATED MODULE: ./src/store/store.ts
 
 
@@ -10112,271 +10160,6 @@ const Navigation = () => {
   });
 };
 /* harmony default export */ const Navigation_Navigation = (Navigation);
-;// CONCATENATED MODULE: ./src/app/hooks.ts
-
-const useAppDispatch = useDispatch;
-const useAppSelector = useSelector;
-;// CONCATENATED MODULE: ./src/types/transactions.type.ts
-let PayMethod;
-(function (PayMethod) {
-  PayMethod["Debit"] = "Debit card";
-  PayMethod["Credit"] = "Credit card";
-  PayMethod["Cash"] = "Cash";
-})(PayMethod || (PayMethod = {}));
-let Tag;
-(function (Tag) {
-  Tag["Food"] = "Food";
-  Tag["Housing"] = "Housing";
-  Tag["Transportation"] = "Transportation";
-  Tag["Clothing"] = "Clothing";
-  Tag["Utilities"] = "Utilities";
-  Tag["Insurance"] = "Insurance";
-  Tag["MedicalAndHealthcare"] = "Medical & Healthcare";
-  Tag["Investing"] = "Investing";
-})(Tag || (Tag = {}));
-;// CONCATENATED MODULE: ./src/utils/loadMockedTransactions.ts
-
-function loadMockedTransactionsHistory() {
-  return [{
-    date: "2022-12-07",
-    transactionList: [{
-      id: "1",
-      tag: Tag.Food,
-      payMethod: PayMethod.Credit,
-      comment: "Some comment",
-      amount: "438"
-    }, {
-      id: "2",
-      tag: Tag.Housing,
-      payMethod: PayMethod.Debit,
-      comment: "Another comment",
-      amount: "6540"
-    }, {
-      id: "3",
-      tag: Tag.Food,
-      payMethod: PayMethod.Credit,
-      comment: "Some comment",
-      amount: "4328"
-    }, {
-      id: "4",
-      tag: Tag.Housing,
-      payMethod: PayMethod.Debit,
-      comment: "Another comment",
-      amount: "65410"
-    }]
-  }, {
-    date: "2022-12-05",
-    transactionList: [{
-      id: "6",
-      tag: Tag.Clothing,
-      payMethod: PayMethod.Credit,
-      comment: "Some comment",
-      amount: "865"
-    }, {
-      id: "7",
-      tag: Tag.Transportation,
-      payMethod: PayMethod.Debit,
-      comment: "Another comment",
-      amount: "4320"
-    }]
-  }, {
-    date: "2022-12-03",
-    transactionList: [{
-      id: "8",
-      tag: Tag.Clothing,
-      payMethod: PayMethod.Credit,
-      comment: "Some comment",
-      amount: "865"
-    }, {
-      id: "9",
-      tag: Tag.Transportation,
-      payMethod: PayMethod.Debit,
-      comment: "Another comment",
-      amount: "4320"
-    }, {
-      id: "10",
-      tag: Tag.Transportation,
-      payMethod: PayMethod.Debit,
-      comment: "Another comment",
-      amount: "4320"
-    }, {
-      id: "11",
-      tag: Tag.Clothing,
-      payMethod: PayMethod.Credit,
-      comment: "Some comment",
-      amount: "865"
-    }, {
-      id: "12",
-      tag: Tag.Transportation,
-      payMethod: PayMethod.Debit,
-      comment: "Another comment",
-      amount: "4320"
-    }, {
-      id: "13",
-      tag: Tag.Clothing,
-      payMethod: PayMethod.Credit,
-      comment: "Some comment",
-      amount: "865"
-    }]
-  }, {
-    date: "2022-11-01",
-    transactionList: [{
-      id: "14",
-      tag: Tag.Clothing,
-      payMethod: PayMethod.Credit,
-      comment: "Some comment",
-      amount: "865"
-    }, {
-      id: "15",
-      tag: Tag.Transportation,
-      payMethod: PayMethod.Debit,
-      comment: "Another comment",
-      amount: "4320"
-    }, {
-      id: "16",
-      tag: Tag.Transportation,
-      payMethod: PayMethod.Debit,
-      comment: "Another comment",
-      amount: "4320"
-    }, {
-      id: "17",
-      tag: Tag.Clothing,
-      payMethod: PayMethod.Credit,
-      comment: "Some comment",
-      amount: "865"
-    }, {
-      id: "18",
-      tag: Tag.Transportation,
-      payMethod: PayMethod.Debit,
-      comment: "Another comment",
-      amount: "4320"
-    }, {
-      id: "19",
-      tag: Tag.Clothing,
-      payMethod: PayMethod.Credit,
-      comment: "Some comment",
-      amount: "865"
-    }]
-  }, {
-    date: "2022-10-15",
-    transactionList: [{
-      id: "20",
-      tag: Tag.Clothing,
-      payMethod: PayMethod.Credit,
-      comment: "Some comment",
-      amount: "865"
-    }, {
-      id: "21",
-      tag: Tag.Transportation,
-      payMethod: PayMethod.Debit,
-      comment: "Another comment",
-      amount: "4320"
-    }, {
-      id: "22",
-      tag: Tag.Transportation,
-      payMethod: PayMethod.Debit,
-      comment: "Another comment",
-      amount: "4320"
-    }, {
-      id: "23",
-      tag: Tag.Clothing,
-      payMethod: PayMethod.Credit,
-      comment: "Some comment",
-      amount: "865"
-    }, {
-      id: "24",
-      tag: Tag.Transportation,
-      payMethod: PayMethod.Debit,
-      comment: "Another comment",
-      amount: "4320"
-    }, {
-      id: "25",
-      tag: Tag.Clothing,
-      payMethod: PayMethod.Credit,
-      comment: "Some comment",
-      amount: "865"
-    }]
-  }, {
-    date: "2022-09-13",
-    transactionList: [{
-      id: "26",
-      tag: Tag.Clothing,
-      payMethod: PayMethod.Credit,
-      comment: "Some comment",
-      amount: "865"
-    }, {
-      id: "27",
-      tag: Tag.Transportation,
-      payMethod: PayMethod.Debit,
-      comment: "Another comment",
-      amount: "4320"
-    }, {
-      id: "28",
-      tag: Tag.Transportation,
-      payMethod: PayMethod.Debit,
-      comment: "Another comment",
-      amount: "4320"
-    }, {
-      id: "29",
-      tag: Tag.Clothing,
-      payMethod: PayMethod.Credit,
-      comment: "Some comment",
-      amount: "865"
-    }, {
-      id: "30",
-      tag: Tag.Transportation,
-      payMethod: PayMethod.Debit,
-      comment: "Another comment",
-      amount: "4320"
-    }, {
-      id: "31",
-      tag: Tag.Clothing,
-      payMethod: PayMethod.Credit,
-      comment: "Some comment",
-      amount: "865"
-    }]
-  }, {
-    date: "2022-09-05",
-    transactionList: [{
-      id: "32",
-      tag: Tag.Clothing,
-      payMethod: PayMethod.Credit,
-      comment: "Some comment",
-      amount: "865"
-    }, {
-      id: "33",
-      tag: Tag.Transportation,
-      payMethod: PayMethod.Debit,
-      comment: "Another comment",
-      amount: "4320"
-    }, {
-      id: "34",
-      tag: Tag.Transportation,
-      payMethod: PayMethod.Debit,
-      comment: "Another comment",
-      amount: "4320"
-    }, {
-      id: "35",
-      tag: Tag.Clothing,
-      payMethod: PayMethod.Credit,
-      comment: "Some comment",
-      amount: "865"
-    }, {
-      id: "36",
-      tag: Tag.Transportation,
-      payMethod: PayMethod.Debit,
-      comment: "Another comment",
-      amount: "4320"
-    }, {
-      id: "37",
-      tag: Tag.Clothing,
-      payMethod: PayMethod.Credit,
-      comment: "Some comment",
-      amount: "865"
-    }]
-  }];
-}
-/* harmony default export */ const loadMockedTransactions = (loadMockedTransactionsHistory);
 ;// CONCATENATED MODULE: ./src/components/Layout/Layout.tsx
 
 
@@ -10384,13 +10167,7 @@ function loadMockedTransactionsHistory() {
 
 
 
-
-
-
 const Layout = () => {
-  const dispatch = useAppDispatch();
-  const mockedTransactionsInfo = loadMockedTransactions();
-  dispatch(setNewTransactions(mockedTransactionsInfo));
   return /*#__PURE__*/(0,jsx_runtime.jsxs)("div", {
     className: "layout",
     children: [/*#__PURE__*/(0,jsx_runtime.jsx)(Navigation_Navigation, {}), /*#__PURE__*/(0,jsx_runtime.jsx)("main", {
@@ -10543,6 +10320,10 @@ const Container = /*#__PURE__*/react.forwardRef(({
 Container.displayName = 'Container';
 Container.defaultProps = defaultProps;
 /* harmony default export */ const esm_Container = (Container);
+;// CONCATENATED MODULE: ./src/app/hooks.ts
+
+const useAppDispatch = useDispatch;
+const useAppSelector = useSelector;
 ;// CONCATENATED MODULE: ./node_modules/react-google-charts/dist/index.js
 
 
@@ -12037,7 +11818,20 @@ Form_Form.propTypes = Form_propTypes;
   Select: esm_FormSelect,
   FloatingLabel: esm_FloatingLabel
 }));
+;// CONCATENATED MODULE: ./src/components/Filter/utils/setStateBySearchParams.ts
+function setStateBySearchParams(dispatch, actionCreator, searchParams, parseParams) {
+  const payload = {};
+  for (const param of parseParams) {
+    const val = searchParams.get(param);
+    if (val) {
+      payload[param] = val;
+    }
+  }
+  dispatch(actionCreator(payload));
+}
 ;// CONCATENATED MODULE: ./src/components/Filter/ExpensesFilter/ExpensesFilter.tsx
+
+
 
 
 
@@ -12050,37 +11844,50 @@ const ExpensesFilter = ({
   className
 }) => {
   const dispatch = useAppDispatch();
+  const [searchParams, setSearchParams] = useSearchParams();
   const filterState = useAppSelector(state => state.transactions.filter.expensesPage);
-  const [dateFrom, setDateFrom] = (0,react.useState)(filterState.dateFrom);
-  const [dateTo, setDateTo] = (0,react.useState)(filterState.dateTo);
-  const [pattern, setPattern] = (0,react.useState)(filterState.pattern);
+  const [dateFrom, setDateFrom] = (0,react.useState)(searchParams.get("dateFrom") || filterState.dateFrom);
+  const [dateTo, setDateTo] = (0,react.useState)(searchParams.get("dateTo") || filterState.dateTo);
+  const [pattern, setPattern] = (0,react.useState)(searchParams.get("pattern") || filterState.pattern);
   const handlePattern = e => {
     const newPattern = e.target.value;
     dispatch(filterExpenses({
-      pattern: newPattern,
-      dateFrom,
-      dateTo
+      pattern: newPattern
     }));
     setPattern(newPattern);
+    setSearchParams({
+      dateFrom,
+      dateTo,
+      pattern: newPattern
+    });
   };
   const handleDateFrom = e => {
     const newDateFrom = e.target.value;
     dispatch(filterExpenses({
-      pattern,
-      dateFrom: newDateFrom,
-      dateTo
+      dateFrom: newDateFrom
     }));
     setDateFrom(newDateFrom);
+    setSearchParams({
+      dateFrom: newDateFrom,
+      dateTo,
+      pattern
+    });
   };
   const handleDateTo = e => {
     const newDateTo = e.target.value;
     dispatch(filterExpenses({
-      pattern,
-      dateFrom,
       dateTo: newDateTo
     }));
     setDateTo(newDateTo);
+    setSearchParams({
+      dateFrom,
+      dateTo: newDateTo,
+      pattern
+    });
   };
+  (0,react.useEffect)(() => {
+    setStateBySearchParams(dispatch, filterExpenses, searchParams, ["dateFrom", "dateTo", "pattern"]);
+  }, []);
   return /*#__PURE__*/(0,jsx_runtime.jsxs)(esm_Row, {
     className: "my-3 mb-md-0 " + className,
     children: [/*#__PURE__*/(0,jsx_runtime.jsxs)(esm_Form.Floating, {
@@ -12145,29 +11952,41 @@ const ExpensesFilter = ({
 
 
 
+
+
 const AnalyticsFilter = ({
   className
 }) => {
   const dispatch = useAppDispatch();
+  const [searchParams, setSearchParams] = useSearchParams();
   const filterState = useAppSelector(state => state.transactions.filter.analyticsPage);
-  const [dateFrom, setDateFrom] = (0,react.useState)(filterState.dateFrom);
-  const [dateTo, setDateTo] = (0,react.useState)(filterState.dateTo);
+  const [dateFrom, setDateFrom] = (0,react.useState)(searchParams.get("dateFrom") || filterState.dateFrom);
+  const [dateTo, setDateTo] = (0,react.useState)(searchParams.get("dateTo") || filterState.dateTo);
   const handleDateFrom = e => {
     const newDateFrom = e.target.value;
     dispatch(filterAnalytics({
-      dateFrom: newDateFrom,
-      dateTo
+      dateFrom: newDateFrom
     }));
     setDateFrom(newDateFrom);
+    setSearchParams({
+      dateFrom: newDateFrom,
+      dateTo
+    });
   };
   const handleDateTo = e => {
     const newDateTo = e.target.value;
     dispatch(filterAnalytics({
-      dateFrom,
       dateTo: newDateTo
     }));
     setDateTo(newDateTo);
+    setSearchParams({
+      dateFrom,
+      dateTo: newDateTo
+    });
   };
+  (0,react.useEffect)(() => {
+    setStateBySearchParams(dispatch, filterAnalytics, searchParams, ["dateFrom", "dateTo"]);
+  }, []);
   return /*#__PURE__*/(0,jsx_runtime.jsxs)(esm_Row, {
     className: "my-3 mb-md-0 " + className,
     children: [/*#__PURE__*/(0,jsx_runtime.jsxs)(esm_Form.Floating, {
@@ -12212,10 +12031,6 @@ const AnalyticsFilter = ({
 
 
 
-;// CONCATENATED MODULE: ./src/store/transactionsSelectors.tsx
-const selectTransactionsHistory = state => state.transactions.transactionsHistory;
-const selectFilterExpenses = state => state.transactions.filter.expensesPage;
-const selectFilterAnalytics = state => state.transactions.filter.analyticsPage;
 ;// CONCATENATED MODULE: ./src/utils/filterTransactions.ts
 function filterTransactionsHistory(transactionsHistory, {
   dateFrom,
@@ -14704,6 +14519,24 @@ InputGroup.displayName = 'InputGroup';
   Radio: InputGroupRadio,
   Checkbox: InputGroupCheckbox
 }));
+;// CONCATENATED MODULE: ./src/types/transactions.type.ts
+let PayMethod;
+(function (PayMethod) {
+  PayMethod["Debit"] = "Debit card";
+  PayMethod["Credit"] = "Credit card";
+  PayMethod["Cash"] = "Cash";
+})(PayMethod || (PayMethod = {}));
+let Tag;
+(function (Tag) {
+  Tag["Food"] = "Food";
+  Tag["Housing"] = "Housing";
+  Tag["Transportation"] = "Transportation";
+  Tag["Clothing"] = "Clothing";
+  Tag["Utilities"] = "Utilities";
+  Tag["Insurance"] = "Insurance";
+  Tag["MedicalAndHealthcare"] = "Medical & Healthcare";
+  Tag["Investing"] = "Investing";
+})(Tag || (Tag = {}));
 ;// CONCATENATED MODULE: ./src/components/AddTransaction/AddTransaction.tsx
 
 
@@ -14746,7 +14579,7 @@ const AddTransaction = ({
       comment,
       payMethod
     };
-    dispatch(add({
+    dispatch(addToStorageAndStore({
       date,
       transaction: {
         ...transaction,
