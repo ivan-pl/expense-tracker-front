@@ -1,3 +1,6 @@
+import { initializeApp } from "firebase/app";
+import { getAuth } from "firebase/auth";
+
 const firebaseConfig = {
   apiKey: "AIzaSyDGTVuKtoxH9q7PiVu14Let87tXWaA6MaU",
   authDomain: "expense-tracker-abac3.firebaseapp.com",
@@ -8,4 +11,5 @@ const firebaseConfig = {
   appId: "1:304845965263:web:d33365132135d7d23af4ba",
 };
 
-export default firebaseConfig;
+export const app = initializeApp(firebaseConfig);
+export const auth = getAuth(app);
