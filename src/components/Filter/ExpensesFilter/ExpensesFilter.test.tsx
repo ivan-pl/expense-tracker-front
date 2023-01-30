@@ -2,15 +2,18 @@ import React from "react";
 import { Provider } from "react-redux";
 import { render, screen } from "@testing-library/react";
 
-import store from "../../store";
-import TransactionFilter from "./TransactionFilter";
-import formatDate from "../../utils/formatDate";
+import store from "../../../store";
+import ExpensesFilter from "./ExpensesFilter";
+import formatDate from "../../../utils/formatDate";
+import { HashRouter } from "react-router-dom";
 
-describe("TransactionFilter", () => {
+describe("ExpensesFilter", () => {
   it("renders filter", () => {
     render(
       <Provider store={store}>
-        <TransactionFilter />
+        <HashRouter>
+          <ExpensesFilter />
+        </HashRouter>
       </Provider>
     );
     expect(screen.getByPlaceholderText(/search by /i)).toBeInTheDocument();

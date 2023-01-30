@@ -1,56 +1,60 @@
-import React, { FC, DetailedHTMLProps, HTMLAttributes, useState } from "react";
+import React, {
+  FC,
+  DetailedHTMLProps,
+  HTMLAttributes,
+  useState,
+  useEffect,
+} from "react";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
+import { useSearchParams } from "react-router-dom";
 
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { filterExpenses } from "../../store/transactionsSlice";
-import "./TransactionFilter.scss";
+import { useAppDispatch, useAppSelector } from "../../../app/hooks";
+import { filterAnalytics } from "../../../store/transactionsSlice";
+import setStateBySearchParams from "../utils/setStateBySearchParams";
 
 type Props = DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
 
-const TransactionFilter: FC<Props> = ({ className }) => {
+const AnalyticsFilter: FC<Props> = ({ className }) => {
   const dispatch = useAppDispatch();
 
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const filterState = useAppSelector(
-    (state) => state.transactions.filter.expensesPage
+    (state) => state.transactions.filter.analyticsPage
   );
 
-  const [dateFrom, setDateFrom] = useState(filterState.dateFrom);
-  const [dateTo, setDateTo] = useState(filterState.dateTo);
-  const [pattern, setPattern] = useState(filterState.pattern);
-
-  const handlePattern = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newPattern = e.target.value;
-    dispatch(filterExpenses({ pattern: newPattern, dateFrom, dateTo }));
-    setPattern(newPattern);
-  };
+  const [dateFrom, setDateFrom] = useState(
+    searchParams.get("dateFrom") || filterState.dateFrom
+  );
+  const [dateTo, setDateTo] = useState(
+    searchParams.get("dateTo") || filterState.dateTo
+  );
 
   const handleDateFrom = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newDateFrom = e.target.value;
-    dispatch(filterExpenses({ pattern, dateFrom: newDateFrom, dateTo }));
+    dispatch(filterAnalytics({ dateFrom: newDateFrom }));
     setDateFrom(newDateFrom);
+    setSearchParams({ dateFrom: newDateFrom, dateTo });
   };
 
   const handleDateTo = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newDateTo = e.target.value;
-    dispatch(filterExpenses({ pattern, dateFrom, dateTo: newDateTo }));
+    dispatch(filterAnalytics({ dateTo: newDateTo }));
     setDateTo(newDateTo);
+    setSearchParams({ dateFrom, dateTo: newDateTo });
   };
+
+  useEffect(() => {
+    setStateBySearchParams(dispatch, filterAnalytics, searchParams, [
+      "dateFrom",
+      "dateTo",
+    ]);
+  }, []);
 
   return (
     <Row className={"my-3 mb-md-0 " + className}>
-      <Form.Floating as={Col} xs="12" lg="6" className="mb-3 mb-lg-0">
-        <Form.Control
-          id="filterPattern"
-          type="text"
-          placeholder="Search by Tag, amount, comment"
-          value={pattern}
-          onChange={handlePattern}
-        />
-        <label htmlFor="filterPattern">Search by Tag, amount, comment</label>
-      </Form.Floating>
-
       <Form.Floating as={Col} className="mb-3 mb-md-0" xs="6" lg="3">
         <Form.Control
           id="filterDateFrom"
@@ -77,4 +81,4 @@ const TransactionFilter: FC<Props> = ({ className }) => {
   );
 };
 
-export default TransactionFilter;
+export default AnalyticsFilter;

@@ -5,3 +5,6 @@ export const selectTransactionsHistory = (state: RootState) =>
 
 export const selectFilterExpenses = (state: RootState) =>
   state.transactions.filter.expensesPage;
+
+export const selectFilterAnalytics = (state: RootState) =>
+  state.transactions.filter.analyticsPage;
