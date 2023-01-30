@@ -54,7 +54,7 @@ const SignUp: FC<Props> = ({ auth }) => {
             {...register("email", {
               required: "Please enter your email",
               pattern: {
-                value: /^[^@ ]+@[^@ ]+\.[^@ .]{2,}$/,
+                value: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/,
                 message: "Please enter a valid email",
               },
             })}

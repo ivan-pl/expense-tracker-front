@@ -11,7 +11,7 @@ const Auth: FC = () => {
 
   return (
     <Container>
-      <SignIn onSignUp={() => setOpenSignUp(true)} />
+      <SignIn onSignUp={() => setOpenSignUp(true)} auth={auth} />
       <Modal show={openSignUp} onHide={() => setOpenSignUp(false)}>
         <Modal.Header closeButton>Sign Up</Modal.Header>
         <Modal.Body>

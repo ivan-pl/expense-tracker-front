@@ -1,23 +1,68 @@
 import React, { FC } from "react";
+import { useNavigate } from "react-router-dom";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import Alert from "react-bootstrap/Alert";
+import Spinner from "react-bootstrap/Spinner";
 import Button from "react-bootstrap/Button";
+import { Auth } from "firebase/auth";
+import { useForm, SubmitHandler } from "react-hook-form";
+import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth";
 
 interface Props {
   onSignUp: () => void;
+  auth: Auth;
 }
 
-const SignIn: FC<Props> = ({ onSignUp }) => {
+type Inputs = {
+  email: string;
+  password: string;
+};
+
+const SignIn: FC<Props> = ({ onSignUp, auth }) => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<Inputs>();
+
+  const onSubmit: SubmitHandler<Inputs> = (data) => {
+    signInWithEmailAndPassword(data.email, data.password);
+  };
+
+  const [signInWithEmailAndPassword, user, loading, error] =
+    useSignInWithEmailAndPassword(auth);
+
+  const navigate = useNavigate();
+
+  if (user) {
+    navigate("/");
+  }
+
   return (
-    <Form className="m-4">
+    <Form className="m-4" onSubmit={handleSubmit(onSubmit)}>
+      {error && <Alert variant="danger">{error.message}</Alert>}
       <Form.Group as={Row} className="mb-3" controlId="formHorizontalEmail">
         <Form.Label column sm={2}>
           Email
         </Form.Label>
         <Col sm={10}>
-          <Form.Control type="email" placeholder="Email" />
+          <Form.Control
+            type="email"
+            placeholder="Email"
+            {...register("email", {
+              required: "Please enter your email",
+              pattern: {
+                value: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/,
+                message: "Please enter a valid email",
+              },
+            })}
+          />
         </Col>
+        {errors.email && (
+          <Form.Text className="text-danger">{errors.email.message}</Form.Text>
+        )}
       </Form.Group>
 
       <Form.Group as={Row} className="mb-3" controlId="formHorizontalPassword">
@@ -25,13 +70,38 @@ const SignIn: FC<Props> = ({ onSignUp }) => {
           Password
         </Form.Label>
         <Col sm={10}>
-          <Form.Control type="password" placeholder="Password" />
+          <Form.Control
+            type="password"
+            placeholder="Password"
+            {...register("password", {
+              required: "Password is required.",
+              minLength: {
+                value: 6,
+                message: "Password should be at-least 6 characters.",
+              },
+            })}
+          />
         </Col>
+        {errors.password && (
+          <p className="text-danger">{errors.password.message}</p>
+        )}
       </Form.Group>
 
       <Form.Group as={Row} className="mb-3">
         <Col sm={{ span: 10, offset: 2 }}>
-          <Button type="submit">Sign in</Button>
+          {loading ? (
+            <Button type="submit" disabled>
+              <Spinner
+                as="span"
+                animation="border"
+                size="sm"
+                role="status"
+                aria-hidden="true"
+              />
+            </Button>
+          ) : (
+            <Button type="submit">Sign Up</Button>
+          )}
         </Col>
       </Form.Group>
       <p>
