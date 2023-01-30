@@ -1,4 +1,4 @@
-import React, { FC, useRef } from "react";
+import React, { FC } from "react";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -15,11 +15,10 @@ const SignUp: FC = () => {
   const {
     register,
     handleSubmit,
-    watch,
+    getValues,
     formState: { errors },
   } = useForm<Inputs>();
 
-  const password = useRef({});
   const onSubmit: SubmitHandler<Inputs> = (data) => console.log("data: ", data);
 
   return (
@@ -85,6 +84,10 @@ const SignUp: FC = () => {
               minLength: {
                 value: 6,
                 message: "Password should be at-least 6 characters.",
+              },
+              validate: (value) => {
+                const { password } = getValues();
+                return value === password || "The passwords do not match";
               },
             })}
           />
