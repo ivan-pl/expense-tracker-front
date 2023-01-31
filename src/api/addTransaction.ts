@@ -1,5 +1,5 @@
 import { Transaction } from "../types/transactions.type";
-import { URL } from "./variables";
+import { URL_USERS } from "./variables";
 
 export default async function addTransaction(
   uid: string,
@@ -8,7 +8,7 @@ export default async function addTransaction(
   date: string
 ): Promise<string> {
   const url =
-    URL + `${uid}/${date}.json?` + new URLSearchParams({ auth: token });
+    URL_USERS + `${uid}/${date}.json?` + new URLSearchParams({ auth: token });
 
   const response = await fetch(url, {
     method: "POST",
