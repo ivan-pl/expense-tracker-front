@@ -85,6 +85,8 @@ export const transactionsSlice = createSlice({
     ) => {
       filter.analyticsPage = { ...filter.analyticsPage, ...payload };
     },
+
+    reset: () => initialState,
   },
 });
 
@@ -103,7 +105,12 @@ export const addToStorageAndStore =
     );
   };
 
-export const { setNewTransactions, add, filterExpenses, filterAnalytics } =
-  transactionsSlice.actions;
+export const {
+  setNewTransactions,
+  add,
+  filterExpenses,
+  filterAnalytics,
+  reset,
+} = transactionsSlice.actions;
 
 export default transactionsSlice.reducer;

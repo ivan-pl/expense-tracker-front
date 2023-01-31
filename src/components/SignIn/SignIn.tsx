@@ -10,6 +10,9 @@ import { Auth } from "firebase/auth";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth";
 
+import { useAppDispatch } from "../../app/hooks";
+import { addToStorageAndStore } from "../../store/userSlice";
+
 interface Props {
   onSignUp: () => void;
   auth: Auth;
@@ -21,6 +24,8 @@ type Inputs = {
 };
 
 const SignIn: FC<Props> = ({ onSignUp, auth }) => {
+  const dispatch = useAppDispatch();
+
   const {
     register,
     handleSubmit,
@@ -31,13 +36,17 @@ const SignIn: FC<Props> = ({ onSignUp, auth }) => {
     signInWithEmailAndPassword(data.email, data.password);
   };
 
-  const [signInWithEmailAndPassword, user, loading, error] =
+  const [signInWithEmailAndPassword, userCredential, loading, error] =
     useSignInWithEmailAndPassword(auth);
 
   const navigate = useNavigate();
 
-  if (user) {
-    navigate("/");
+  if (userCredential) {
+    const { user } = userCredential;
+    user.getIdToken().then((token) => {
+      dispatch(addToStorageAndStore({ token, uid: user.uid }));
+      navigate("/");
+    });
   }
 
   return (
