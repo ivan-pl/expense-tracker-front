@@ -109,7 +109,7 @@ const SignIn: FC<Props> = ({ onSignUp, auth }) => {
               />
             </Button>
           ) : (
-            <Button type="submit">Sign Up</Button>
+            <Button type="submit">Sign In</Button>
           )}
         </Col>
       </Form.Group>

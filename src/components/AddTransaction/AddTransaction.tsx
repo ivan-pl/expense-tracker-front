@@ -169,7 +169,7 @@ const AddTransaction: FC<Props> = ({ className = "" }: Props) => {
               />
             </Button>
           ) : (
-            <Button variant="primary" onClick={handleAdd}>
+            <Button variant="success" onClick={handleAdd}>
               Add
             </Button>
           )}
