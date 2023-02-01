@@ -1,4 +1,5 @@
 import { Transaction } from "../types/transactions.type";
+import checkResponse from "./utils/checkResponse";
 import { URL_USERS } from "./variables";
 
 export default async function addTransaction(
@@ -8,16 +9,16 @@ export default async function addTransaction(
   date: string
 ): Promise<string> {
   const url =
-    URL_USERS + `${uid}/${date}.json?` + new URLSearchParams({ auth: token });
+    URL_USERS +
+    `${uid}/transactions/${date}.json?` +
+    new URLSearchParams({ auth: token });
 
   const response = await fetch(url, {
     method: "POST",
     body: JSON.stringify(transaction),
   });
 
-  if (!response.ok) {
-    throw new Error(response.statusText);
-  }
+  checkResponse(response);
 
   return (await response.json())["name"];
 }

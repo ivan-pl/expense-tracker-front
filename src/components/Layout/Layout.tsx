@@ -7,6 +7,9 @@ import loadUser from "../../storageController/loadUser";
 import isCredentialsValid from "../../api/isCredentialsValid";
 import { add as addUserCredentials, signOut } from "../../store/userSlice";
 import "./Layout.scss";
+import getTransactions from "../../api/getTransactions";
+import { setNewTransactions } from "../../store/transactionsSlice";
+import addDayTransactions from "../../storageController/addDayTransactions";
 
 const Layout: FC = () => {
   const navigate = useNavigate();
@@ -31,6 +34,13 @@ const Layout: FC = () => {
       .catch(() => {
         dispatch(signOut());
         navigate("/auth");
+      })
+      .then(() => {
+        return getTransactions(uid, token);
+      })
+      .then((transactionsHistory) => {
+        dispatch(setNewTransactions(transactionsHistory));
+        transactionsHistory.forEach(addDayTransactions);
       });
   }, []);
 
