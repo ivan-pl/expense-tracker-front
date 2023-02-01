@@ -10142,6 +10142,20 @@ const addToStorageAndStore = ({
   }));
   addDayTransactions(selectTransactionsHistory(getState()).find(_ => _.date === date));
 };
+
+// export const updateInStorageAndStore =
+//   ({
+//     transaction,
+//     date,
+//   }: {
+//     transaction: Transaction;
+//     date: string;
+//   }): AppThunk =>
+//   (dispatch, getState) => {
+//     dispatch(update({date, transaction}));
+//     updateTransactionInStorage(date, transaction);
+//   };
+
 const {
   setNewTransactions,
   add,
@@ -24867,7 +24881,6 @@ function checkResponse(response) {
   if (!response.ok) {
     throw new Error(response.statusText);
   }
-  return true;
 }
 ;// CONCATENATED MODULE: ./src/api/getTransactions.ts
 
@@ -33154,6 +33167,24 @@ function showError(err) {
     children: err.message
   }) : null;
 }
+;// CONCATENATED MODULE: ./src/api/updateTransaction.ts
+
+
+async function updateTransaction(transaction, date, uid, token) {
+  const url = URL_USERS + `${uid}/transactions/${date}.json` + new URLSearchParams({
+    auth: token
+  });
+  const {
+    id,
+    ...data
+  } = transaction;
+  const response = await fetch(url, {
+    method: "PUT",
+    body: JSON.stringify(data)
+  });
+  checkResponse(response);
+  return (await response.json())[id];
+}
 ;// CONCATENATED MODULE: ./src/components/EditTransaction/EditTransaction.tsx
 
 
@@ -33169,12 +33200,20 @@ function showError(err) {
 
 
 
+
+
+
 const EditTransaction = ({
-  date,
-  transaction
+  date: initialDate,
+  transaction: initialTransaction
 }) => {
   const [open, setOpen] = (0,react.useState)(true);
+  const [loadingSave, setLoadingSave] = (0,react.useState)(false);
   const dispatch = useAppDispatch();
+  const {
+    uid,
+    token
+  } = useAppSelector(selectUserCredentials);
   const {
     handleSubmit,
     register,
@@ -33183,12 +33222,20 @@ const EditTransaction = ({
     }
   } = useForm({
     defaultValues: {
-      date,
-      ...transaction
+      date: initialDate,
+      ...initialTransaction
     }
   });
   const handleSave = data => {
-    console.log(data);
+    const {
+      date,
+      ...transaction
+    } = data;
+    setLoadingSave(true);
+    updateTransaction({
+      ...transaction,
+      id: initialTransaction.id
+    }, date, uid, token).then(updatedTransaction => {});
     handleClose();
   };
   const handleClose = () => {
@@ -33196,7 +33243,7 @@ const EditTransaction = ({
     dispatch(closeEditWindow());
   };
   const handleDelete = () => {
-    console.log("delete", transaction.id);
+    console.log("delete");
   };
   return /*#__PURE__*/(0,jsx_runtime.jsxs)(react_bootstrap_esm_Modal, {
     show: open,
@@ -33282,7 +33329,18 @@ const EditTransaction = ({
             onClick: handleClose,
             className: "ms-auto",
             children: "Close"
-          }), /*#__PURE__*/(0,jsx_runtime.jsx)(react_bootstrap_esm_Button, {
+          }), loadingSave ? /*#__PURE__*/(0,jsx_runtime.jsx)(react_bootstrap_esm_Button, {
+            type: "submit",
+            variant: "success",
+            disabled: true,
+            children: /*#__PURE__*/(0,jsx_runtime.jsx)(esm_Spinner, {
+              as: "span",
+              animation: "border",
+              size: "sm",
+              role: "status",
+              "aria-hidden": "true"
+            })
+          }) : /*#__PURE__*/(0,jsx_runtime.jsx)(react_bootstrap_esm_Button, {
             type: "submit",
             variant: "success",
             children: "Save"
