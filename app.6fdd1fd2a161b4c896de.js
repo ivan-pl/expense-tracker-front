@@ -10126,7 +10126,10 @@ const transactionsSlice = createSlice({
         ...payload
       };
     },
-    reset: () => initialState
+    reset: () => ({
+      ...initialState,
+      transactionsHistory: []
+    })
   }
 });
 const addToStorageAndStore = ({
@@ -10190,14 +10193,45 @@ const {
   reset: userSlice_reset
 } = userSlice.actions;
 /* harmony default export */ const store_userSlice = (userSlice.reducer);
+;// CONCATENATED MODULE: ./src/store/expensesPageSlice.ts
+
+const expensesPageSlice_initialState = {
+  transaction: null,
+  date: null,
+  isEditWindowOpened: false
+};
+const expensesPageSlice = createSlice({
+  name: "expensesPage",
+  initialState: expensesPageSlice_initialState,
+  reducers: {
+    openEditWindow: (state, {
+      payload: {
+        date,
+        transaction
+      }
+    }) => {
+      state.isEditWindowOpened = true, state.transaction = transaction, state.date = date;
+    },
+    closeEditWindow: state => {
+      state.isEditWindowOpened = false, state.date = null, state.transaction = null;
+    }
+  }
+});
+const {
+  closeEditWindow,
+  openEditWindow
+} = expensesPageSlice.actions;
+/* harmony default export */ const store_expensesPageSlice = (expensesPageSlice.reducer);
 ;// CONCATENATED MODULE: ./src/store/store.ts
+
 
 
 
 const store = configureStore({
   reducer: {
     transactions: store_transactionsSlice,
-    user: store_userSlice
+    user: store_userSlice,
+    expensesPage: store_expensesPageSlice
   }
 });
 /* harmony default export */ const store_store = (store);
@@ -24828,7 +24862,43 @@ async function isCredentialsValid(uid, token) {
   const response = await fetch(url);
   return response.ok;
 }
+;// CONCATENATED MODULE: ./src/api/utils/checkResponse.ts
+function checkResponse(response) {
+  if (!response.ok) {
+    throw new Error(response.statusText);
+  }
+  return true;
+}
+;// CONCATENATED MODULE: ./src/api/getTransactions.ts
+
+
+async function getTransactions(uid, token) {
+  const url = URL_USERS + `${uid}/transactions.json?` + new URLSearchParams({
+    auth: token
+  });
+  const response = await fetch(url);
+  checkResponse(response);
+  const responseTransactions = await response.json();
+  if (!responseTransactions) {
+    return [];
+  }
+  const transactionsHistory = [];
+  for (const [date, transactions] of Object.entries(responseTransactions)) {
+    const transactionList = Object.entries(transactions).map(([id, transaction]) => ({
+      ...transaction,
+      id
+    }));
+    transactionsHistory.push({
+      date,
+      transactionList
+    });
+  }
+  return transactionsHistory.sort((a, b) => a.date < b.date ? 1 : -1);
+}
 ;// CONCATENATED MODULE: ./src/components/Layout/Layout.tsx
+
+
+
 
 
 
@@ -24864,6 +24934,11 @@ const Layout = () => {
     }).catch(() => {
       dispatch(userSlice_signOut());
       navigate("/auth");
+    }).then(() => {
+      return getTransactions(uid, token);
+    }).then(transactionsHistory => {
+      dispatch(setNewTransactions(transactionsHistory));
+      transactionsHistory.forEach(addDayTransactions);
     });
   }, []);
   return /*#__PURE__*/(0,jsx_runtime.jsxs)("div", {
@@ -26792,21 +26867,34 @@ const Analytics = () => {
 
 
 
-const Transaction = props => {
+
+
+const Transaction = ({
+  transaction,
+  date
+}) => {
+  const dispatch = useAppDispatch();
+  const handleClick = () => {
+    dispatch(openEditWindow({
+      transaction,
+      date
+    }));
+  };
   return /*#__PURE__*/(0,jsx_runtime.jsxs)("div", {
     className: "transaction",
+    onClick: handleClick,
     children: [/*#__PURE__*/(0,jsx_runtime.jsx)("div", {
       className: "tag",
-      children: props.transaction.tag
+      children: transaction.tag
     }), /*#__PURE__*/(0,jsx_runtime.jsx)("div", {
       className: "pay-method",
-      children: props.transaction.payMethod
+      children: transaction.payMethod
     }), /*#__PURE__*/(0,jsx_runtime.jsx)("div", {
       className: "comment",
-      children: props.transaction.comment
+      children: transaction.comment
     }), /*#__PURE__*/(0,jsx_runtime.jsx)("div", {
       className: "amount",
-      children: props.transaction.amount + " RUB"
+      children: transaction.amount + " RUB"
     })]
   });
 };
@@ -26817,16 +26905,19 @@ const Transaction = props => {
 
 
 
-const DayTransactionList = props => {
-  const date = props.dayTransactionList.date;
-  const transactions = props.dayTransactionList.transactionList.map(transaction => /*#__PURE__*/(0,jsx_runtime.jsx)(Transaction_Transaction, {
-    transaction: transaction
+const DayTransactionList = ({
+  dayTransactionList
+}) => {
+  const date = dayTransactionList.date;
+  const transactions = dayTransactionList.transactionList.map(transaction => /*#__PURE__*/(0,jsx_runtime.jsx)(Transaction_Transaction, {
+    transaction: transaction,
+    date: date
   }, transaction.id));
   return /*#__PURE__*/(0,jsx_runtime.jsxs)("div", {
     className: "day-transactions",
     children: [/*#__PURE__*/(0,jsx_runtime.jsx)("time", {
       className: "time",
-      dateTime: date.substring(0, 10),
+      dateTime: date,
       children: new Date(date).toDateString()
     }), /*#__PURE__*/(0,jsx_runtime.jsx)("div", {
       className: "transaction-list",
@@ -30207,17 +30298,16 @@ let Tag;
 const selectUserCredentials = state => state.user;
 ;// CONCATENATED MODULE: ./src/api/addTransaction.ts
 
+
 async function addTransaction(uid, token, transaction, date) {
-  const url = URL_USERS + `${uid}/${date}.json?` + new URLSearchParams({
+  const url = URL_USERS + `${uid}/transactions/${date}.json?` + new URLSearchParams({
     auth: token
   });
   const response = await fetch(url, {
     method: "POST",
     body: JSON.stringify(transaction)
   });
-  if (!response.ok) {
-    throw new Error(response.statusText);
-  }
+  checkResponse(response);
   return (await response.json())["name"];
 }
 ;// CONCATENATED MODULE: ./src/components/AddTransaction/AddTransaction.tsx
@@ -30392,7 +30482,7 @@ const AddTransaction = ({
             "aria-hidden": "true"
           })
         }) : /*#__PURE__*/(0,jsx_runtime.jsx)(react_bootstrap_esm_Button, {
-          variant: "primary",
+          variant: "success",
           onClick: handleAdd,
           children: "Add"
         })]
@@ -30401,6 +30491,8 @@ const AddTransaction = ({
   });
 };
 /* harmony default export */ const AddTransaction_AddTransaction = (AddTransaction);
+;// CONCATENATED MODULE: ./src/store/expensesPageSelectors.ts
+const selectEditWindow = state => state.expensesPage;
 ;// CONCATENATED MODULE: ./node_modules/date-fns/esm/_lib/requiredArgs/index.js
 function requiredArgs(required, args) {
   if (args.length < required) {
@@ -30673,82 +30765,67 @@ function countTotal(transactionsHistory) {
   }
   return total;
 }
-;// CONCATENATED MODULE: ./src/pages/Expenses/Expenses.tsx
+;// CONCATENATED MODULE: ./node_modules/react-bootstrap/esm/createUtilityClasses.js
 
 
-
-
-
-
-
-
-
-
-
-const Expenses = () => {
-  let transactionsHistory = useAppSelector(selectTransactionsHistory);
-  const filter = useAppSelector(selectFilterExpenses);
-  transactionsHistory = filterTransactionsHistory(transactionsHistory, filter);
-  const total = countTotal(transactionsHistory);
-  return /*#__PURE__*/(0,jsx_runtime.jsxs)("div", {
-    className: "expenses",
-    children: [/*#__PURE__*/(0,jsx_runtime.jsx)(Total, {
-      day: total.day,
-      week: total.week,
-      month: total.month,
-      className: "expenses__total"
-    }), /*#__PURE__*/(0,jsx_runtime.jsx)(Filter_ExpensesFilter, {
-      className: "expenses__filter"
-    }), /*#__PURE__*/(0,jsx_runtime.jsx)(TransactionSection_TransactionSection, {
-      transactionsHistory: transactionsHistory,
-      className: "expenses__transactions"
-    }), /*#__PURE__*/(0,jsx_runtime.jsx)(AddTransaction_AddTransaction, {
-      className: "expenses__add"
-    })]
+function responsivePropType(propType) {
+  return PropTypes.oneOfType([propType, PropTypes.shape({
+    xs: propType,
+    sm: propType,
+    md: propType,
+    lg: propType,
+    xl: propType,
+    xxl: propType
+  })]);
+}
+function createUtilityClassName(utilityValues, breakpoints = DEFAULT_BREAKPOINTS, minBreakpoint = DEFAULT_MIN_BREAKPOINT) {
+  const classes = [];
+  Object.entries(utilityValues).forEach(([utilName, utilValue]) => {
+    if (utilValue != null) {
+      if (typeof utilValue === 'object') {
+        breakpoints.forEach(brkPoint => {
+          const bpValue = utilValue[brkPoint];
+          if (bpValue != null) {
+            const infix = brkPoint !== minBreakpoint ? `-${brkPoint}` : '';
+            classes.push(`${utilName}${infix}-${bpValue}`);
+          }
+        });
+      } else {
+        classes.push(`${utilName}-${utilValue}`);
+      }
+    }
   });
-};
-const Total = ({
-  day,
-  week,
-  month,
-  className
-}) => {
-  return /*#__PURE__*/(0,jsx_runtime.jsxs)("section", {
-    className: "total " + className,
-    children: [/*#__PURE__*/(0,jsx_runtime.jsx)("h2", {
-      className: "total__header",
-      children: "Total"
-    }), /*#__PURE__*/(0,jsx_runtime.jsxs)("div", {
-      className: "total-wrap",
-      children: [/*#__PURE__*/(0,jsx_runtime.jsxs)("div", {
-        className: "row",
-        children: [/*#__PURE__*/(0,jsx_runtime.jsx)("div", {
-          children: "Per day"
-        }), /*#__PURE__*/(0,jsx_runtime.jsxs)("div", {
-          children: [day, " \u20BD"]
-        })]
-      }), /*#__PURE__*/(0,jsx_runtime.jsxs)("div", {
-        className: "row",
-        children: [/*#__PURE__*/(0,jsx_runtime.jsx)("div", {
-          children: "Per week"
-        }), /*#__PURE__*/(0,jsx_runtime.jsxs)("div", {
-          children: [week, " \u20BD"]
-        })]
-      }), /*#__PURE__*/(0,jsx_runtime.jsxs)("div", {
-        className: "row",
-        children: [/*#__PURE__*/(0,jsx_runtime.jsx)("div", {
-          children: "Per month"
-        }), /*#__PURE__*/(0,jsx_runtime.jsxs)("div", {
-          children: [month, " \u20BD"]
-        })]
-      })]
-    })]
-  });
-};
-/* harmony default export */ const Expenses_Expenses = (Expenses);
-;// CONCATENATED MODULE: ./src/pages/Expenses/index.ts
+  return classes;
+}
+;// CONCATENATED MODULE: ./node_modules/react-bootstrap/esm/Stack.js
 
-/* harmony default export */ const pages_Expenses = (Expenses_Expenses);
+
+
+
+
+const Stack = /*#__PURE__*/react.forwardRef(({
+  as: Component = 'div',
+  bsPrefix,
+  className,
+  direction,
+  gap,
+  ...props
+}, ref) => {
+  bsPrefix = useBootstrapPrefix(bsPrefix, direction === 'horizontal' ? 'hstack' : 'vstack');
+  const breakpoints = useBootstrapBreakpoints();
+  const minBreakpoint = useBootstrapMinBreakpoint();
+  return /*#__PURE__*/(0,jsx_runtime.jsx)(Component, {
+    ...props,
+    ref: ref,
+    className: classnames_default()(className, bsPrefix, ...createUtilityClassName({
+      gap,
+      breakpoints,
+      minBreakpoint
+    }))
+  });
+});
+Stack.displayName = 'Stack';
+/* harmony default export */ const esm_Stack = (Stack);
 ;// CONCATENATED MODULE: ./node_modules/react-hook-form/dist/index.esm.mjs
 
 
@@ -33067,6 +33144,244 @@ function useForm(props = {}) {
 
 //# sourceMappingURL=index.esm.mjs.map
 
+;// CONCATENATED MODULE: ./src/utils/showError.tsx
+
+
+
+function showError(err) {
+  return err ? /*#__PURE__*/(0,jsx_runtime.jsx)(esm_Form.Text, {
+    className: "text-danger",
+    children: err.message
+  }) : null;
+}
+;// CONCATENATED MODULE: ./src/components/EditTransaction/EditTransaction.tsx
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const EditTransaction = ({
+  date,
+  transaction
+}) => {
+  const [open, setOpen] = (0,react.useState)(true);
+  const dispatch = useAppDispatch();
+  const {
+    handleSubmit,
+    register,
+    formState: {
+      errors
+    }
+  } = useForm({
+    defaultValues: {
+      date,
+      ...transaction
+    }
+  });
+  const handleSave = data => {
+    console.log(data);
+    handleClose();
+  };
+  const handleClose = () => {
+    setOpen(false);
+    dispatch(closeEditWindow());
+  };
+  const handleDelete = () => {
+    console.log("delete", transaction.id);
+  };
+  return /*#__PURE__*/(0,jsx_runtime.jsxs)(react_bootstrap_esm_Modal, {
+    show: open,
+    onHide: handleClose,
+    children: [/*#__PURE__*/(0,jsx_runtime.jsx)(react_bootstrap_esm_Modal.Header, {
+      children: "Edit transaction"
+    }), /*#__PURE__*/(0,jsx_runtime.jsx)(react_bootstrap_esm_Modal.Body, {
+      children: /*#__PURE__*/(0,jsx_runtime.jsxs)(esm_Form, {
+        onSubmit: handleSubmit(handleSave),
+        children: [/*#__PURE__*/(0,jsx_runtime.jsxs)(esm_Form.Group, {
+          className: "mb-3 col-6",
+          children: [/*#__PURE__*/(0,jsx_runtime.jsx)(esm_Form.Label, {
+            children: "Date"
+          }), /*#__PURE__*/(0,jsx_runtime.jsx)(esm_Form.Control, {
+            type: "date",
+            ...register("date", {
+              required: "Date is required"
+            })
+          }), showError(errors.date)]
+        }), /*#__PURE__*/(0,jsx_runtime.jsxs)(esm_Stack, {
+          direction: "horizontal",
+          className: "mb-3",
+          gap: 4,
+          children: [/*#__PURE__*/(0,jsx_runtime.jsxs)(esm_Form.Group, {
+            as: esm_Col,
+            children: [/*#__PURE__*/(0,jsx_runtime.jsx)(esm_Form.Label, {
+              children: "Pay method"
+            }), /*#__PURE__*/(0,jsx_runtime.jsx)(esm_Form.Select, {
+              ...register("payMethod", {
+                required: true
+              }),
+              children: Object.keys(PayMethod).map(payMethodName => /*#__PURE__*/(0,jsx_runtime.jsx)("option", {
+                value: payMethodName,
+                children: payMethodName
+              }, payMethodName))
+            })]
+          }), /*#__PURE__*/(0,jsx_runtime.jsxs)(esm_Form.Group, {
+            as: esm_Col,
+            children: [/*#__PURE__*/(0,jsx_runtime.jsx)(esm_Form.Label, {
+              children: "Tag"
+            }), /*#__PURE__*/(0,jsx_runtime.jsx)(esm_Form.Select, {
+              ...register("tag", {
+                required: true
+              }),
+              children: Object.keys(Tag).map(tagName => /*#__PURE__*/(0,jsx_runtime.jsx)("option", {
+                value: tagName,
+                children: tagName
+              }, tagName))
+            })]
+          })]
+        }), /*#__PURE__*/(0,jsx_runtime.jsxs)(esm_Form.Group, {
+          children: [/*#__PURE__*/(0,jsx_runtime.jsx)(esm_Form.Label, {
+            children: "Amount"
+          }), /*#__PURE__*/(0,jsx_runtime.jsxs)(esm_InputGroup, {
+            children: [/*#__PURE__*/(0,jsx_runtime.jsx)(esm_InputGroup.Text, {
+              children: "RUB"
+            }), /*#__PURE__*/(0,jsx_runtime.jsx)(esm_Form.Control, {
+              placeholder: "0",
+              type: "number",
+              ...register("amount", {
+                required: "Amount is required"
+              })
+            })]
+          })]
+        }), /*#__PURE__*/(0,jsx_runtime.jsxs)(esm_Form.Group, {
+          children: [/*#__PURE__*/(0,jsx_runtime.jsx)(esm_Form.Label, {
+            children: "Comment"
+          }), /*#__PURE__*/(0,jsx_runtime.jsx)(esm_Form.Control, {
+            placeholder: "Any comment",
+            type: "text",
+            ...register("comment")
+          })]
+        }), /*#__PURE__*/(0,jsx_runtime.jsxs)(esm_Stack, {
+          className: "mt-5",
+          direction: "horizontal",
+          gap: 3,
+          children: [/*#__PURE__*/(0,jsx_runtime.jsx)(react_bootstrap_esm_Button, {
+            variant: "danger",
+            onClick: handleDelete,
+            children: "Delete"
+          }), /*#__PURE__*/(0,jsx_runtime.jsx)(react_bootstrap_esm_Button, {
+            variant: "secondary",
+            onClick: handleClose,
+            className: "ms-auto",
+            children: "Close"
+          }), /*#__PURE__*/(0,jsx_runtime.jsx)(react_bootstrap_esm_Button, {
+            type: "submit",
+            variant: "success",
+            children: "Save"
+          })]
+        })]
+      })
+    })]
+  });
+};
+/* harmony default export */ const EditTransaction_EditTransaction = (EditTransaction);
+;// CONCATENATED MODULE: ./src/components/EditTransaction/index.ts
+
+/* harmony default export */ const components_EditTransaction = (EditTransaction_EditTransaction);
+;// CONCATENATED MODULE: ./src/pages/Expenses/Expenses.tsx
+
+
+
+
+
+
+
+
+
+
+
+
+
+const Expenses = () => {
+  let transactionsHistory = useAppSelector(selectTransactionsHistory);
+  const filter = useAppSelector(selectFilterExpenses);
+  const {
+    date,
+    isEditWindowOpened,
+    transaction
+  } = useAppSelector(selectEditWindow);
+  transactionsHistory = filterTransactionsHistory(transactionsHistory, filter);
+  const total = countTotal(transactionsHistory);
+  return /*#__PURE__*/(0,jsx_runtime.jsxs)("div", {
+    className: "expenses",
+    children: [/*#__PURE__*/(0,jsx_runtime.jsx)(Total, {
+      day: total.day,
+      week: total.week,
+      month: total.month,
+      className: "expenses__total"
+    }), /*#__PURE__*/(0,jsx_runtime.jsx)(Filter_ExpensesFilter, {
+      className: "expenses__filter"
+    }), /*#__PURE__*/(0,jsx_runtime.jsx)(TransactionSection_TransactionSection, {
+      transactionsHistory: transactionsHistory,
+      className: "expenses__transactions"
+    }), /*#__PURE__*/(0,jsx_runtime.jsx)(AddTransaction_AddTransaction, {
+      className: "expenses__add"
+    }), isEditWindowOpened && /*#__PURE__*/(0,jsx_runtime.jsx)(components_EditTransaction, {
+      date: date,
+      transaction: transaction
+    })]
+  });
+};
+const Total = ({
+  day,
+  week,
+  month,
+  className
+}) => {
+  return /*#__PURE__*/(0,jsx_runtime.jsxs)("section", {
+    className: "total " + className,
+    children: [/*#__PURE__*/(0,jsx_runtime.jsx)("h2", {
+      className: "total__header",
+      children: "Total"
+    }), /*#__PURE__*/(0,jsx_runtime.jsxs)("div", {
+      className: "total-wrap",
+      children: [/*#__PURE__*/(0,jsx_runtime.jsxs)("div", {
+        className: "row",
+        children: [/*#__PURE__*/(0,jsx_runtime.jsx)("div", {
+          children: "Per day"
+        }), /*#__PURE__*/(0,jsx_runtime.jsxs)("div", {
+          children: [day, " \u20BD"]
+        })]
+      }), /*#__PURE__*/(0,jsx_runtime.jsxs)("div", {
+        className: "row",
+        children: [/*#__PURE__*/(0,jsx_runtime.jsx)("div", {
+          children: "Per week"
+        }), /*#__PURE__*/(0,jsx_runtime.jsxs)("div", {
+          children: [week, " \u20BD"]
+        })]
+      }), /*#__PURE__*/(0,jsx_runtime.jsxs)("div", {
+        className: "row",
+        children: [/*#__PURE__*/(0,jsx_runtime.jsx)("div", {
+          children: "Per month"
+        }), /*#__PURE__*/(0,jsx_runtime.jsxs)("div", {
+          children: [month, " \u20BD"]
+        })]
+      })]
+    })]
+  });
+};
+/* harmony default export */ const Expenses_Expenses = (Expenses);
+;// CONCATENATED MODULE: ./src/pages/Expenses/index.ts
+
+/* harmony default export */ const pages_Expenses = (Expenses_Expenses);
 ;// CONCATENATED MODULE: ./src/components/SignIn/SignIn.tsx
 
 
@@ -33187,7 +33502,7 @@ const SignIn = ({
           })
         }) : /*#__PURE__*/(0,jsx_runtime.jsx)(react_bootstrap_esm_Button, {
           type: "submit",
-          children: "Sign Up"
+          children: "Sign In"
         })
       })
     }), /*#__PURE__*/(0,jsx_runtime.jsxs)("p", {
