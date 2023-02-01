@@ -86,7 +86,7 @@ export const transactionsSlice = createSlice({
       filter.analyticsPage = { ...filter.analyticsPage, ...payload };
     },
 
-    reset: () => initialState,
+    reset: () => ({ ...initialState, transactionsHistory: [] }),
   },
 });
 

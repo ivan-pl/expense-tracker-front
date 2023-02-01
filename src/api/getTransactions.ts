@@ -22,7 +22,11 @@ export default async function getTransactions(
   const response = await fetch(url);
   checkResponse(response);
 
-  const responseTransactions = (await response.json()) as ResponseType;
+  const responseTransactions = (await response.json()) as ResponseType | null;
+  if (!responseTransactions) {
+    return [];
+  }
+
   const transactionsHistory: TransactionsHistory = [];
 
   for (const [date, transactions] of Object.entries(responseTransactions)) {
