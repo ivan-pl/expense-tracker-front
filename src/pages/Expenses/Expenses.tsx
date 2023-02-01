@@ -10,6 +10,7 @@ import {
 } from "../../store/transactionsSelectors";
 import countTotal, { Total as TotalValues } from "./utils/countTotal";
 import filterTransactionsHistory from "../../utils/filterTransactions";
+import EditTransaction from "../../components/EditTransaction";
 import "./Expenses.scss";
 
 const Expenses: FC = () => {
@@ -33,6 +34,7 @@ const Expenses: FC = () => {
         className="expenses__transactions"
       />
       <AddTransaction className="expenses__add" />
+      <EditTransaction />
     </div>
   );
 };

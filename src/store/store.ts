@@ -1,11 +1,13 @@
 import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
 import transactionsReducer from "./transactionsSlice";
 import userReducer from "./userSlice";
+import expensesPageReducer from "./expensesPageSlice";
 
 const store = configureStore({
   reducer: {
     transactions: transactionsReducer,
     user: userReducer,
+    expensesPage: expensesPageReducer,
   },
 });
 
