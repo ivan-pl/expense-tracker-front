@@ -105,6 +105,19 @@ export const addToStorageAndStore =
     );
   };
 
+// export const updateInStorageAndStore =
+//   ({
+//     transaction,
+//     date,
+//   }: {
+//     transaction: Transaction;
+//     date: string;
+//   }): AppThunk =>
+//   (dispatch, getState) => {
+//     dispatch(update({date, transaction}));
+//     updateTransactionInStorage(date, transaction);
+//   };
+
 export const {
   setNewTransactions,
   add,

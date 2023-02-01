@@ -1,18 +1,20 @@
 import React, { FC, useState } from "react";
 import Form from "react-bootstrap/Form";
-import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Stack from "react-bootstrap/Stack";
+import Spinner from "react-bootstrap/Spinner";
 import InputGroup from "react-bootstrap/InputGroup";
 import { useForm, SubmitHandler } from "react-hook-form";
 
 import { Tag, PayMethod } from "../../types/transactions.type";
-import { useAppDispatch } from "../../app/hooks";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { closeEditWindow } from "../../store/expensesPageSlice";
 import showError from "../../utils/showError";
 import { Transaction } from "../../types/transactions.type";
+import updateTransaction from "../../api/updateTransaction";
+import { selectUserCredentials } from "../../store/userSelectors";
 
 interface Inputs {
   date: string;
@@ -27,10 +29,15 @@ interface Props {
   date: string;
 }
 
-const EditTransaction: FC<Props> = ({ date, transaction }) => {
+const EditTransaction: FC<Props> = ({
+  date: initialDate,
+  transaction: initialTransaction,
+}) => {
   const [open, setOpen] = useState(true);
+  const [loadingSave, setLoadingSave] = useState(false);
 
   const dispatch = useAppDispatch();
+  const { uid, token } = useAppSelector(selectUserCredentials);
 
   const {
     handleSubmit,
@@ -38,13 +45,22 @@ const EditTransaction: FC<Props> = ({ date, transaction }) => {
     formState: { errors },
   } = useForm<Inputs>({
     defaultValues: {
-      date,
-      ...transaction,
+      date: initialDate,
+      ...initialTransaction,
     },
   });
 
   const handleSave: SubmitHandler<Inputs> = (data) => {
-    console.log(data);
+    const { date, ...transaction } = data;
+    setLoadingSave(true);
+    updateTransaction(
+      { ...transaction, id: initialTransaction.id },
+      date,
+      uid,
+      token
+    ).then((updatedTransaction) => {
+      
+    });
     handleClose();
   };
 
@@ -54,7 +70,7 @@ const EditTransaction: FC<Props> = ({ date, transaction }) => {
   };
 
   const handleDelete = () => {
-    console.log("delete", transaction.id);
+    console.log("delete");
   };
 
   return (
@@ -129,9 +145,21 @@ const EditTransaction: FC<Props> = ({ date, transaction }) => {
             >
               Close
             </Button>
-            <Button type="submit" variant="success">
-              Save
-            </Button>
+            {loadingSave ? (
+              <Button type="submit" variant="success" disabled>
+                <Spinner
+                  as="span"
+                  animation="border"
+                  size="sm"
+                  role="status"
+                  aria-hidden="true"
+                />
+              </Button>
+            ) : (
+              <Button type="submit" variant="success">
+                Save
+              </Button>
+            )}
           </Stack>
         </Form>
       </Modal.Body>
