@@ -1,7 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { Transaction, DayTransactions } from "../types/transactions.type";
-import addTransactionToHistory from "./utils/addTransactionToHistory";
 import formatDate from "../utils/formatDate";
 import { AppThunk } from "./store";
 import updateDayTransactionsInStorage from "../storageController/updateDayTransactions";
@@ -10,7 +9,6 @@ import {
   selectTransactionsHistory,
 } from "./transactionsSelectors";
 import loadTransactionsHistory from "../storageController/loadTransactionsHistory";
-import { stringify } from "querystring";
 
 export interface TransactionsState {
   transactionsHistory: DayTransactions[];
@@ -61,15 +59,20 @@ export const transactionsSlice = createSlice({
         payload: { transaction, date },
       }: PayloadAction<{ transaction: Transaction; date: string }>
     ) => {
-      if (state.transactionsHistory.length === 0) {
-        state.transactionsHistory.push({
+      const ind = state.transactionsHistory.findIndex(
+        (_) => new Date(_.date) <= new Date(date)
+      );
+      const { transactionsHistory } = state;
+
+      if (ind === -1) {
+        transactionsHistory.push({
           date,
           transactionList: [transaction],
         });
         return state;
       }
 
-      addTransactionToHistory(state.transactionsHistory, date, transaction);
+      transactionsHistory[ind].transactionList.unshift(transaction);
     },
 
     deleteTransaction: (
