@@ -159,7 +159,7 @@ const AddTransaction: FC<Props> = ({ className = "" }: Props) => {
           </Button>
 
           {isLoading ? (
-            <Button variant="primary" disabled>
+            <Button variant="success" disabled>
               <Spinner
                 as="span"
                 animation="border"

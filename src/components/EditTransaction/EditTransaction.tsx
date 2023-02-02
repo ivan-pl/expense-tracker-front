@@ -4,6 +4,7 @@ import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Stack from "react-bootstrap/Stack";
+import Alert from "react-bootstrap/Alert";
 import Spinner from "react-bootstrap/Spinner";
 import InputGroup from "react-bootstrap/InputGroup";
 import { useForm, SubmitHandler } from "react-hook-form";
@@ -14,7 +15,9 @@ import { closeEditWindow } from "../../store/expensesPageSlice";
 import showError from "../../utils/showError";
 import { Transaction } from "../../types/transactions.type";
 import updateTransaction from "../../api/updateTransaction";
+import deleteTransaction from "../../api/deleteTransaction";
 import { selectUserCredentials } from "../../store/userSelectors";
+import { deleteFromStorageAndStore } from "../../store/transactionsSlice";
 
 interface Inputs {
   date: string;
@@ -29,12 +32,22 @@ interface Props {
   date: string;
 }
 
+const createTransaction = (
+  inputs: Omit<Inputs, "id">,
+  transaction: Transaction
+): Transaction => ({
+  ...transaction,
+  ...inputs,
+});
+
 const EditTransaction: FC<Props> = ({
   date: initialDate,
   transaction: initialTransaction,
 }) => {
   const [open, setOpen] = useState(true);
   const [loadingSave, setLoadingSave] = useState(false);
+  const [loadingDelete, setLoadingDelete] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
 
   const dispatch = useAppDispatch();
   const { uid, token } = useAppSelector(selectUserCredentials);
@@ -58,9 +71,7 @@ const EditTransaction: FC<Props> = ({
       date,
       uid,
       token
-    ).then((updatedTransaction) => {
-      
-    });
+    ).then((updatedTransaction) => {});
     handleClose();
   };
 
@@ -70,7 +81,18 @@ const EditTransaction: FC<Props> = ({
   };
 
   const handleDelete = () => {
-    console.log("delete");
+    setLoadingDelete(true);
+    const id = initialTransaction.id;
+
+    deleteTransaction(id, initialDate, uid, token)
+      .then(() => {
+        dispatch(deleteFromStorageAndStore(id, initialDate));
+        handleClose();
+      })
+      .catch((err: Error) => {
+        setErrorMsg(err.message);
+      })
+      .finally(() => setLoadingDelete(false));
   };
 
   return (
@@ -79,6 +101,7 @@ const EditTransaction: FC<Props> = ({
 
       <Modal.Body>
         <Form onSubmit={handleSubmit(handleSave)}>
+          {errorMsg && <Alert variant="danger">{errorMsg}</Alert>}
           <Form.Group className="mb-3 col-6">
             <Form.Label>Date</Form.Label>
             <Form.Control
@@ -134,9 +157,21 @@ const EditTransaction: FC<Props> = ({
           </Form.Group>
 
           <Stack className="mt-5" direction="horizontal" gap={3}>
-            <Button variant="danger" onClick={handleDelete}>
-              Delete
-            </Button>
+            {loadingDelete ? (
+              <Button variant="secondary" onClick={handleClose} disabled>
+                <Spinner
+                  as="span"
+                  animation="border"
+                  size="sm"
+                  role="status"
+                  aria-hidden="true"
+                />
+              </Button>
+            ) : (
+              <Button variant="danger" onClick={handleDelete}>
+                Delete
+              </Button>
+            )}
 
             <Button
               variant="secondary"

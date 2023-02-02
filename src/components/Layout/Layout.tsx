@@ -9,7 +9,7 @@ import { add as addUserCredentials, signOut } from "../../store/userSlice";
 import "./Layout.scss";
 import getTransactions from "../../api/getTransactions";
 import { setNewTransactions } from "../../store/transactionsSlice";
-import addDayTransactions from "../../storageController/addDayTransactions";
+import addDayTransactions from "../../storageController/updateDayTransactions";
 
 const Layout: FC = () => {
   const navigate = useNavigate();
