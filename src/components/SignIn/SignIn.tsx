@@ -50,13 +50,16 @@ const SignIn: FC<Props> = ({ onSignUp, auth }) => {
   }
 
   return (
-    <Form className="m-4" onSubmit={handleSubmit(onSubmit)}>
+    <Form
+      className="m-4 col-10 col-md-5 mx-md-auto"
+      onSubmit={handleSubmit(onSubmit)}
+    >
       {error && <Alert variant="danger">{error.message}</Alert>}
       <Form.Group as={Row} className="mb-3" controlId="formHorizontalEmail">
-        <Form.Label column sm={2}>
+        <Form.Label column sm={2} md={3}>
           Email
         </Form.Label>
-        <Col sm={10}>
+        <Col sm={10} md={9}>
           <Form.Control
             type="email"
             placeholder="Email"
@@ -75,10 +78,10 @@ const SignIn: FC<Props> = ({ onSignUp, auth }) => {
       </Form.Group>
 
       <Form.Group as={Row} className="mb-3" controlId="formHorizontalPassword">
-        <Form.Label column sm={2}>
+        <Form.Label column sm={2} md={3}>
           Password
         </Form.Label>
-        <Col sm={10}>
+        <Col sm={10} md={9}>
           <Form.Control
             type="password"
             placeholder="Password"
@@ -97,7 +100,7 @@ const SignIn: FC<Props> = ({ onSignUp, auth }) => {
       </Form.Group>
 
       <Form.Group as={Row} className="mb-3">
-        <Col sm={{ span: 10, offset: 2 }}>
+        <Col sm={{ span: 10, offset: 2 }} md={{ span: 9, offset: 3 }}>
           {loading ? (
             <Button type="submit" disabled>
               <Spinner
@@ -113,7 +116,7 @@ const SignIn: FC<Props> = ({ onSignUp, auth }) => {
           )}
         </Col>
       </Form.Group>
-      <p>
+      <p className="text-center">
         Not a member?{" "}
         <a
           href="#"
