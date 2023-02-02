@@ -10010,39 +10010,21 @@ var autoBatchEnhancer = function (options) {
 F();
 
 //# sourceMappingURL=redux-toolkit.esm.js.map
-;// CONCATENATED MODULE: ./src/store/utils/addTransactionToHistory.ts
-function addTransactionToHistory(transactionsHistory, date, transaction) {
-  const ind = transactionsHistory.findIndex(_ => new Date(_.date) <= new Date(date));
-  if (ind === -1) {
-    transactionsHistory.push({
-      date,
-      transactionList: [transaction]
-    });
-    return;
-  }
-  if (transactionsHistory[ind].date === date) {
-    transactionsHistory[ind].transactionList.push(transaction);
-  } else {
-    transactionsHistory.splice(ind, 0, {
-      date,
-      transactionList: [transaction]
-    });
-  }
-}
 ;// CONCATENATED MODULE: ./src/utils/formatDate.ts
 const formatDate = date => date.toISOString().substring(0, 10);
 /* harmony default export */ const utils_formatDate = (formatDate);
 ;// CONCATENATED MODULE: ./src/storageController/variables.ts
 const STORAGE_PREFIX = "TH_";
-;// CONCATENATED MODULE: ./src/storageController/addDayTransactions.ts
+;// CONCATENATED MODULE: ./src/storageController/updateDayTransactions.ts
 
-async function addDayTransactions(dayTransactions) {
+async function updateDayTransactions(dayTransactions) {
   localStorage.setItem(STORAGE_PREFIX + dayTransactions.date, JSON.stringify(dayTransactions));
 }
 ;// CONCATENATED MODULE: ./src/store/transactionsSelectors.ts
 const selectTransactionsHistory = state => state.transactions.transactionsHistory;
 const selectFilterExpenses = state => state.transactions.filter.expensesPage;
 const selectFilterAnalytics = state => state.transactions.filter.analyticsPage;
+const selectDayTransactions = date => state => state.transactions.transactionsHistory.find(_ => _.date === date);
 ;// CONCATENATED MODULE: ./src/storageController/loadTransactionsHistory.ts
 
 function loadTransactionsHistory() {
@@ -10062,7 +10044,6 @@ function loadTransactionsHistory() {
   return transactionsHistory;
 }
 ;// CONCATENATED MODULE: ./src/store/transactionsSlice.ts
-
 
 
 
@@ -10097,14 +10078,33 @@ const transactionsSlice = createSlice({
         date
       }
     }) => {
-      if (state.transactionsHistory.length === 0) {
-        state.transactionsHistory.push({
+      const ind = state.transactionsHistory.findIndex(_ => new Date(_.date) <= new Date(date));
+      const {
+        transactionsHistory
+      } = state;
+      if (ind === -1) {
+        transactionsHistory.push({
           date,
           transactionList: [transaction]
         });
         return state;
       }
-      addTransactionToHistory(state.transactionsHistory, date, transaction);
+      transactionsHistory[ind].transactionList.unshift(transaction);
+    },
+    deleteTransaction: (state, {
+      payload: {
+        id,
+        date
+      }
+    }) => {
+      const dayTransactions = state.transactionsHistory.find(_ => _.date === date);
+      if (!dayTransactions) {
+        return;
+      }
+      const ind = dayTransactions?.transactionList.findIndex(_ => _.id === id);
+      if (ind !== -1) {
+        dayTransactions.transactionList.splice(ind, 1);
+      }
     },
     filterExpenses: ({
       filter
@@ -10132,36 +10132,38 @@ const transactionsSlice = createSlice({
     })
   }
 });
-const addToStorageAndStore = ({
-  transaction,
-  date
-}) => (dispatch, getState) => {
+const addToStorageAndStore = (transaction, date) => (dispatch, getState) => {
   dispatch(add({
     date,
     transaction
   }));
-  addDayTransactions(selectTransactionsHistory(getState()).find(_ => _.date === date));
+  const dayTransactions = selectDayTransactions(date)(getState());
+  if (dayTransactions) {
+    updateDayTransactions(dayTransactions);
+  }
 };
-
-// export const updateInStorageAndStore =
-//   ({
-//     transaction,
-//     date,
-//   }: {
-//     transaction: Transaction;
-//     date: string;
-//   }): AppThunk =>
-//   (dispatch, getState) => {
-//     dispatch(update({date, transaction}));
-//     updateTransactionInStorage(date, transaction);
-//   };
-
+const deleteFromStorageAndStore = (id, date) => (dispatch, getState) => {
+  dispatch(deleteTransaction({
+    id,
+    date
+  }));
+  const dayTransactions = selectDayTransactions(date)(getState());
+  if (dayTransactions) {
+    updateDayTransactions(dayTransactions);
+  }
+};
+const updateInStorageAndStore = (transaction, curDate, newDate) => dispatch => {
+  const id = transaction.id;
+  dispatch(deleteFromStorageAndStore(id, curDate));
+  dispatch(addToStorageAndStore(transaction, newDate));
+};
 const {
   setNewTransactions,
   add,
   filterExpenses,
   filterAnalytics,
-  reset: transactionsSlice_reset
+  reset: transactionsSlice_reset,
+  deleteTransaction
 } = transactionsSlice.actions;
 /* harmony default export */ const store_transactionsSlice = (transactionsSlice.reducer);
 ;// CONCATENATED MODULE: ./src/storageController/addUser.ts
@@ -24951,7 +24953,7 @@ const Layout = () => {
       return getTransactions(uid, token);
     }).then(transactionsHistory => {
       dispatch(setNewTransactions(transactionsHistory));
-      transactionsHistory.forEach(addDayTransactions);
+      transactionsHistory.forEach(updateDayTransactions);
     });
   }, []);
   return /*#__PURE__*/(0,jsx_runtime.jsxs)("div", {
@@ -30379,12 +30381,9 @@ const AddTransaction = ({
     };
     addTransaction(uid, token, transaction, date).then(id => {
       dispatch(addToStorageAndStore({
-        date,
-        transaction: {
-          ...transaction,
-          id
-        }
-      }));
+        ...transaction,
+        id
+      }, date));
       resetState();
     }).catch(err => {
       setErrorMsg(err.message);
@@ -30485,7 +30484,7 @@ const AddTransaction = ({
           onClick: handleClose,
           children: "Close"
         }), isLoading ? /*#__PURE__*/(0,jsx_runtime.jsx)(react_bootstrap_esm_Button, {
-          variant: "primary",
+          variant: "success",
           disabled: true,
           children: /*#__PURE__*/(0,jsx_runtime.jsx)(esm_Spinner, {
             as: "span",
@@ -33171,7 +33170,7 @@ function showError(err) {
 
 
 async function updateTransaction(transaction, date, uid, token) {
-  const url = URL_USERS + `${uid}/transactions/${date}.json` + new URLSearchParams({
+  const url = URL_USERS + `${uid}/transactions/${date}.json?` + new URLSearchParams({
     auth: token
   });
   const {
@@ -33180,12 +33179,33 @@ async function updateTransaction(transaction, date, uid, token) {
   } = transaction;
   const response = await fetch(url, {
     method: "PUT",
-    body: JSON.stringify(data)
+    body: JSON.stringify({
+      [id]: data
+    })
   });
   checkResponse(response);
-  return (await response.json())[id];
+  const updatedTransaction = (await response.json())[id];
+  return {
+    ...updatedTransaction,
+    id
+  };
+}
+;// CONCATENATED MODULE: ./src/api/deleteTransaction.ts
+
+
+async function deleteTransaction_deleteTransaction(id, date, uid, token) {
+  const url = URL_USERS + `${uid}/transactions/${date}/${id}.json?` + new URLSearchParams({
+    auth: token
+  });
+  const response = await fetch(url, {
+    method: "DELETE"
+  });
+  checkResponse(response);
 }
 ;// CONCATENATED MODULE: ./src/components/EditTransaction/EditTransaction.tsx
+
+
+
 
 
 
@@ -33209,6 +33229,8 @@ const EditTransaction = ({
 }) => {
   const [open, setOpen] = (0,react.useState)(true);
   const [loadingSave, setLoadingSave] = (0,react.useState)(false);
+  const [loadingDelete, setLoadingDelete] = (0,react.useState)(false);
+  const [errorMsg, setErrorMsg] = (0,react.useState)("");
   const dispatch = useAppDispatch();
   const {
     uid,
@@ -33235,15 +33257,26 @@ const EditTransaction = ({
     updateTransaction({
       ...transaction,
       id: initialTransaction.id
-    }, date, uid, token).then(updatedTransaction => {});
-    handleClose();
+    }, date, uid, token).then(updatedTransaction => {
+      dispatch(updateInStorageAndStore(updatedTransaction, initialDate, date));
+      handleClose();
+    }).catch(err => {
+      setErrorMsg(err.message);
+    }).finally(() => setLoadingSave(false));
   };
   const handleClose = () => {
     setOpen(false);
     dispatch(closeEditWindow());
   };
   const handleDelete = () => {
-    console.log("delete");
+    setLoadingDelete(true);
+    const id = initialTransaction.id;
+    deleteTransaction_deleteTransaction(id, initialDate, uid, token).then(() => {
+      dispatch(deleteFromStorageAndStore(id, initialDate));
+      handleClose();
+    }).catch(err => {
+      setErrorMsg(err.message);
+    }).finally(() => setLoadingDelete(false));
   };
   return /*#__PURE__*/(0,jsx_runtime.jsxs)(react_bootstrap_esm_Modal, {
     show: open,
@@ -33253,7 +33286,10 @@ const EditTransaction = ({
     }), /*#__PURE__*/(0,jsx_runtime.jsx)(react_bootstrap_esm_Modal.Body, {
       children: /*#__PURE__*/(0,jsx_runtime.jsxs)(esm_Form, {
         onSubmit: handleSubmit(handleSave),
-        children: [/*#__PURE__*/(0,jsx_runtime.jsxs)(esm_Form.Group, {
+        children: [errorMsg && /*#__PURE__*/(0,jsx_runtime.jsx)(esm_Alert, {
+          variant: "danger",
+          children: errorMsg
+        }), /*#__PURE__*/(0,jsx_runtime.jsxs)(esm_Form.Group, {
           className: "mb-3 col-6",
           children: [/*#__PURE__*/(0,jsx_runtime.jsx)(esm_Form.Label, {
             children: "Date"
@@ -33320,7 +33356,18 @@ const EditTransaction = ({
           className: "mt-5",
           direction: "horizontal",
           gap: 3,
-          children: [/*#__PURE__*/(0,jsx_runtime.jsx)(react_bootstrap_esm_Button, {
+          children: [loadingDelete ? /*#__PURE__*/(0,jsx_runtime.jsx)(react_bootstrap_esm_Button, {
+            variant: "secondary",
+            onClick: handleClose,
+            disabled: true,
+            children: /*#__PURE__*/(0,jsx_runtime.jsx)(esm_Spinner, {
+              as: "span",
+              animation: "border",
+              size: "sm",
+              role: "status",
+              "aria-hidden": "true"
+            })
+          }) : /*#__PURE__*/(0,jsx_runtime.jsx)(react_bootstrap_esm_Button, {
             variant: "danger",
             onClick: handleDelete,
             children: "Delete"
@@ -33485,7 +33532,7 @@ const SignIn = ({
     });
   }
   return /*#__PURE__*/(0,jsx_runtime.jsxs)(esm_Form, {
-    className: "m-4",
+    className: "m-4 col-10 col-md-5 mx-md-auto",
     onSubmit: handleSubmit(onSubmit),
     children: [error && /*#__PURE__*/(0,jsx_runtime.jsx)(esm_Alert, {
       variant: "danger",
@@ -33497,9 +33544,11 @@ const SignIn = ({
       children: [/*#__PURE__*/(0,jsx_runtime.jsx)(esm_Form.Label, {
         column: true,
         sm: 2,
+        md: 3,
         children: "Email"
       }), /*#__PURE__*/(0,jsx_runtime.jsx)(esm_Col, {
         sm: 10,
+        md: 9,
         children: /*#__PURE__*/(0,jsx_runtime.jsx)(esm_Form.Control, {
           type: "email",
           placeholder: "Email",
@@ -33522,9 +33571,11 @@ const SignIn = ({
       children: [/*#__PURE__*/(0,jsx_runtime.jsx)(esm_Form.Label, {
         column: true,
         sm: 2,
+        md: 3,
         children: "Password"
       }), /*#__PURE__*/(0,jsx_runtime.jsx)(esm_Col, {
         sm: 10,
+        md: 9,
         children: /*#__PURE__*/(0,jsx_runtime.jsx)(esm_Form.Control, {
           type: "password",
           placeholder: "Password",
@@ -33548,6 +33599,10 @@ const SignIn = ({
           span: 10,
           offset: 2
         },
+        md: {
+          span: 9,
+          offset: 3
+        },
         children: loading ? /*#__PURE__*/(0,jsx_runtime.jsx)(react_bootstrap_esm_Button, {
           type: "submit",
           disabled: true,
@@ -33564,6 +33619,7 @@ const SignIn = ({
         })
       })
     }), /*#__PURE__*/(0,jsx_runtime.jsxs)("p", {
+      className: "text-center",
       children: ["Not a member?", " ", /*#__PURE__*/(0,jsx_runtime.jsx)("a", {
         href: "#",
         onClick: e => {
@@ -33734,24 +33790,29 @@ const SignUp = ({
 
 
 
+
 const Auth = () => {
   const [openSignUp, setOpenSignUp] = (0,react.useState)(false);
-  return /*#__PURE__*/(0,jsx_runtime.jsxs)(esm_Container, {
-    children: [/*#__PURE__*/(0,jsx_runtime.jsx)(components_SignIn, {
-      onSignUp: () => setOpenSignUp(true),
-      auth: auth
-    }), /*#__PURE__*/(0,jsx_runtime.jsxs)(react_bootstrap_esm_Modal, {
-      show: openSignUp,
-      onHide: () => setOpenSignUp(false),
-      children: [/*#__PURE__*/(0,jsx_runtime.jsx)(react_bootstrap_esm_Modal.Header, {
-        closeButton: true,
-        children: "Sign Up"
-      }), /*#__PURE__*/(0,jsx_runtime.jsx)(react_bootstrap_esm_Modal.Body, {
-        children: /*#__PURE__*/(0,jsx_runtime.jsx)(components_SignUp, {
-          auth: auth
-        })
+  return /*#__PURE__*/(0,jsx_runtime.jsx)(esm_Container, {
+    className: "mt-5",
+    children: /*#__PURE__*/(0,jsx_runtime.jsxs)(esm_Row, {
+      className: "justify-content-center",
+      children: [/*#__PURE__*/(0,jsx_runtime.jsx)(components_SignIn, {
+        onSignUp: () => setOpenSignUp(true),
+        auth: auth
+      }), /*#__PURE__*/(0,jsx_runtime.jsxs)(react_bootstrap_esm_Modal, {
+        show: openSignUp,
+        onHide: () => setOpenSignUp(false),
+        children: [/*#__PURE__*/(0,jsx_runtime.jsx)(react_bootstrap_esm_Modal.Header, {
+          closeButton: true,
+          children: "Sign Up"
+        }), /*#__PURE__*/(0,jsx_runtime.jsx)(react_bootstrap_esm_Modal.Body, {
+          children: /*#__PURE__*/(0,jsx_runtime.jsx)(components_SignUp, {
+            auth: auth
+          })
+        })]
       })]
-    })]
+    })
   });
 };
 /* harmony default export */ const Auth_Auth = (Auth);
