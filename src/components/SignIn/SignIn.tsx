@@ -51,15 +51,15 @@ const SignIn: FC<Props> = ({ onSignUp, auth }) => {
 
   return (
     <Form
-      className="m-4 col-10 col-md-5 mx-md-auto"
+      className="m-4 col-10 col-md-4 mx-md-auto card pt-4"
       onSubmit={handleSubmit(onSubmit)}
     >
       {error && <Alert variant="danger">{error.message}</Alert>}
       <Form.Group as={Row} className="mb-3" controlId="formHorizontalEmail">
-        <Form.Label column sm={2} md={3}>
+        <Form.Label column xs={12}>
           Email
         </Form.Label>
-        <Col sm={10} md={9}>
+        <Col>
           <Form.Control
             type="email"
             placeholder="Email"
@@ -78,10 +78,8 @@ const SignIn: FC<Props> = ({ onSignUp, auth }) => {
       </Form.Group>
 
       <Form.Group as={Row} className="mb-3" controlId="formHorizontalPassword">
-        <Form.Label column sm={2} md={3}>
-          Password
-        </Form.Label>
-        <Col sm={10} md={9}>
+        <Form.Label xs={12}>Password</Form.Label>
+        <Col>
           <Form.Control
             type="password"
             placeholder="Password"
@@ -100,7 +98,7 @@ const SignIn: FC<Props> = ({ onSignUp, auth }) => {
       </Form.Group>
 
       <Form.Group as={Row} className="mb-3">
-        <Col sm={{ span: 10, offset: 2 }} md={{ span: 9, offset: 3 }}>
+        <Col className="col-auto ms-auto">
           {loading ? (
             <Button type="submit" disabled>
               <Spinner
