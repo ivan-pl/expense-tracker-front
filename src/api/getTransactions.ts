@@ -1,8 +1,4 @@
-import {
-  DayTransactions,
-  TransactionsHistory,
-  Transaction,
-} from "../types/transactions.type";
+import { TransactionsHistory, Transaction } from "../types/transactions.type";
 import checkResponse from "./utils/checkResponse";
 import { URL_USERS } from "./variables";
 

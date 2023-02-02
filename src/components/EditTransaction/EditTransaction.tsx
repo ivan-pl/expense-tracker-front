@@ -35,14 +35,6 @@ interface Props {
   date: string;
 }
 
-const createTransaction = (
-  inputs: Omit<Inputs, "id">,
-  transaction: Transaction
-): Transaction => ({
-  ...transaction,
-  ...inputs,
-});
-
 const EditTransaction: FC<Props> = ({
   date: initialDate,
   transaction: initialTransaction,

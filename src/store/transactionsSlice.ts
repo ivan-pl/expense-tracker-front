@@ -4,10 +4,7 @@ import { Transaction, DayTransactions } from "../types/transactions.type";
 import formatDate from "../utils/formatDate";
 import { AppThunk } from "./store";
 import updateDayTransactionsInStorage from "../storageController/updateDayTransactions";
-import {
-  selectDayTransactions,
-  selectTransactionsHistory,
-} from "./transactionsSelectors";
+import { selectDayTransactions } from "./transactionsSelectors";
 import loadTransactionsHistory from "../storageController/loadTransactionsHistory";
 
 export interface TransactionsState {
