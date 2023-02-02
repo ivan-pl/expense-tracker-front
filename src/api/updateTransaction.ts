@@ -10,15 +10,20 @@ export default async function updateTransaction(
 ): Promise<Transaction> {
   const url =
     URL_USERS +
-    `${uid}/transactions/${date}.json` +
+    `${uid}/transactions/${date}.json?` +
     new URLSearchParams({ auth: token });
   const { id, ...data } = transaction;
 
   const response = await fetch(url, {
     method: "PUT",
-    body: JSON.stringify(data),
+    body: JSON.stringify({ [id]: data }),
   });
   checkResponse(response);
 
-  return (await response.json())[id] as Transaction;
+  const updatedTransaction = (await response.json())[id] as Omit<
+    Transaction,
+    "id"
+  >;
+
+  return { ...updatedTransaction, id };
 }

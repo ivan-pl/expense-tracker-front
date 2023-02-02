@@ -57,12 +57,7 @@ const AddTransaction: FC<Props> = ({ className = "" }: Props) => {
 
     addTransaction(uid, token, transaction, date)
       .then((id) => {
-        dispatch(
-          addToStorageAndStore({
-            date,
-            transaction: { ...transaction, id },
-          })
-        );
+        dispatch(addToStorageAndStore({ ...transaction, id }, date));
         resetState();
       })
       .catch((err: Error) => {

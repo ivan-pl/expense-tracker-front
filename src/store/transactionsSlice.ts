@@ -96,27 +96,6 @@ export const transactionsSlice = createSlice({
       }
     },
 
-    // update: (
-    //   state,
-    //   {
-    //     payload: { transaction, date },
-    //   }: PayloadAction<{ transaction: Transaction; date: string }>
-    // ) => {
-    //   const dayTransactions = state.transactionsHistory.find(
-    //     (_) => _.date === date
-    //   );
-    //   if (!dayTransactions) {
-    //     return;
-    //   }
-
-    //   const ind = dayTransactions.transactionList.findIndex(
-    //     (_) => _.id === transaction.id
-    //   );
-    //   if (ind !== -1) {
-    //     dayTransactions.transactionList[ind] = transaction;
-    //   }
-    // },
-
     filterExpenses: (
       { filter },
       {
@@ -140,13 +119,7 @@ export const transactionsSlice = createSlice({
 });
 
 export const addToStorageAndStore =
-  ({
-    transaction,
-    date,
-  }: {
-    transaction: Transaction;
-    date: string;
-  }): AppThunk =>
+  (transaction: Transaction, date: string): AppThunk =>
   (dispatch, getState) => {
     dispatch(add({ date, transaction }));
     const dayTransactions = selectDayTransactions(date)(getState());
@@ -165,18 +138,13 @@ export const deleteFromStorageAndStore =
     }
   };
 
-// export const updateInStorageAndStore =
-//   ({
-//     transaction,
-//     date,
-//   }: {
-//     transaction: Transaction;
-//     date: string;
-//   }): AppThunk =>
-//   (dispatch, getState) => {
-//     dispatch(update({ date, transaction }));
-//     updateTransactionInStorage(date, transaction);
-//   };
+export const updateInStorageAndStore =
+  (transaction: Transaction, curDate: string, newDate: string): AppThunk =>
+  (dispatch) => {
+    const id = transaction.id;
+    dispatch(deleteFromStorageAndStore(id, curDate));
+    dispatch(addToStorageAndStore(transaction, newDate));
+  };
 
 export const {
   setNewTransactions,

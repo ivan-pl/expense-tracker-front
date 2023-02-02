@@ -17,7 +17,10 @@ import { Transaction } from "../../types/transactions.type";
 import updateTransaction from "../../api/updateTransaction";
 import deleteTransaction from "../../api/deleteTransaction";
 import { selectUserCredentials } from "../../store/userSelectors";
-import { deleteFromStorageAndStore } from "../../store/transactionsSlice";
+import {
+  deleteFromStorageAndStore,
+  updateInStorageAndStore,
+} from "../../store/transactionsSlice";
 
 interface Inputs {
   date: string;
@@ -71,8 +74,17 @@ const EditTransaction: FC<Props> = ({
       date,
       uid,
       token
-    ).then((updatedTransaction) => {});
-    handleClose();
+    )
+      .then((updatedTransaction) => {
+        dispatch(
+          updateInStorageAndStore(updatedTransaction, initialDate, date)
+        );
+        handleClose();
+      })
+      .catch((err: Error) => {
+        setErrorMsg(err.message);
+      })
+      .finally(() => setLoadingSave(false));
   };
 
   const handleClose = () => {
