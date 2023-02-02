@@ -33532,7 +33532,7 @@ const SignIn = ({
     });
   }
   return /*#__PURE__*/(0,jsx_runtime.jsxs)(esm_Form, {
-    className: "m-4 col-10 col-md-5 mx-md-auto",
+    className: "m-4 col-10 col-md-4 mx-md-auto card pt-4",
     onSubmit: handleSubmit(onSubmit),
     children: [error && /*#__PURE__*/(0,jsx_runtime.jsx)(esm_Alert, {
       variant: "danger",
@@ -33543,12 +33543,9 @@ const SignIn = ({
       controlId: "formHorizontalEmail",
       children: [/*#__PURE__*/(0,jsx_runtime.jsx)(esm_Form.Label, {
         column: true,
-        sm: 2,
-        md: 3,
+        xs: 12,
         children: "Email"
       }), /*#__PURE__*/(0,jsx_runtime.jsx)(esm_Col, {
-        sm: 10,
-        md: 9,
         children: /*#__PURE__*/(0,jsx_runtime.jsx)(esm_Form.Control, {
           type: "email",
           placeholder: "Email",
@@ -33569,13 +33566,9 @@ const SignIn = ({
       className: "mb-3",
       controlId: "formHorizontalPassword",
       children: [/*#__PURE__*/(0,jsx_runtime.jsx)(esm_Form.Label, {
-        column: true,
-        sm: 2,
-        md: 3,
+        xs: 12,
         children: "Password"
       }), /*#__PURE__*/(0,jsx_runtime.jsx)(esm_Col, {
-        sm: 10,
-        md: 9,
         children: /*#__PURE__*/(0,jsx_runtime.jsx)(esm_Form.Control, {
           type: "password",
           placeholder: "Password",
@@ -33595,14 +33588,7 @@ const SignIn = ({
       as: esm_Row,
       className: "mb-3",
       children: /*#__PURE__*/(0,jsx_runtime.jsx)(esm_Col, {
-        sm: {
-          span: 10,
-          offset: 2
-        },
-        md: {
-          span: 9,
-          offset: 3
-        },
+        className: "col-auto ms-auto",
         children: loading ? /*#__PURE__*/(0,jsx_runtime.jsx)(react_bootstrap_esm_Button, {
           type: "submit",
           disabled: true,
