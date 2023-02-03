@@ -24933,6 +24933,7 @@ const Layout = () => {
       navigate("/auth");
       return;
     }
+    console.log(2);
     const {
       uid,
       token
@@ -30411,6 +30412,7 @@ const AddTransaction = ({
           variant: "danger",
           children: errorMsg
         }), /*#__PURE__*/(0,jsx_runtime.jsxs)(esm_Form, {
+          "data-testid": "form",
           children: [/*#__PURE__*/(0,jsx_runtime.jsxs)(esm_Form.Group, {
             controlId: "formGridDate",
             className: "mb-3 col-6",
@@ -30419,7 +30421,8 @@ const AddTransaction = ({
             }), /*#__PURE__*/(0,jsx_runtime.jsx)(esm_Form.Control, {
               type: "date",
               value: date,
-              onChange: e => setDate(e.target.value)
+              onChange: e => setDate(e.target.value),
+              "data-testid": "date"
             })]
           }), /*#__PURE__*/(0,jsx_runtime.jsxs)(esm_Row, {
             className: "mb-3",
@@ -30431,6 +30434,7 @@ const AddTransaction = ({
               }), /*#__PURE__*/(0,jsx_runtime.jsx)(esm_Form.Select, {
                 value: payMethod,
                 onChange: e => setPayMethod(e.target.value),
+                "data-testid": "payMethod",
                 children: Object.keys(PayMethod).map(payMethodName => /*#__PURE__*/(0,jsx_runtime.jsx)("option", {
                   value: payMethodName,
                   children: payMethodName
@@ -30444,6 +30448,7 @@ const AddTransaction = ({
               }), /*#__PURE__*/(0,jsx_runtime.jsx)(esm_Form.Select, {
                 value: tag,
                 onChange: e => setTag(e.target.value),
+                "data-testid": "tag",
                 children: Object.keys(Tag).map(tagName => /*#__PURE__*/(0,jsx_runtime.jsx)("option", {
                   value: tagName,
                   children: tagName
@@ -30462,7 +30467,8 @@ const AddTransaction = ({
                 placeholder: "0",
                 type: "number",
                 value: amount,
-                onChange: e => setAmount(e.target.value)
+                onChange: e => setAmount(e.target.value),
+                "data-testid": "amount"
               })]
             })]
           }), /*#__PURE__*/(0,jsx_runtime.jsxs)(esm_Form.Group, {
@@ -30474,7 +30480,8 @@ const AddTransaction = ({
               placeholder: "Any comment",
               type: "text",
               value: comment,
-              onChange: e => setComment(e.target.value)
+              onChange: e => setComment(e.target.value),
+              "data-testid": "comment"
             })]
           })]
         })]
