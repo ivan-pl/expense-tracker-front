@@ -24933,7 +24933,6 @@ const Layout = () => {
       navigate("/auth");
       return;
     }
-    console.log(2);
     const {
       uid,
       token
