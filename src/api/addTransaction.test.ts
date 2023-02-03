@@ -1,8 +1,6 @@
 import addTransaction from "./addTransaction";
-import fetchMock, { enableFetchMocks } from "jest-fetch-mock";
+import fetchMock from "jest-fetch-mock";
 import { PayMethod, Tag, Transaction } from "../types/transactions.type";
-
-enableFetchMocks();
 
 const testTransaction: Omit<Transaction, "id"> = {
   amount: "123",
