@@ -84,13 +84,14 @@ const AddTransaction: FC<Props> = ({ className = "" }: Props) => {
         </Modal.Header>
         <Modal.Body>
           {errorMsg && <Alert variant="danger">{errorMsg}</Alert>}
-          <Form>
+          <Form data-testid="form">
             <Form.Group controlId="formGridDate" className="mb-3 col-6">
               <Form.Label>Date</Form.Label>
               <Form.Control
                 type="date"
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
+                data-testid="date"
               />
             </Form.Group>
 
@@ -100,6 +101,7 @@ const AddTransaction: FC<Props> = ({ className = "" }: Props) => {
                 <Form.Select
                   value={payMethod}
                   onChange={(e) => setPayMethod(e.target.value as PayMethod)}
+                  data-testid="payMethod"
                 >
                   {Object.keys(PayMethod).map((payMethodName) => (
                     <option key={payMethodName} value={payMethodName}>
@@ -114,6 +116,7 @@ const AddTransaction: FC<Props> = ({ className = "" }: Props) => {
                 <Form.Select
                   value={tag}
                   onChange={(e) => setTag(e.target.value as Tag)}
+                  data-testid="tag"
                 >
                   {Object.keys(Tag).map((tagName) => (
                     <option key={tagName} value={tagName}>
@@ -133,6 +136,7 @@ const AddTransaction: FC<Props> = ({ className = "" }: Props) => {
                   type="number"
                   value={amount}
                   onChange={(e) => setAmount(e.target.value)}
+                  data-testid="amount"
                 />
               </InputGroup>
             </Form.Group>
@@ -144,6 +148,7 @@ const AddTransaction: FC<Props> = ({ className = "" }: Props) => {
                 type="text"
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
+                data-testid="comment"
               />
             </Form.Group>
           </Form>
