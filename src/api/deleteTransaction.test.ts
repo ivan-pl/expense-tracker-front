@@ -1,7 +1,7 @@
 import deleteTransaction from "./deleteTransaction";
 import fetchMock from "jest-fetch-mock";
 
-describe("deleteTransaction", () => {
+describe("deleteTransaction()", () => {
   it("returns undefined", async () => {
     fetchMock.mockResponse("null", { status: 200 });
     await expect(
