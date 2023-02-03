@@ -195,4 +195,5 @@ export default {
   // watchman: true,
   automock: false,
   resetMocks: false,
+  coverageReporters: ["json-summary", "text", "lcov"],
 };
