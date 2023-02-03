@@ -6,6 +6,7 @@ import transactionsReducer, {
   TransactionsState,
   setNewTransactions,
   add,
+  deleteTransaction,
 } from "./transactionsSlice";
 
 const CURRENT_DATE = formatDate(new Date());
@@ -62,5 +63,36 @@ describe("transactions reducer", () => {
         { date: CURRENT_DATE, transactionList: [transaction, transaction] },
       ],
     } as TransactionsState);
+  });
+
+  it("should handle deleteTransaction", () => {
+    expect(
+      transactionsReducer(
+        initialState,
+        deleteTransaction({ id: "asd", date: "2022-11-15" })
+      )
+    ).toEqual(initialState);
+
+    const state: TransactionsState = {
+      ...initialState,
+      transactionsHistory: mockedTransactionsHistory,
+    };
+
+    const date = mockedTransactionsHistory[0].date;
+    const idToDelete = mockedTransactionsHistory[0].transactionList[0].id;
+    const newState = transactionsReducer(
+      state,
+      deleteTransaction({ id: idToDelete, date })
+    );
+
+    let isDeleted = true;
+    for (const dayTransaction of newState.transactionsHistory) {
+      if (dayTransaction.transactionList.find((_) => _.id === idToDelete)) {
+        isDeleted = false;
+        break;
+      }
+    }
+
+    expect(isDeleted).toBeTruthy();
   });
 });
