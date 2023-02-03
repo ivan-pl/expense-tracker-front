@@ -91,6 +91,7 @@
     "currency.js": "^2.0.4",
     "date-fns": "^2.29.3",
     "firebase": "^9.16.0",
+    "isomorphic-fetch": "^3.0.0",
     "normalize.css": "^8.0.1",
     "react-bootstrap": "^2.7.0",
     "react-firebase-hooks": "^5.1.1",
