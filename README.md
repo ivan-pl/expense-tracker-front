@@ -11,10 +11,10 @@
 
 - [About](#about)
   - [Built with](#built-with)
-- [License](#license)
 - [Getting started](#getting-started)
   - [Local installing](#local-installing)
   - [Setting up your firebase](#setting-up-firebase)
+- [License](#license)
 
 ## About <a name="about"></a>
 
