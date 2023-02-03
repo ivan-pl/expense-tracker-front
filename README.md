@@ -1,4 +1,5 @@
 # Expense tracker
+
 <p>
   <a href=""><img src="https://img.shields.io/azure-devops/build/rustwasm/gloo/6.svg?style=flat-square" alt="Build Status" /></a>
   <a href=""><img src="./badges/badge-functions.svg" alt="Coverage functions Status" /></a>
