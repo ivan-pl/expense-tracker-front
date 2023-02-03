@@ -5,11 +5,15 @@ import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import InputGroup from "react-bootstrap/InputGroup";
+import Spinner from "react-bootstrap/Spinner";
+import Alert from "react-bootstrap/Alert";
 
 import formatDate from "../../utils/formatDate";
 import { PayMethod, Tag, Transaction } from "../../types/transactions.type";
-import { useAppDispatch } from "../../app/hooks";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { addToStorageAndStore } from "../../store/transactionsSlice";
+import { selectUserCredentials } from "../../store/userSelectors";
+import addTransaction from "../../api/addTransaction";
 import "./AddTransaction.scss";
 
 interface Props {
@@ -18,6 +22,7 @@ interface Props {
 
 const AddTransaction: FC<Props> = ({ className = "" }: Props) => {
   const dispatch = useAppDispatch();
+  const { uid, token } = useAppSelector(selectUserCredentials);
 
   const [open, setOpen] = useState(false);
   const [date, setDate] = useState(formatDate(new Date()));
@@ -25,6 +30,8 @@ const AddTransaction: FC<Props> = ({ className = "" }: Props) => {
   const [payMethod, setPayMethod] = useState(PayMethod.Cash);
   const [comment, setComment] = useState("");
   const [amount, setAmount] = useState("");
+  const [isLoading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
 
   const resetState = () => {
     setOpen(false);
@@ -33,22 +40,30 @@ const AddTransaction: FC<Props> = ({ className = "" }: Props) => {
     setPayMethod(PayMethod.Cash);
     setComment("");
     setAmount("");
+    setErrorMsg("");
   };
 
   const showModal = () => setOpen(true);
 
   const handleAdd = () => {
+    setLoading(true);
+
     const transaction: Omit<Transaction, "id"> = {
       amount,
       tag,
       comment,
       payMethod,
     };
-    dispatch(
-      addToStorageAndStore({ date, transaction: { ...transaction, id: "123" } })
-    );
 
-    resetState();
+    addTransaction(uid, token, transaction, date)
+      .then((id) => {
+        dispatch(addToStorageAndStore({ ...transaction, id }, date));
+        resetState();
+      })
+      .catch((err: Error) => {
+        setErrorMsg(err.message);
+      })
+      .finally(() => setLoading(false));
   };
 
   const handleClose = () => resetState();
@@ -68,6 +83,7 @@ const AddTransaction: FC<Props> = ({ className = "" }: Props) => {
           <Modal.Title>Add expenses</Modal.Title>
         </Modal.Header>
         <Modal.Body>
+          {errorMsg && <Alert variant="danger">{errorMsg}</Alert>}
           <Form>
             <Form.Group controlId="formGridDate" className="mb-3 col-6">
               <Form.Label>Date</Form.Label>
@@ -136,9 +152,22 @@ const AddTransaction: FC<Props> = ({ className = "" }: Props) => {
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          <Button variant="primary" onClick={handleAdd}>
-            Add
-          </Button>
+
+          {isLoading ? (
+            <Button variant="success" disabled>
+              <Spinner
+                as="span"
+                animation="border"
+                size="sm"
+                role="status"
+                aria-hidden="true"
+              />
+            </Button>
+          ) : (
+            <Button variant="success" onClick={handleAdd}>
+              Add
+            </Button>
+          )}
         </Modal.Footer>
       </Modal>
     </>

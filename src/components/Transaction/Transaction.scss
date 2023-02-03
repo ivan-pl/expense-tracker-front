@@ -5,6 +5,12 @@
     "pay-method amount"
     "comment amount"
     / 1fr 1fr;
+  cursor: pointer;
+  padding: 3px;
+
+  &:hover {
+    outline: 1px solid black;
+  }
 
   .tag {
     grid-area: tag;

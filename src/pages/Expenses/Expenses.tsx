@@ -8,13 +8,17 @@ import {
   selectTransactionsHistory,
   selectFilterExpenses,
 } from "../../store/transactionsSelectors";
+import { selectEditWindow } from "../../store/expensesPageSelectors";
 import countTotal, { Total as TotalValues } from "./utils/countTotal";
 import filterTransactionsHistory from "../../utils/filterTransactions";
+import EditTransaction from "../../components/EditTransaction";
 import "./Expenses.scss";
 
 const Expenses: FC = () => {
   let transactionsHistory = useAppSelector(selectTransactionsHistory);
   const filter = useAppSelector(selectFilterExpenses);
+  const { date, isEditWindowOpened, transaction } =
+    useAppSelector(selectEditWindow);
   transactionsHistory = filterTransactionsHistory(transactionsHistory, filter);
 
   const total = countTotal(transactionsHistory);
@@ -33,6 +37,9 @@ const Expenses: FC = () => {
         className="expenses__transactions"
       />
       <AddTransaction className="expenses__add" />
+      {isEditWindowOpened && (
+        <EditTransaction date={date!} transaction={transaction!} />
+      )}
     </div>
   );
 };

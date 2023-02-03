@@ -5,10 +5,12 @@ import Layout from "../components/Layout";
 import About from "../pages/About";
 import Analytics from "../pages/Analytics";
 import Expenses from "../pages/Expenses";
+import Auth from "../pages/Auth";
 
 const App: FC = () => {
   return (
     <Routes>
+      <Route path="/auth" element={<Auth />} />
       <Route path="/" element={<Layout />}>
         <Route index element={<Expenses />} />
         <Route path="/expenses" element={<Expenses />} />

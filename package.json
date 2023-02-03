@@ -90,9 +90,12 @@
     "bootstrap": "^5.2.3",
     "currency.js": "^2.0.4",
     "date-fns": "^2.29.3",
+    "firebase": "^9.16.0",
     "normalize.css": "^8.0.1",
     "react-bootstrap": "^2.7.0",
+    "react-firebase-hooks": "^5.1.1",
     "react-google-charts": "^4.0.0",
+    "react-hook-form": "^7.43.0",
     "react-redux": "^8.0.5",
     "react-router-dom": "^6.4.2"
   }

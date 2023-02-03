@@ -1,8 +1,8 @@
 import { DayTransactions, PayMethod, Tag } from "../types/transactions.type";
-import addDayTransactions from "./addDayTransactions";
+import updateDayTransactions from "./updateDayTransactions";
 import { STORAGE_PREFIX } from "./variables";
 
-describe("addDayTransactions()", () => {
+describe("updateDayTransactions()", () => {
   const dayTransactions: DayTransactions = {
     date: "2022-02-14",
     transactionList: [
@@ -21,7 +21,7 @@ describe("addDayTransactions()", () => {
   });
 
   it("adds DayTransactions", async () => {
-    await addDayTransactions(dayTransactions);
+    await updateDayTransactions(dayTransactions);
     expect(
       JSON.parse(localStorage.getItem(STORAGE_PREFIX + dayTransactions.date)!)
     ).toEqual(dayTransactions);

@@ -1,6 +1,6 @@
 import { STORAGE_PREFIX } from "./variables";
 import { TransactionsHistory } from "../types/transactions.type";
-import addDayTransactions from "./addDayTransactions";
+import addDayTransactions from "./updateDayTransactions";
 
 export default async function setTransactionsHistory(
   transactionsHistory: TransactionsHistory

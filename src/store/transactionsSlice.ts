@@ -1,11 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { Transaction, DayTransactions } from "../types/transactions.type";
-import addTransactionToHistory from "./utils/addTransactionToHistory";
 import formatDate from "../utils/formatDate";
 import { AppThunk } from "./store";
-import addDayTransactionsToStorage from "../storageController/addDayTransactions";
-import { selectTransactionsHistory } from "./transactionsSelectors";
+import updateDayTransactionsInStorage from "../storageController/updateDayTransactions";
+import { selectDayTransactions } from "./transactionsSelectors";
 import loadTransactionsHistory from "../storageController/loadTransactionsHistory";
 
 export interface TransactionsState {
@@ -57,15 +56,44 @@ export const transactionsSlice = createSlice({
         payload: { transaction, date },
       }: PayloadAction<{ transaction: Transaction; date: string }>
     ) => {
-      if (state.transactionsHistory.length === 0) {
-        state.transactionsHistory.push({
+      const ind = state.transactionsHistory.findIndex(
+        (_) => new Date(_.date) <= new Date(date)
+      );
+      const { transactionsHistory } = state;
+
+      if (ind === -1) {
+        transactionsHistory.push({
           date,
           transactionList: [transaction],
         });
         return state;
       }
 
-      addTransactionToHistory(state.transactionsHistory, date, transaction);
+      transactionsHistory[ind].transactionList.unshift(transaction);
+    },
+
+    deleteTransaction: (
+      state,
+      {
+        payload: { id, date },
+      }: PayloadAction<{
+        id: string;
+        date: string;
+      }>
+    ) => {
+      const dayTransactions = state.transactionsHistory.find(
+        (_) => _.date === date
+      );
+      if (!dayTransactions) {
+        return;
+      }
+
+      const ind = dayTransactions?.transactionList.findIndex(
+        (_) => _.id === id
+      );
+      if (ind !== -1) {
+        dayTransactions.transactionList.splice(ind, 1);
+      }
     },
 
     filterExpenses: (
@@ -85,25 +113,46 @@ export const transactionsSlice = createSlice({
     ) => {
       filter.analyticsPage = { ...filter.analyticsPage, ...payload };
     },
+
+    reset: () => ({ ...initialState, transactionsHistory: [] }),
   },
 });
 
 export const addToStorageAndStore =
-  ({
-    transaction,
-    date,
-  }: {
-    transaction: Transaction;
-    date: string;
-  }): AppThunk =>
+  (transaction: Transaction, date: string): AppThunk =>
   (dispatch, getState) => {
     dispatch(add({ date, transaction }));
-    addDayTransactionsToStorage(
-      selectTransactionsHistory(getState()).find((_) => _.date === date)!
-    );
+    const dayTransactions = selectDayTransactions(date)(getState());
+    if (dayTransactions) {
+      updateDayTransactionsInStorage(dayTransactions);
+    }
   };
 
-export const { setNewTransactions, add, filterExpenses, filterAnalytics } =
-  transactionsSlice.actions;
+export const deleteFromStorageAndStore =
+  (id: string, date: string): AppThunk =>
+  (dispatch, getState) => {
+    dispatch(deleteTransaction({ id, date }));
+    const dayTransactions = selectDayTransactions(date)(getState());
+    if (dayTransactions) {
+      updateDayTransactionsInStorage(dayTransactions);
+    }
+  };
+
+export const updateInStorageAndStore =
+  (transaction: Transaction, curDate: string, newDate: string): AppThunk =>
+  (dispatch) => {
+    const id = transaction.id;
+    dispatch(deleteFromStorageAndStore(id, curDate));
+    dispatch(addToStorageAndStore(transaction, newDate));
+  };
+
+export const {
+  setNewTransactions,
+  add,
+  filterExpenses,
+  filterAnalytics,
+  reset,
+  deleteTransaction,
+} = transactionsSlice.actions;
 
 export default transactionsSlice.reducer;
