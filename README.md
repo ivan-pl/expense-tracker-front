@@ -50,7 +50,7 @@ npm install
 npm start
 ```
 
-### Setting up your <a name="setting-up-firebase"></a>firebase setting-up-firebase
+### Setting up your <a name="setting-up-firebase"></a>
 
 In order to set up the app for your firebase instance you need:
 
