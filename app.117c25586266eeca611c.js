@@ -10043,7 +10043,19 @@ function loadTransactionsHistory() {
   });
   return transactionsHistory;
 }
+;// CONCATENATED MODULE: ./src/store/utils/getInsertIndex.ts
+function getInsertIndex(transactionsHistory, date) {
+  for (const [ind, {
+    date: curDate
+  }] of Object.entries(transactionsHistory)) {
+    if (curDate < date) {
+      return +ind;
+    }
+  }
+  return transactionsHistory.length;
+}
 ;// CONCATENATED MODULE: ./src/store/transactionsSlice.ts
+
 
 
 
@@ -10078,12 +10090,13 @@ const transactionsSlice = createSlice({
         date
       }
     }) => {
-      const ind = state.transactionsHistory.findIndex(_ => new Date(_.date) <= new Date(date));
       const {
         transactionsHistory
       } = state;
+      const ind = transactionsHistory.findIndex(_ => _.date === date);
       if (ind === -1) {
-        transactionsHistory.push({
+        const insertIndex = getInsertIndex(transactionsHistory, date);
+        transactionsHistory.splice(insertIndex, 0, {
           date,
           transactionList: [transaction]
         });
