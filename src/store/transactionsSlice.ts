@@ -6,6 +6,7 @@ import { AppThunk } from "./store";
 import updateDayTransactionsInStorage from "../storageController/updateDayTransactions";
 import { selectDayTransactions } from "./transactionsSelectors";
 import loadTransactionsHistory from "../storageController/loadTransactionsHistory";
+import getInsertIndex from "./utils/getInsertIndex";
 
 export interface TransactionsState {
   transactionsHistory: DayTransactions[];
@@ -56,13 +57,12 @@ export const transactionsSlice = createSlice({
         payload: { transaction, date },
       }: PayloadAction<{ transaction: Transaction; date: string }>
     ) => {
-      const ind = state.transactionsHistory.findIndex(
-        (_) => new Date(_.date) <= new Date(date)
-      );
       const { transactionsHistory } = state;
+      const ind = transactionsHistory.findIndex((_) => _.date === date);
 
       if (ind === -1) {
-        transactionsHistory.push({
+        const insertIndex = getInsertIndex(transactionsHistory, date);
+        transactionsHistory.splice(insertIndex, 0, {
           date,
           transactionList: [transaction],
         });
